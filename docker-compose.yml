@@ -2,13 +2,12 @@ version: "3.7"
 services:
   vite_docker:
     image: node:alpine
-    container_name: vite_docker
+    container_name: cms_frontend
+    build: .
     entrypoint: /bin/sh
     ports:
       - 8000:8000
-    working_dir: /srv/app
+    # working_dir: /srv/app
     volumes:
-      - type: bind
-        source: ./
-        target: /srv/app
+      - .:/app
     tty: true
