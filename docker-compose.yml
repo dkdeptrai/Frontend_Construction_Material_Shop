@@ -1,8 +1,8 @@
 version: "3.7"
 services:
   vite_docker:
-    image: node:alpine
-    container_name: cms_frontend
+    image: cms_frontend_image
+    container_name: cms_frontend_container
     build: .
     entrypoint: /bin/sh
     ports:
