@@ -1,10 +1,13 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./SignInPage.css";
 
 //pages and components
-import pic from "../../assets/Group.png";
+import pic from "../../../assets/Group.png";
 
 function SignInPage() {
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -18,7 +21,11 @@ function SignInPage() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Add your sign-in logic here
+    
+    //Performing authentication
+
+    //If authentication is successful
+    navigate("/dashboard");
   };
 
   return (

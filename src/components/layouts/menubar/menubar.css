@@ -1,0 +1,28 @@
+.menuItem {
+  margin: 10px;
+}
+
+.menuItemActive {
+  color: #f7e8ef;
+  fill: #f7e8ef;
+}
+
+.menuItemActive:hover {
+  color: #f7e8ef;
+  fill: #f7e8ef;
+}
+
+.menuItemInactive {
+  color: #455a64;
+  fill: #455a64;
+}
+
+.menuItemInactive:hover {
+  color: #f7e8ef;
+  fill: #f7e8ef;
+}
+
+.container {
+  background-color: #ffffff;
+  width: 300px;
+}

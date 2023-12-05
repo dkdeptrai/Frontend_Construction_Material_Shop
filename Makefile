@@ -7,7 +7,6 @@ DOCKER_EXEC_TOOLS_APP=$(CURRENT_USER) docker exec -it $(DOCKER_NAME) sh
 NODE_INSTALL="npm i"
 SERVER_RUN="npm run dev"
 
-
 .PHONY: build install dev up start first stop restart clear
 
 

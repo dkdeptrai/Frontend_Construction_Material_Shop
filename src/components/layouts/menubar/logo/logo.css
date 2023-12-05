@@ -1,0 +1,31 @@
+.logo {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  grid-template-rows: 1fr 1fr;
+  align-items: center;
+  justify-items: start;
+  gap: 8px;
+  margin: 24px;
+}
+
+.icon {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+}
+
+.shopName {
+  grid-column: 2;
+  grid-row: 1;
+  color: #455a64;
+  font-size: 20px;
+  font-weight: 500;
+  align-items: end;
+}
+
+.shopDescription {
+  grid-column: 2;
+  grid-row: 2;
+  color: #455a64;
+  font-size: 12px;
+  font-weight: 400;
+}

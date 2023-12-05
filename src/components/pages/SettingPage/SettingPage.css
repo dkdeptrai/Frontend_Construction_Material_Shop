@@ -7,7 +7,7 @@ label {
 .setting-page {
   display: grid;
   grid-template-columns: 3fr 1fr;
-  padding: 2vw 4% 0 4%;
+  padding: 2vw 4vw 0 4vw;
 }
 
 .setting-page label {
@@ -27,5 +27,5 @@ label {
   border: 1px solid var(--frame-color);
   width: 16.5vw;
   height: 16.5vw;
-  margin-left: auto;
+  margin-left: 4vw;
 }
