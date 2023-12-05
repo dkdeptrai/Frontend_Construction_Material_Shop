@@ -1,33 +1,64 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
+import React from "react";
+import ReactDOM from "react-dom/client";
 import "./App.css";
+import MenuBar from "./components/layouts/menubar/menubar.jsx";
+import DashBoard from "./components/pages/dashBoard";
+import Customers from "./components/pages/customers";
+import Employees from "./components/pages/employees";
+import Inventory from "./components/pages/inventory";
+import Orders from "./components/pages/orders";
+import Products from "./components/pages/products";
+import PurchaseOrders from "./components/pages/purchaseOrders";
+import Reports from "./components/pages/reports";
+import Warehouse from "./components/pages/warehouse";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
+
+const ROUTE_TITLES = {
+  "/": "Dashboard",
+  "/dashboard": "Dashboard",
+  "/customers": "Customers",
+  "/employees": "Employees",
+  "/inventory": "Inventory",
+  "/orders": "Orders",
+  "/products": "Products",
+  "/purchaseorders": "Purchase Orders",
+  "/reports": "Reports",
+  "/warehouse": "Warehouse",
+};
 
 function App() {
-  const [count, setCount] = useState(0);
+  // const location = useLocation();
+  // const title = ROUTE_TITLES[location.pathname];
 
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMRsdfsdf
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <Router>
+        {/* <header>
+        <h1>{title}</h1>
+      </header> */}
+        <div style={{ display: "flex", height: "100vh" }}>
+          <MenuBar />
+          <div style={{ flex: 1 }}>
+            <Routes>
+              <Route path="/" element={<DashBoard />} />
+              <Route path="/dashboard" element={<DashBoard />} />
+              <Route path="/customers" element={<Customers />} />
+              <Route path="/employees" element={<Employees />} />
+              <Route path="/inventory" element={<Inventory />} />
+              <Route path="/orders" element={<Orders />} />
+              <Route path="/products" element={<Products />} />
+              <Route path="/purchaseorders" element={<PurchaseOrders />} />
+              <Route path="/reports" element={<Reports />} />
+              <Route path="/warehouse" element={<Warehouse />} />
+            </Routes>
+          </div>
+        </div>
+      </Router>
     </>
   );
 }
