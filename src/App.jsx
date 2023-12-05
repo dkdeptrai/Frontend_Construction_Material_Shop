@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./App.css";
+import Header from "./components/layouts/header/header.jsx";
 import MenuBar from "./components/layouts/menubar/menubar.jsx";
 import DashBoard from "./components/pages/dashBoard";
 import Customers from "./components/pages/customers";
@@ -32,18 +33,14 @@ const ROUTE_TITLES = {
 };
 
 function App() {
-  // const location = useLocation();
-  // const title = ROUTE_TITLES[location.pathname];
-
   return (
     <>
       <Router>
-        {/* <header>
-        <h1>{title}</h1>
-      </header> */}
         <div style={{ display: "flex", height: "100vh" }}>
           <MenuBar />
           <div style={{ flex: 1 }}>
+            <Header></Header>
+
             <Routes>
               <Route path="/" element={<DashBoard />} />
               <Route path="/dashboard" element={<DashBoard />} />
