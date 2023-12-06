@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./App.css";
+import { useSelector } from "react-redux";
 
 //pages and components
 import Header from "./components/layouts/header/header.jsx";
@@ -42,9 +43,11 @@ import { useState } from "react";
 //pages and components
 
 function App() {
+  const isOpen = useSelector((state) => state.modal.isOpen);
+
   return (
     <>
-      <Router>
+      {isOpen ? <SettingPage/> : <Router>
         <Routes>
           <Route path="/" element={<SignInPage />} />
         </Routes>
@@ -65,7 +68,8 @@ function App() {
             </Routes>
           </div>
         </div>
-      </Router>
+      </Router>}
+      
     </>
   );
 }
