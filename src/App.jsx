@@ -55,10 +55,10 @@ function App() {
         <Routes>
           <Route path="/" element={<SignInPage />} />
         </Routes>
-        <div style={{ display: "flex", height: "100vh" }}>
-          <MenuBar />
+        <div className="routerContainer">
+          <MenuBar className="menuBar"/>
           <div style={{ flex: 1 }}>
-            <Header></Header>
+            <Header ></Header>
             <Routes>
               <Route path="/dashboard" element={<DashBoard />} />
               <Route path="/customers" element={<Customers />} />
