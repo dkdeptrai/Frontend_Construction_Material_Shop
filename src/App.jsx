@@ -16,7 +16,7 @@ import PurchaseOrders from "./components/pages/purchaseOrders";
 import Reports from "./components/pages/reports";
 import Warehouse from "./components/pages/warehouse";
 import SignInPage from "./components/pages/SignInPage/SignInPage.jsx";
-import SettingPage from "./components/pages/SettingPage/SettingPage.jsx";
+
 
 import {
   BrowserRouter as Router,
@@ -36,9 +36,12 @@ const ROUTE_TITLES = {
   "/purchaseorders": "Purchase Orders",
   "/reports": "Reports",
   "/warehouse": "Warehouse",
-  "/setting": "Setting",
+  "/account": "Account",
+  "/password": "Password",
 };
 import { useState } from "react";
+import SettingModal from "./components/pages/Setting/SettingModal/SettingModal.jsx";
+import Account from "./components/pages/Setting/account/account.jsx";
 
 //pages and components
 
@@ -47,7 +50,8 @@ function App() {
 
   return (
     <>
-      {isOpen ? <SettingPage/> : <Router>
+      {isOpen ? <SettingModal /> : null}
+      <Router>
         <Routes>
           <Route path="/" element={<SignInPage />} />
         </Routes>
@@ -64,12 +68,12 @@ function App() {
               <Route path="/products" element={<Products />} />
               <Route path="/purchaseorders" element={<PurchaseOrders />} />
               <Route path="/reports" element={<Reports />} />
-              <Route path="/setting" element={<SettingPage />} />
+              <Route path="/warehouse" element={<Warehouse />} />
+              <Route path="/account" element={<Account />} />
             </Routes>
           </div>
         </div>
-      </Router>}
-      
+      </Router>
     </>
   );
 }

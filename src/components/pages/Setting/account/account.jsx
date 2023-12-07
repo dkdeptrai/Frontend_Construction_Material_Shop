@@ -1,16 +1,17 @@
 import React from "react";
-import "./SettingPage.css";
+import "./account.css";
 import { useDispatch } from "react-redux";
-import { closeModal } from "../../../states/Modal.jsx";
+import { closeModal } from "../../../../states/Modal.jsx";
 
-const SettingPage = ({ open, setOpen }) => {
+const Account = () => {
   const dispatch = useDispatch();
+
   const handleClick = () => {
     dispatch(closeModal());
   };
 
   return (
-    <div className="modal-overlay">
+    <div className="setting">
       <div className="setting-page">
         <div>
           <label>Name</label>
@@ -27,12 +28,10 @@ const SettingPage = ({ open, setOpen }) => {
           <input type="date" />
         </div>
         <div className="image"></div>
-        <div className="buttons">
-          <button onClick={handleClick}>Cancel</button>
-        </div>
       </div>
+      <button className="close-button" onClick={handleClick}>Cancel</button>
     </div>
   );
 };
 
-export default SettingPage;
+export default Account;

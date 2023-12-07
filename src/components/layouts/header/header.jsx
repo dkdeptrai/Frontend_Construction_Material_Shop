@@ -6,7 +6,6 @@ import { openModal } from "../../../states/Modal.jsx";
 
 //icons and images
 import SettingIcon from "../../../assets/icons/setting.svg?react";
-import SettingPage from "../../pages/SettingPage/SettingPage";
 import "./header.css";
 
 function Header() {
@@ -26,7 +25,6 @@ function Header() {
       <div className="info">
         <div className="employeeName">John Doe</div>
         <Image className="avatar" src="https://picsum.photos/200" />
-
         <button className="settingButton" onClick={handeClick}>
           <SettingIcon />
         </button>
