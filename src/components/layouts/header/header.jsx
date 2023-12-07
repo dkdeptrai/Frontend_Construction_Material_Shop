@@ -7,7 +7,10 @@ import "./header.css";
 function Header() {
   const location = useLocation();
   const pageTitle = location.pathname.split("/").pop();
-  const pageTitleText = pageTitle.charAt(0).toUpperCase() + pageTitle.slice(1);
+  const pageTitleText =
+    pageTitle === "purchaseorders"
+      ? "Purchase Orders"
+      : pageTitle.charAt(0).toUpperCase() + pageTitle.slice(1);
 
   return (
     <div className="header">

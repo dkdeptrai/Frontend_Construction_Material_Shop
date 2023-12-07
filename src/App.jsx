@@ -36,10 +36,10 @@ function App() {
   return (
     <>
       <Router>
-        <div style={{ display: "flex", height: "100vh" }}>
-          <MenuBar />
+        <div className="routerContainer">
+          <MenuBar className="menuBar" />
           <div style={{ flex: 1 }}>
-            <Header></Header>
+            <Header />
 
             <Routes>
               <Route path="/" element={<DashBoard />} />
