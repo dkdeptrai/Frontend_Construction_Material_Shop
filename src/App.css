@@ -27,3 +27,12 @@
   --text-color: #4c4f60;
   --background-color: #ffffff;
 }
+
+.routerContainer {
+  display: flex;
+  height: 100vh;
+}
+
+.menuBar {
+  border: 100px solid black;
+}
