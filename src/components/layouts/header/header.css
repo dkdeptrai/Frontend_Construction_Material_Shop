@@ -6,6 +6,7 @@
   align-items: center;
   color: #4c4f60;
   padding-left: 64px;
+  border-bottom: #eaecf0 solid 1px;
 }
 
 .pageTitle {
