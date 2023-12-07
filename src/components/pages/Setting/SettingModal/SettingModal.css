@@ -1,0 +1,34 @@
+.modal-overlay {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* semi-transparent background */
+  backdrop-filter: blur(5px); /* blur the background */
+  display: flex;
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  gap: 1px;
+  height: 90%;
+  width: 90%;
+  background-color: black;
+  padding: 20px 20px 20px 20px;
+}
+
+.setting-modal {
+  padding: 2vw 4vw 2vw 4vw;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+}
+
+.close-button {
+  width: 10%;
+  align-self: flex-end;
+}
+

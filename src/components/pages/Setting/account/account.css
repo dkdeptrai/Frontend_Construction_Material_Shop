@@ -1,0 +1,41 @@
+label {
+  font-size: 1.125rem;
+}
+
+.setting {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  padding: 10px;
+}
+
+.setting-page {
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  background: white;
+}
+
+.setting-page label {
+  display: block;
+  margin-bottom: 0.875rem;
+}
+
+.setting-page input {
+  box-sizing: border-box;
+  margin-bottom: 0.875rem;
+  padding: 0.5rem;
+  width: 100%;
+}
+
+.image {
+  border: 1px solid var(--frame-color);
+  width: 16.5vw;
+  height: 16.5vw;
+  margin-left: 4vw;
+}
+
+.close-button {
+  width: 10%;
+  align-self: flex-end;
+  margin-top: 5%;
+}
