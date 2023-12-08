@@ -1,15 +1,7 @@
 import React from "react";
 import "./account.css";
-import { useDispatch } from "react-redux";
-import { closeModal } from "../../../../states/Modal.jsx";
 
 const Account = () => {
-  const dispatch = useDispatch();
-
-  const handleClick = () => {
-    dispatch(closeModal());
-  };
-
   return (
     <div className="setting">
       <div className="setting-page">
@@ -19,9 +11,9 @@ const Account = () => {
           <label>Employee Code</label>
           <input type="text" />
           <label>Email</label>
-          <input type="text" />
+          <input type="email" />
           <label>Phone</label>
-          <input type="text" />
+          <input type="tel" />
           <label>Address</label>
           <input type="text" />
           <label>Date of birth</label>
@@ -29,7 +21,6 @@ const Account = () => {
         </div>
         <div className="image"></div>
       </div>
-      <button className="close-button" onClick={handleClick}>Cancel</button>
     </div>
   );
 };

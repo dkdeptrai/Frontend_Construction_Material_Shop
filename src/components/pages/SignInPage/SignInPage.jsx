@@ -24,19 +24,19 @@ function SignInPage() {
     e.preventDefault();
 
     //Performing authentication
-    try {
-      const response = await axios.get("/api/v1/auth/authenticate", {
-        email,
-        password,
-      });
+    // try {
+    //   const response = await axios.get("/api/v1/auth/authenticate", {
+    //     email,
+    //     password,
+    //   });
 
-      if (response.status === 200) {
+    //   if (response.status === 200) {
         navigate("/dashboard");
-        console.log("User authenticated successfully");
-      }
-    } catch (error) {
-      console.log(error);
-    }
+    //     console.log("User authenticated successfully");
+    //   }
+    // } catch (error) {
+    //   console.log(error);
+    // }
   };
 
   return (

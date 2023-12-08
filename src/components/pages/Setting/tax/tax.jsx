@@ -4,7 +4,9 @@ import "./tax.css";
 const Tax = () => {
   return (
     <div className="tax">
-      <h1>Tax</h1>
+      <label>Tax</label>
+      <input type="text" />
+      <button>Update</button>
     </div>
   );
 };
