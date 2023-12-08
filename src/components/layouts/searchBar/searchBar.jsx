@@ -29,6 +29,7 @@ function SearchBar(props) {
         placeholder={props.placeholder}
       />
       <Select
+        placeholder="Filter"
         className="searchOptions"
         options={options}
         isSearchable={false}

@@ -11,10 +11,11 @@ import Customers from "./components/pages/customersPage.jsx";
 import Employees from "./components/pages/employeePages.jsx";
 import Inventory from "./components/pages/inventoryPage.jsx";
 import Orders from "./components/pages/ordersPage.jsx";
-import Products from "./components/pages/products/productsPage.jsx";
+import Products from "./components/pages/productsPage/productsPage.jsx";
 import PurchaseOrders from "./components/pages/purchaseOrdersPage.jsx";
 import Reports from "./components/pages/reportsPage.jsx";
 import Warehouse from "./components/pages/warehousePage.jsx";
+import SignInPage from "./components/pages/SignInPage/SignInPage.jsx";
 
 import {
   BrowserRouter as Router,
@@ -54,24 +55,23 @@ function App() {
           <Route path="/" element={<SignInPage />} />
         </Routes>
         <div className="routerContainer">
-
           <MenuBar className="menuBar" />
           <div className="rightPanel">
             <Header />
-
-
-            <Routes>
-              <Route path="/dashboard" element={<DashBoard />} />
-              <Route path="/customers" element={<Customers />} />
-              <Route path="/employees" element={<Employees />} />
-              <Route path="/inventory" element={<Inventory />} />
-              <Route path="/orders" element={<Orders />} />
-              <Route path="/products" element={<Products />} />
-              <Route path="/purchaseorders" element={<PurchaseOrders />} />
-              <Route path="/reports" element={<Reports />} />
-              <Route path="/warehouse" element={<Warehouse />} />
-              <Route path="/account" element={<Account />} />
-            </Routes>
+            <div className="contentContainer">
+              <Routes>
+                <Route path="/dashboard" element={<DashBoard />} />
+                <Route path="/customers" element={<Customers />} />
+                <Route path="/employees" element={<Employees />} />
+                <Route path="/inventory" element={<Inventory />} />
+                <Route path="/orders" element={<Orders />} />
+                <Route path="/products" element={<Products />} />
+                <Route path="/purchaseorders" element={<PurchaseOrders />} />
+                <Route path="/reports" element={<Reports />} />
+                <Route path="/warehouse" element={<Warehouse />} />
+                <Route path="/account" element={<Account />} />
+              </Routes>
+            </div>
           </div>
         </div>
       </Router>

@@ -1,11 +1,13 @@
 .searchBarContainer {
   display: flex;
   align-items: center;
+  justify-content: center;
   width: 700px;
-  padding: 0px 10px;
+  padding: 0px 12px;
   border: 1px solid #eaecf0;
   color: #344054;
   font-weight: 500;
+  border-radius: 7px;
 }
 
 .searchBarContainer input {
@@ -13,9 +15,12 @@
 }
 
 .searchBar {
-  margin: 20px;
+  margin: 10px;
+  border: none;
 }
 
 .searchOptions {
   width: 200px;
+  border-radius: 8px;
+  border: 1px solid var(--frame-color);
 }
