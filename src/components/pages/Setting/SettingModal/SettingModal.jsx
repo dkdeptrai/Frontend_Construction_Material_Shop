@@ -10,7 +10,7 @@ import Account from "../account/account.jsx";
 import Password from "../password/password.jsx";
 import Notifications from "../notifications/notifications.jsx";
 import Tax from "../tax/tax.jsx";
-import SidebarComponent from "../sidebar/sidebar.jsx";
+import SidebarComponent from "../setting_sidebar/sidebar.jsx";
 import "./SettingModal.css";
 
 const SettingModal = () => {
@@ -20,7 +20,7 @@ const SettingModal = () => {
     <>
       <div className="modal-overlay">
         <div className="modal-content">
-          <SidebarComponent onMenuItemClick={setSelectedItem}/>
+          <SidebarComponent selectedItem={selectedItem} onMenuItemClick={setSelectedItem}/>
           {selectedItem === 'account' && <Account />}
           {selectedItem === 'password' && <Password />}
           {selectedItem === 'notifications' && <Notifications />}
