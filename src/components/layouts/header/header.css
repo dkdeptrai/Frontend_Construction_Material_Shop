@@ -1,4 +1,5 @@
 .header {
+  flex: 1;
   display: flex;
   flex-direction: horizontal;
   background-color: #ffffff;

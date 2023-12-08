@@ -33,6 +33,7 @@
   height: 100vh;
 }
 
-.menuBar {
-  border: 100px solid black;
+.rightPanel {
+  flex: 1;
+  flex-direction: vertical;
 }
