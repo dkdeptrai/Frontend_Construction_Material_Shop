@@ -25,4 +25,11 @@
 .container {
   background-color: #ffffff;
   width: 300px;
+  border-right: 1px solid #eaecf0; /* Change the color to match your design */
+}
+
+.separator {
+  border-top: 1px solid #eaecf0; /* Change the color to match your design */
+  margin: 20px 0;
+  width: 100%;
 }

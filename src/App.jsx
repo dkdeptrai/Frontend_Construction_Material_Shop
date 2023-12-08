@@ -3,15 +3,15 @@ import ReactDOM from "react-dom/client";
 import "./App.css";
 import Header from "./components/layouts/header/header.jsx";
 import MenuBar from "./components/layouts/menubar/menubar.jsx";
-import DashBoard from "./components/pages/dashBoard";
-import Customers from "./components/pages/customers";
-import Employees from "./components/pages/employees";
-import Inventory from "./components/pages/inventory";
-import Orders from "./components/pages/orders";
-import Products from "./components/pages/products";
-import PurchaseOrders from "./components/pages/purchaseOrders";
-import Reports from "./components/pages/reports";
-import Warehouse from "./components/pages/warehouse";
+import DashBoard from "./components/pages/dashBoardPage.jsx";
+import Customers from "./components/pages/customersPage.jsx";
+import Employees from "./components/pages/employeePages.jsx";
+import Inventory from "./components/pages/inventoryPage.jsx";
+import Orders from "./components/pages/ordersPage.jsx";
+import Products from "./components/pages/products/productsPage.jsx";
+import PurchaseOrders from "./components/pages/purchaseOrdersPage.jsx";
+import Reports from "./components/pages/reportsPage.jsx";
+import Warehouse from "./components/pages/warehousePage.jsx";
 import {
   BrowserRouter as Router,
   Routes,
@@ -38,7 +38,7 @@ function App() {
       <Router>
         <div className="routerContainer">
           <MenuBar className="menuBar" />
-          <div style={{ flex: 1 }}>
+          <div className="rightPanel">
             <Header />
 
             <Routes>

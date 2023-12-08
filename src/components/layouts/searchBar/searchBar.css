@@ -1,0 +1,21 @@
+.searchBarContainer {
+  display: flex;
+  align-items: center;
+  width: 700px;
+  padding: 0px 10px;
+  border: 1px solid #eaecf0;
+  color: #344054;
+  font-weight: 500;
+}
+
+.searchBarContainer input {
+  width: 500px;
+}
+
+.searchBar {
+  margin: 20px;
+}
+
+.searchOptions {
+  width: 200px;
+}

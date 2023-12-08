@@ -9,6 +9,8 @@ import InventoryIcon from "../../../assets/icons/inventory.svg?react";
 import WarehouseIcon from "../../../assets/icons/warehouse.svg?react";
 import ReportIcon from "../../../assets/icons/report.svg?react";
 import EmployeeIcon from "../../../assets/icons/employee.svg?react";
+import SignOutIcon from "../../../assets/icons/sign-out.svg?react";
+import SearchIcon from "../../../assets/icons/search.svg?react";
 import Logo from "./logo/logo.jsx";
 import "./menubar.css";
 
@@ -74,6 +76,8 @@ function MenuBar() {
           <MenuItemComponent icon={<WarehouseIcon />} link="/warehouse" />
           <MenuItemComponent icon={<ReportIcon />} link="/reports" />
           <MenuItemComponent icon={<EmployeeIcon />} link="/employees" />
+          <div className="separator"></div>
+          <MenuItemComponent icon={<SignOutIcon />} link="/signout" />
         </Menu>
       </Sidebar>
     </div>
