@@ -1,6 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./App.css";
+import { useSelector } from "react-redux";
+
+//pages and components
 import Header from "./components/layouts/header/header.jsx";
 import MenuBar from "./components/layouts/menubar/menubar.jsx";
 import DashBoard from "./components/pages/dashBoardPage.jsx";
@@ -12,6 +15,7 @@ import Products from "./components/pages/products/productsPage.jsx";
 import PurchaseOrders from "./components/pages/purchaseOrdersPage.jsx";
 import Reports from "./components/pages/reportsPage.jsx";
 import Warehouse from "./components/pages/warehousePage.jsx";
+
 import {
   BrowserRouter as Router,
   Routes,
@@ -20,7 +24,7 @@ import {
 } from "react-router-dom";
 
 const ROUTE_TITLES = {
-  "/": "Dashboard",
+  "/": "Authentication",
   "/dashboard": "Dashboard",
   "/customers": "Customers",
   "/employees": "Employees",
@@ -30,19 +34,33 @@ const ROUTE_TITLES = {
   "/purchaseorders": "Purchase Orders",
   "/reports": "Reports",
   "/warehouse": "Warehouse",
+  "/account": "Account",
+  "/password": "Password",
 };
+import { useState } from "react";
+import SettingModal from "./components/pages/Setting/SettingModal/SettingModal.jsx";
+import Account from "./components/pages/Setting/account/account.jsx";
+
+//pages and components
 
 function App() {
+  const isOpen = useSelector((state) => state.modal.isOpen);
+
   return (
     <>
+      {isOpen ? <SettingModal /> : null}
       <Router>
+        <Routes>
+          <Route path="/" element={<SignInPage />} />
+        </Routes>
         <div className="routerContainer">
+
           <MenuBar className="menuBar" />
           <div className="rightPanel">
             <Header />
 
+
             <Routes>
-              <Route path="/" element={<DashBoard />} />
               <Route path="/dashboard" element={<DashBoard />} />
               <Route path="/customers" element={<Customers />} />
               <Route path="/employees" element={<Employees />} />
@@ -52,6 +70,7 @@ function App() {
               <Route path="/purchaseorders" element={<PurchaseOrders />} />
               <Route path="/reports" element={<Reports />} />
               <Route path="/warehouse" element={<Warehouse />} />
+              <Route path="/account" element={<Account />} />
             </Routes>
           </div>
         </div>
