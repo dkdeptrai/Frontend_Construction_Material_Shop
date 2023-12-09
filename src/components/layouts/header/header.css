@@ -1,13 +1,11 @@
 .header {
-  flex: 1;
   display: flex;
-  flex-direction: horizontal;
-  background-color: #ffffff;
+  background-color: var(--background-color);
   height: 89px;
   align-items: center;
-  color: #4c4f60;
+  color: var(--text-color);
   padding-left: 64px;
-  border-bottom: #eaecf0 solid 1px;
+  border-bottom: var(--border-color) solid 1px;
 }
 
 .pageTitle {
@@ -19,7 +17,7 @@
 
 .info {
   display: flex;
-  flex-direction: horizontal;
+  flex-direction: row;
   align-items: center;
   margin-left: auto;
   margin-right: 44px;
@@ -38,7 +36,7 @@
 
 .settingButton {
   background-color: transparent;
-  color: #4c4f60;
+  color: var(--text-color);
   border: none;
   margin-left: 20px;
 }

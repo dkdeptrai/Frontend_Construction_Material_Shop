@@ -1,0 +1,22 @@
+.exportButton {
+  background-color: transparent;
+  color: var(--text-color);
+  padding: 12px 16px;
+  width: fit-content;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.exportButton > div {
+  font-size: 14px;
+  font-weight: 700px;
+}
+
+.exportButton:hover {
+  background-color: var(--hover-color);
+  color: var(--text-color);
+}
+
+.exportIcon {
+  margin-right: 4px;
+}

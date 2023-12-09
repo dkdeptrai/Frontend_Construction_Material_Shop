@@ -19,21 +19,24 @@
   font-style: normal;
 }
 
-#root {
-  font-family: Poppins, sans-serif;
-  margin: 0 auto;
-  --primary-color: #6a1039;
-  --selected-text-color: #f7e8ef;
-  --text-color: #4c4f60;
-  --background-color: #ffffff;
-}
-
 .routerContainer {
   display: flex;
   height: 100vh;
 }
 
 .rightPanel {
+  width: 100%;
   flex: 1;
-  flex-direction: vertical;
+  display: flex;
+  flex-direction: column;
+  overflow: auto;
+}
+
+.contentContainer {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  height: 100%;
+  padding: 30px 60px;
+  overflow: auto;
 }
