@@ -1,6 +1,9 @@
 import React from "react";
 import SearchBar from "../../layouts/searchBar/searchBar.jsx";
 import Table from "../../core/table/table.jsx";
+import ExportButton from "../../layouts/exportButton/exportButton.jsx";
+import DeleteButton from "../../layouts/deleteButton/deleteButton.jsx";
+import NewButton from "../../layouts/newButton/newButton.jsx";
 import "./productsPage.css";
 
 function ProductsPage() {
@@ -8,85 +11,133 @@ function ProductsPage() {
   const productRows = [
     {
       id: 1,
-      col1: "brick",
-      col2: "100",
-      col3: "kg",
-      col4: "China",
+      productName: "brick",
+      image: "https://picsum.photos/200",
+      productPrice: "100",
+      productCalculationUnit: "kg",
+      productOrigin: "China",
     },
     {
       id: 2,
-      col1: "brick",
-      col2: "100",
-      col3: "kg",
-      col4: "China",
+      productName: "brick",
+      productPrice: "100",
+      productCalculationUnit: "kg",
+      productOrigin: "China",
     },
     {
       id: 3,
-      col1: "brick",
-      col2: "100",
-      col3: "kg",
-      col4: "China",
+      productName: "brick",
+      productPrice: "100",
+      productCalculationUnit: "kg",
+      productOrigin: "China",
     },
     {
       id: 4,
-      col1: "brick",
-      col2: "100",
-      col3: "kg",
-      col4: "China",
+      productName: "brick",
+      productPrice: "100",
+      productCalculationUnit: "kg",
+      productOrigin: "China",
     },
     {
       id: 5,
-      col1: "brick",
-      col2: "100",
-      col3: "kg",
-      col4: "China",
+      productName: "brick",
+      productPrice: "100",
+      productCalculationUnit: "kg",
+      productOrigin: "China",
     },
     {
       id: 6,
-      col1: "brick",
-      col2: "100",
-      col3: "kg",
-      col4: "China",
+      productName: "brick",
+      productPrice: "100",
+      productCalculationUnit: "kg",
+      productOrigin: "China",
     },
     {
       id: 7,
-      col1: "brick",
-      col2: "100",
-      col3: "kg",
-      col4: "China",
+      productName: "brick",
+      productPrice: "100",
+      productCalculationUnit: "kg",
+      productOrigin: "China",
     },
     {
       id: 8,
-      col1: "brick",
-      col2: "100",
-      col3: "kg",
-      col4: "China",
+      productName: "brick",
+      productPrice: "100",
+      productCalculationUnit: "kg",
+      productOrigin: "China",
     },
     {
       id: 9,
-      col1: "brick",
-      col2: "100",
-      col3: "kg",
-      col4: "China",
+      productName: "brick",
+      productPrice: "100",
+      productCalculationUnit: "kg",
+      productOrigin: "China",
+    },
+    {
+      id: 10,
+      productName: "brick",
+      productPrice: "100",
+      productCalculationUnit: "kg",
+      productOrigin: "China",
+    },
+    {
+      id: 11,
+      productName: "brick",
+      productPrice: "100",
+      productCalculationUnit: "kg",
+      productOrigin: "China",
+    },
+    {
+      id: 12,
+      productName: "brick",
+      productPrice: "100",
+      productCalculationUnit: "kg",
+      productOrigin: "China",
+    },
+    {
+      id: 13,
+      productName: "brick",
+      productPrice: "100",
+      productCalculationUnit: "kg",
+      productOrigin: "China",
     },
   ];
   const productColumns = [
+    { field: "index", headerName: "No.", width: 50 },
     {
-      field: "col1",
+      field: "productName",
       headerName: "Product Name",
-      width: 200,
+      flex: 1.5,
+      renderCell: (params) => (
+        <div className="productNameCell">
+          <img className="productImage" src={params.row.image} />
+          <span>{params.value}</span>
+        </div>
+      ),
     },
-    { field: "col2", headerName: "Price", flex: 1 },
-    { field: "col3", headerName: "Calculation unit", flex: 1 },
-    { field: "col4", headerName: "Origin", flex: 1 },
+    { field: "productPrice", headerName: "Price", flex: 0.3 },
+    {
+      field: "productCalculationUnit",
+      headerName: "Calculation unit",
+      flex: 0.4,
+    },
+    { field: "productOrigin", headerName: "Origin", flex: 1 },
   ];
   return (
     <div className="pageContainer">
-      <SearchBar
-        options={options}
-        placeholder="Search Inventory by name, ID or any related keywords"
-      />
-      <Table columns={productColumns} rows={productRows} />
+      <div className="toolBar">
+        <SearchBar
+          className="searchBar"
+          options={options}
+          placeholder="Search Products by name, ID or any related keywords"
+        />
+        <div className="buttonContainer">
+          <ExportButton onClick={() => {}} />
+          <DeleteButton onClick={() => {}} />
+          <NewButton text="New Product" onClick={() => {}} />
+        </div>
+      </div>
+      <Table className="table" columns={productColumns} rows={productRows} />
     </div>
   );
 }

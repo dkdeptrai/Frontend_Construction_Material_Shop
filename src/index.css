@@ -19,6 +19,7 @@
   --frame-color: #eaecf0;
   --button-color: #6a1039;
   --border-color: #eaecf0;
+  --hover-color: #fafbfb;
 }
 
 a {
@@ -66,10 +67,10 @@ button {
 button:hover {
   border-color: #646cff;
 }
-button:focus,
+/* button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
-}
+} */
 
 @media (prefers-color-scheme: light) {
   :root {

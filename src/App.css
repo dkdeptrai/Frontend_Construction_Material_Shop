@@ -29,6 +29,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
+  overflow: auto;
 }
 
 .contentContainer {
@@ -37,4 +38,5 @@
   flex-direction: column;
   height: 100%;
   padding: 30px 60px;
+  overflow: auto;
 }

@@ -1,0 +1,6 @@
+.newButton {
+  background-color: var(--button-color);
+  width: max-content;
+  font-weight: 500;
+  font-size: 14px;
+}
