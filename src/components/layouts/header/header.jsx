@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Image } from "react-bootstrap";
 import { useDispatch } from "react-redux";
-import { openModal } from "../../../states/Modal.jsx";
+import { openModal } from "../../../store/Modal.jsx";
 
 //icons and images
 import SettingIcon from "../../../assets/icons/setting.svg?react";

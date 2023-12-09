@@ -34,6 +34,13 @@ label {
   width: 16.5vw;
   height: 16.5vw;
   margin-left: 4vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.image-input {
+  border: none;
 }
 
 .close-button {

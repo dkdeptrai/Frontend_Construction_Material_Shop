@@ -1,15 +1,13 @@
 import React from "react";
 import "./password.css";
+import InputComponent from "../../../InputComponent/InputComponent";
 
 const Password = () => {
   return (
     <div className="password">
-      <label>Name</label>
-      <input type="text" />
-      <label>Employee Code</label>
-      <input type="text" />
-      <label>Email</label>
-      <input type="email" />
+      <InputComponent label="Confirm old password" type="password" />
+      <InputComponent label="New password" type="password" />
+      <InputComponent label="Confirm new password" type="password" />
       <button>Submit</button>
     </div>
   );

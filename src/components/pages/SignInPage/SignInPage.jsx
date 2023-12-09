@@ -2,12 +2,17 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./SignInPage.css";
 import axios from "axios";
+import userReducer from "../../../reducers/userReducer";
+import { setUserData } from "../../../actions/userActions";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 //pages and components
 import pic from "../../../assets/Group.png";
 
 function SignInPage() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -22,16 +27,21 @@ function SignInPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    navigate("/dashboard");
 
     //Performing authentication
     // try {
-    //   const response = await axios.get("/api/v1/auth/authenticate", {
-    //     email,
-    //     password,
-    //   });
+    //   // const response = await axios.post("http://localhost:8080/api/v1/auth/authenticate", {
+    //   //   email: email,
+    //   //   password: password,
+    //   // });
+    //   // //const userData = response.data.data;
+     
 
-    //   if (response.status === 200) {
-        navigate("/dashboard");
+    //   // if (response.status === 200) {
+    //   //   //dispatch(setUserData(userData));
+    //      navigate("/dashboard");
+        
     //     console.log("User authenticated successfully");
     //   }
     // } catch (error) {

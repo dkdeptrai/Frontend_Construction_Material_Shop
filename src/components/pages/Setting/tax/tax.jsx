@@ -1,11 +1,11 @@
 import React from "react";
 import "./tax.css";
+import InputComponent from "../../../InputComponent/InputComponent";
 
 const Tax = () => {
   return (
     <div className="tax">
-      <label>Tax</label>
-      <input type="text" />
+      <InputComponent label="Tax" type="text" />
       <button>Update</button>
     </div>
   );
