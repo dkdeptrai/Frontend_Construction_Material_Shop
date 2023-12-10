@@ -1,11 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./SignInPage.css";
-import axios from "axios";
-import userReducer from "../../../reducers/userReducer";
 import { setUserData } from "../../../actions/userActions";
 import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
 
 //pages and components
 import pic from "../../../assets/Group.png";
