@@ -1,0 +1,12 @@
+label {
+  font-size: 1.125rem;
+  display: block;
+  margin-bottom: 0.875rem;
+}
+
+input {
+  box-sizing: border-box;
+  margin-bottom: 0.875rem;
+  padding: 0.5rem;
+  width: 100%;
+}
