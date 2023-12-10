@@ -27,26 +27,28 @@ function SignInPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    navigate("/dashboard");
 
     //Performing authentication
-    // try {
-    //   // const response = await axios.post("http://localhost:8080/api/v1/auth/authenticate", {
-    //   //   email: email,
-    //   //   password: password,
-    //   // });
-    //   // //const userData = response.data.data;
-     
+    try {
+      const response = await fetch("/api/v1/auth/authenticate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email, password: password }),
+      });
 
-    //   // if (response.status === 200) {
-    //   //   //dispatch(setUserData(userData));
-    //      navigate("/dashboard");
-        
-    //     console.log("User authenticated successfully");
-    //   }
-    // } catch (error) {
-    //   console.log(error);
-    // }
+      const data = await response.json();
+      const userData = data.user;
+      console.log(userData);
+
+      if (response.status === 200) {
+        dispatch(setUserData(userData));
+        navigate("/dashboard");
+
+        console.log(data.message);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (

@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Image } from "react-bootstrap";
 import { useDispatch } from "react-redux";
 import { openModal } from "../../../store/Modal.jsx";
+import { useSelector } from "react-redux";
 
 //icons and images
 import SettingIcon from "../../../assets/icons/setting.svg?react";
@@ -11,7 +12,7 @@ import "./header.css";
 function Header() {
   const dispatch = useDispatch();
   const location = useLocation();
-  const navigate = useNavigate();
+  const userData = useSelector((state) => state.user.userData);
   const pageTitle = location.pathname.split("/").pop();
   const pageTitleText =
     pageTitle === "purchaseorders"
@@ -26,7 +27,7 @@ function Header() {
     <div className="header">
       <div className="pageTitle">{pageTitleText}</div>
       <div className="info">
-        <div className="employeeName">John Doe</div>
+        <div className="employeeName">{userData.name}</div>
         <Image className="avatar" src="https://picsum.photos/200" />
         <button className="settingButton" onClick={handeClick}>
           <SettingIcon />
