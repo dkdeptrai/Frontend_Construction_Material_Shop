@@ -145,7 +145,7 @@ function Employee() {
         <div className="buttonContainer">
           <ExportButton onClick={() => {}} />
           <DeleteButton onClick={() => {}} />
-          <NewButton text="New Product" onClick={() => {handleClick}} />
+          <NewButton text="New Product" onClick={() => {}} />
         </div>
       </div>
       <Table className="table" columns={productColumns} rows={productRows} />
