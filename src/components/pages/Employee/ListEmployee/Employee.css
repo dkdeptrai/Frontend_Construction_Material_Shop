@@ -1,0 +1,49 @@
+input {
+  all: unset;
+}
+
+.searchBar {
+  margin-right: auto;
+}
+
+.buttonContainer {
+  display: flex;
+  flex-direction: row;
+  margin-left: auto;
+}
+
+.buttonContainer > * {
+  margin: 0px 10px;
+}
+
+.toolBar {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  font-size: 14;
+}
+
+.pageContainer {
+  height: 100%;
+  width: 100%;
+  background-color: #ffffff;
+}
+
+.productImage {
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+.productNameCell {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.table {
+  width: 100%;
+}
+
+
