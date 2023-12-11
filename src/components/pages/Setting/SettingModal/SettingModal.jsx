@@ -8,7 +8,7 @@ import {
 } from "react-router-dom";
 import Account from "../account/account.jsx";
 import Password from "../password/password.jsx";
-import Notifications from "../password/notifications/notifications.jsx";
+import Notifications from "../notifications/notifications.jsx";
 import Tax from "../tax/tax.jsx";
 import SidebarComponent from "../setting_sidebar/sidebar.jsx";
 import "./SettingModal.css";

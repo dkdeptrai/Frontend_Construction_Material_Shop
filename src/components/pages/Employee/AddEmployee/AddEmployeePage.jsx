@@ -1,6 +1,6 @@
-import InputComponent from "../../InputComponent/InputComponent";
+import InputComponent from "../../../InputComponent/InputComponent";
 
-const EmployeePage = () => {
+const AddEmployee = () => {
   const handleClick = () => {
     console.log("Submit");
   };
@@ -27,4 +27,4 @@ const EmployeePage = () => {
   );
 };
 
-export default EmployeePage;
+export default AddEmployee;

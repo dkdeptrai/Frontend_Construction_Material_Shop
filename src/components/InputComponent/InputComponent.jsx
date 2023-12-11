@@ -1,11 +1,11 @@
 import React from 'react';
 import './InputComponent.css';
 
-const InputComponent = ({ label, type, accept }) => {
+const InputComponent = ({ label, type, accept, defaultValue }) => {
   return (
     <div>
       <label>{label}</label>
-      <input type={type} accept={accept} />
+      <input type={type} accept={accept} defaultValue={defaultValue}/>
     </div>
   );
 };
