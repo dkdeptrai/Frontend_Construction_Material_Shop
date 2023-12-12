@@ -8,6 +8,7 @@ import "./productsPage.css";
 
 function ProductsPage() {
   const options = ["product", "category", "brand", "price", "quantity"];
+  const fetchProduct = function () {};
   const productRows = [
     {
       id: 1,
