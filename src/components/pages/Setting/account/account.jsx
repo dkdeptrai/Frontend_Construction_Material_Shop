@@ -10,16 +10,44 @@ const Account = () => {
     <div className="setting">
       <div className="setting-page">
         <div>
-          <InputComponent label="Name" type="text" defaultValue={userData?.name}/>
-          <InputComponent label="Employee Code" type="text" defaultValue={userData?.employeeCode}/>
-          <InputComponent label="Email" type="email" defaultValue={userData?.email}/>
-          <InputComponent label="Phone" type="tel" defaultValue={userData?.phone}/>
-          <InputComponent label="Address" type="text" defaultValue={userData?.contactAddress}/>
-          <InputComponent label="Date of birth" type="date" defaultValue={userData?.dateOfBirth}/>
+          <InputComponent
+            label="Name"
+            type="text"
+            defaultValue={userData?.name}
+          />
+          <InputComponent
+            label="Employee Code"
+            type="text"
+            defaultValue={userData?.employeeCode}
+          />
+          <InputComponent
+            label="Email"
+            type="email"
+            defaultValue={userData?.email}
+          />
+          <InputComponent
+            label="Phone"
+            type="tel"
+            defaultValue={userData?.phone}
+          />
+          <InputComponent
+            label="Address"
+            type="text"
+            defaultValue={userData?.contactAddress}
+          />
+          <InputComponent
+            label="Date of birth"
+            type="date"
+            defaultValue={userData?.dateOfBirth}
+          />
         </div>
         <div className="image">
-          <input type="file" accept="image/*" className="image-input"></input>
-        </div> 
+          <InputComponent
+            type="file"
+            accept="image/*"
+            className="image-input"
+          />
+        </div>
       </div>
     </div>
   );

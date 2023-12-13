@@ -1,0 +1,14 @@
+.back-button {
+  background-color: transparent;
+  color: var(--text-color);
+  border: none;
+  border: 1px solid var(--border-color);
+  margin-bottom: 30px;
+  width: fit-content;
+}
+
+.button-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

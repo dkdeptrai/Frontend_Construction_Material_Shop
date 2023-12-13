@@ -1,0 +1,38 @@
+.employee-page {
+  display: flex;
+  flex-direction: column;
+  height: auto;
+}
+
+.submit-button-padding {
+  display: flex;
+  flex-direction: row;
+  margin-top: 30px;
+  margin-bottom: 30px;
+  justify-content: flex-end;
+}
+
+.image-upload {
+  border: 1px solid var(--frame-color);
+  width: 230px;
+  height: 230px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 0.875rem;
+  border-radius: 7px;
+}
+
+.image-upload input {
+  align-self: center;
+  border: none;
+}
+
+.button-margin {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
