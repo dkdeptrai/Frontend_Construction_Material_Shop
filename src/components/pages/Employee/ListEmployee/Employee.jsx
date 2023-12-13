@@ -1,4 +1,7 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+
+//pages and components
 import SearchBar from "../../../layouts/searchBar/searchBar.jsx";
 import Table from "../../../core/table/table.jsx";
 import ExportButton from "../../../layouts/exportButton/exportButton.jsx";
@@ -9,6 +12,12 @@ import NewButton from "../../../layouts/newButton/newButton.jsx";
 import "./Employee.css";
 
 function Employee() {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate("/employees/add");
+  };
+  
   const options = ["Name", "Phone number", "Address", "Position"];
   const productRows = [
     {
@@ -145,7 +154,7 @@ function Employee() {
         <div className="buttonContainer">
           <ExportButton onClick={() => {}} />
           <DeleteButton onClick={() => {}} />
-          <NewButton text="New Product" onClick={() => {}} />
+          <NewButton text="New Product" onClick={handleClick} />
         </div>
       </div>
       <Table className="table" columns={productColumns} rows={productRows} />

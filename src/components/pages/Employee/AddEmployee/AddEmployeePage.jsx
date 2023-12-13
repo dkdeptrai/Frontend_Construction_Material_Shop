@@ -1,4 +1,6 @@
 import InputComponent from "../../../InputComponent/InputComponent";
+import "./AddEmployeePage.css";
+import BackButton from "../../../layouts/backButton/backButton.jsx";
 
 const AddEmployee = () => {
   const handleClick = () => {
@@ -7,6 +9,7 @@ const AddEmployee = () => {
 
   return (
     <div className="employee-page">
+      <BackButton content="Add Employee" />
       <InputComponent label="Employee Code" inputType="text" />
       <InputComponent label="Employee Name" inputType="text" />
       <InputComponent
@@ -22,7 +25,9 @@ const AddEmployee = () => {
       <InputComponent label="Position" inputType="text" />
       <InputComponent label="Salary" inputType="number" />
       <InputComponent label="Start Date" inputType="date" />
-      <button onClick={handleClick}>Submit</button>
+      <div className="button-margin">
+        <button onClick={handleClick}>Submit</button>
+      </div>
     </div>
   );
 };

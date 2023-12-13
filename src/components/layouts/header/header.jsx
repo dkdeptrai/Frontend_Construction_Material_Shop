@@ -16,8 +16,10 @@ function Header() {
   const pageTitleText =
     pageTitle === "purchaseorders"
       ? "Purchase Orders"
+      : pageTitle === "add"
+      ? "Employees"
       : pageTitle.charAt(0).toUpperCase() + pageTitle.slice(1);
- 
+
   const handeClick = () => {
     dispatch(openModal());
   };

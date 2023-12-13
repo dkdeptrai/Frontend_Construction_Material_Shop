@@ -26,26 +26,26 @@ function SignInPage() {
     e.preventDefault();
 
     //Performing authentication
-    try {
-      const response = await fetch("/api/v1/auth/authenticate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email, password: password }),
-      });
+    // try {
+    //   const response = await fetch("/api/v1/auth/authenticate", {
+    //     method: "POST",
+    //     headers: { "Content-Type": "application/json" },
+    //     body: JSON.stringify({ email: email, password: password }),
+    //   });
 
-      const data = await response.json();
-      const userData = data.user;
-      console.log(userData);
+    //   const data = await response.json();
+    //   const userData = data.user;
+    //   console.log(userData);
 
-      if (response.status === 200) {
-        dispatch(setUserData(userData));
+    //   if (response.status === 200) {
+    //     dispatch(setUserData(userData));
         navigate("/dashboard");
 
-        console.log(data.message);
-      }
-    } catch (error) {
-      console.log(error);
-    }
+    //     console.log(data.message);
+    //   }
+    // } catch (error) {
+    //   console.log(error);
+    // }
   };
 
   return (
