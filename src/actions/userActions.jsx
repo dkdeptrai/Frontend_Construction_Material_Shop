@@ -5,4 +5,11 @@ const setUserData = (userData) => {
   };
 };
 
-export { setUserData };
+const resetUserData = () => {
+  return {
+    type: 'RESET_USER_DATA',
+    payload: null
+  };
+};
+
+export { setUserData, resetUserData };

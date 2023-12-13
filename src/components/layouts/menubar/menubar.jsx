@@ -1,5 +1,7 @@
 import { NavLink, useLocation } from "react-router-dom";
 import { Sidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import DashboardIcon from "../../../assets/icons/dashboard.svg?react";
 import ProductIcon from "../../../assets/icons/product.svg?react";
 import OrderIcon from "../../../assets/icons/order.svg?react";
@@ -13,9 +15,11 @@ import SignOutIcon from "../../../assets/icons/sign-out.svg?react";
 import SearchIcon from "../../../assets/icons/search.svg?react";
 import Logo from "./logo/logo.jsx";
 import "./menubar.css";
+import { resetUserData, setUserData } from "../../../actions/userActions.jsx";
 
 function MenuItemComponent({ icon, link }) {
   const location = useLocation();
+
   return (
     <MenuItem
       style={{ margin: "20px" }}
@@ -32,6 +36,13 @@ function MenuItemComponent({ icon, link }) {
 
 function MenuBar() {
   const location = useLocation();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleSignOut = async (e) => {
+    dispatch(resetUserData());
+    navigate("/");
+  };
   return (
     <div className="container">
       <Logo />
@@ -77,7 +88,13 @@ function MenuBar() {
           <MenuItemComponent icon={<ReportIcon />} link="/reports" />
           <MenuItemComponent icon={<EmployeeIcon />} link="/employees" />
           <div className="separator"></div>
-          <MenuItemComponent icon={<SignOutIcon />} link="/signout" />
+          <MenuItem
+            style={{ margin: "20px" }}
+            icon={<SignOutIcon />}
+            onClick={handleSignOut}
+          >
+            Sign Out
+          </MenuItem>
         </Menu>
       </Sidebar>
     </div>
