@@ -24,7 +24,7 @@ function MenuItemComponent({ icon, link }) {
     <MenuItem
       style={{ margin: "20px" }}
       icon={icon}
-      active={location.pathname === link}
+      active={location.pathname.startsWith(link)}
       component={<NavLink to={link} />}
     >
       {link === "/purchaseorders"
