@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import SearchBar from "../../layouts/searchBar/searchBar.jsx";
 import Table from "../../core/table/table.jsx";
 import ExportButton from "../../layouts/exportButton/exportButton.jsx";
@@ -8,6 +8,21 @@ import "./productsPage.css";
 
 function ProductsPage() {
   const options = ["product", "category", "brand", "price", "quantity"];
+  const [products, setProducts] = useState([]);
+
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:8080/api/v1/products?page=1&size=10",
+        { mode: "no-cors" }
+      );
+      const data = await response.json();
+      setProducts(data);
+      console.log("Products fetched:", data);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
   const productRows = [
     {
       id: 1,
@@ -134,7 +149,7 @@ function ProductsPage() {
         <div className="buttonContainer">
           <ExportButton onClick={() => {}} />
           <DeleteButton onClick={() => {}} />
-          <NewButton text="New Product" onClick={() => {}} />
+          <NewButton text="New Product" onClick={() => fetchProducts()} />
         </div>
       </div>
       <Table className="table" columns={productColumns} rows={productRows} />
