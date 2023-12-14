@@ -13,17 +13,16 @@ function SignInPage() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [emailError, setEmailError] = useState(false);
-  const [passwordError, setPasswordError] = useState(false);
+  const [authError, setAuthError] = useState(false);
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
-    setEmailError(false);
+    setAuthError(false);
   };
 
   const handlePasswordChange = (e) => {
     setPassword(e.target.value);
-    setPasswordError(false);
+    setAuthError(false);
   };
 
   const handleSubmit = async (e) => {
@@ -47,11 +46,8 @@ function SignInPage() {
         throw new Error(data.message);
       }
     } catch (error) {
-      if (error.message === "This account is not found") {
-        setEmailError(true);
-      } else if (error.message === "User not found or Incorrect password") {
-        setEmailError(true);
-        setPasswordError(true);
+      if (error.message === "User not found or Incorrect password") {
+        setAuthError(true);
       }
       console.log(error);
     }
@@ -69,9 +65,7 @@ function SignInPage() {
         <form onSubmit={handleSubmit}>
           <label className="form-label">Email:</label>
           <input type="email" value={email} onChange={handleEmailChange} />
-          {emailError ? (
-            <p style={{ color: "red", margin: "0" }}>Email does not exist.</p>
-          ) : null}
+
           <br />
           <label>Password:</label>
           <input
@@ -79,8 +73,10 @@ function SignInPage() {
             value={password}
             onChange={handlePasswordChange}
           />
-          {passwordError ? (
-            <p style={{ color: "red", margin: "0" }}>Password is incorrect.</p>
+          {authError ? (
+            <p style={{ color: "red", margin: "0" }}>
+              Email or password is incorrect.
+            </p>
           ) : null}
           <br />
           <button type="submit">Sign In</button>
