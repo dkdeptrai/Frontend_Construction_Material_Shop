@@ -40,6 +40,7 @@ function SignInPage() {
       console.log(userData);
 
       if (response.status === 200) {
+        sessionStorage.setItem("token", data.token);
         dispatch(setUserData(userData));
         navigate("/dashboard");
       } else {
