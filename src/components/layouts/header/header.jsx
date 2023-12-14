@@ -11,7 +11,7 @@ import "./header.css";
 function Header() {
   const dispatch = useDispatch();
   const location = useLocation();
-  const pageTitle = location.pathname.split("/").pop();
+  const pageTitle = location.pathname.split("/")[1];
   const userData = useSelector((state) => state.user.userData);
   const pageTitleText =
     pageTitle === "purchaseorders"
@@ -20,7 +20,7 @@ function Header() {
       ? "Employees"
       : pageTitle.charAt(0).toUpperCase() + pageTitle.slice(1);
 
-  const handeClick = () => {
+  const handleClick = () => {
     dispatch(openModal());
   };
 
@@ -30,7 +30,7 @@ function Header() {
       <div className="info">
         <div className="employeeName">{userData?.name}</div>
         <Image className="avatar" src="https://picsum.photos/200" />
-        <button className="settingButton" onClick={handeClick}>
+        <button className="settingButton" onClick={handleClick}>
           <SettingIcon />
         </button>
       </div>

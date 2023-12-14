@@ -13,6 +13,7 @@ import Inventory from "./components/pages/inventoryPage.jsx";
 import SaleOrdersPage from "./components/pages/SaleOrders/ListOrders/saleOrders.jsx";
 import AddSaleOrderPage from "./components/pages/SaleOrders/AddOrder/AddSaleOrderPage.jsx";
 import Products from "./components/pages/productsPage/productsPage.jsx";
+import AddProductPage from "./components/pages/addProductPage/addProductPage.jsx";
 import PurchaseOrders from "./components/pages/purchaseOrdersPage.jsx";
 import Reports from "./components/pages/reportsPage.jsx";
 import Warehouse from "./components/pages/warehousePage.jsx";
@@ -21,6 +22,7 @@ import Account from "./components/pages/Setting/account/account.jsx";
 import SettingModal from "./components/pages/Setting/SettingModal/SettingModal.jsx";
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import AddProduct from "./components/pages/addProductPage/addProductPage.jsx";
 
 const ROUTE_TITLES = {
   "/": "Authentication",
@@ -63,6 +65,7 @@ function App() {
                 <Route path="/orders" element={<SaleOrdersPage />} />
                 <Route path="/orders/add" element={<AddSaleOrderPage />} />
                 <Route path="/products" element={<Products />} />
+                <Route path="/products/add" element={<AddProductPage />} />
                 <Route path="/purchaseorders" element={<PurchaseOrders />} />
                 <Route path="/reports" element={<Reports />} />
                 <Route path="/warehouse" element={<Warehouse />} />
