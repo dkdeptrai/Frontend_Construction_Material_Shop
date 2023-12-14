@@ -10,7 +10,8 @@ import Customers from "./components/pages/customersPage.jsx";
 import Employee from "./components/pages/Employee/ListEmployee/Employee.jsx";
 import AddEmployee from "./components/pages/Employee/AddEmployee/AddEmployeePage.jsx";
 import Inventory from "./components/pages/inventoryPage.jsx";
-import Orders from "./components/pages/ordersPage.jsx";
+import SaleOrdersPage from "./components/pages/SaleOrders/ListOrders/saleOrders.jsx";
+import AddSaleOrderPage from "./components/pages/SaleOrders/AddOrder/AddSaleOrderPage.jsx";
 import Products from "./components/pages/productsPage/productsPage.jsx";
 import PurchaseOrders from "./components/pages/purchaseOrdersPage.jsx";
 import Reports from "./components/pages/reportsPage.jsx";
@@ -29,6 +30,7 @@ const ROUTE_TITLES = {
   "/employees/add": "Add Employee",
   "/inventory": "Inventory",
   "/orders": "Orders",
+  "/orders/add": "Add Order",
   "/products": "Products",
   "/purchaseorders": "Purchase Orders",
   "/reports": "Reports",
@@ -58,7 +60,8 @@ function App() {
                 <Route path="/employees" element={<Employee />} />
                 <Route path="/employees/add" element={<AddEmployee />} /> */
                 <Route path="/inventory" element={<Inventory />} />
-                <Route path="/orders" element={<Orders />} />
+                <Route path="/orders" element={<SaleOrdersPage />} />
+                <Route path="/orders/add" element={<AddSaleOrderPage />} />
                 <Route path="/products" element={<Products />} />
                 <Route path="/purchaseorders" element={<PurchaseOrders />} />
                 <Route path="/reports" element={<Reports />} />
