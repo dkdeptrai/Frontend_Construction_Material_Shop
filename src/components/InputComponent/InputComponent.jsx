@@ -1,11 +1,42 @@
-import React from 'react';
-import './InputComponent.css';
+import React from "react";
+import "./InputComponent.css";
 
-const InputComponent = ({ label, type, accept, defaultValue }) => {
+const InputComponent = ({
+  label,
+  type,
+  accept,
+  defaultValue,
+  value,
+  setValue,
+  options
+}) => {
+  const handleChange = (e) => {
+    setValue(e.target.value);
+  };
+
+  if (type === "select") {
+    return (
+      <div>
+        <label>{label}</label>
+        <select value={value} onChange={handleChange}>
+          {options.map((option) => (
+            <option key={option}>{option}</option>
+          ))}
+        </select>
+      </div>
+    );
+  }
+
   return (
     <div>
       <label>{label}</label>
-      <input type={type} accept={accept} defaultValue={defaultValue}/>
+      <input
+        type={type}
+        accept={accept}
+        defaultValue={defaultValue}
+        value={value}
+        onChange={handleChange}
+      />
     </div>
   );
 };
