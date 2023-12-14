@@ -10,3 +10,15 @@ input {
   padding: 0.5rem;
   width: 100%;
 }
+
+select {
+  box-sizing: border-box;
+  margin-bottom: 0.875rem;
+  padding: 0.5rem;
+  width: 15%;
+  border-radius: 7px;
+  border: 2px solid var(--frame-color);
+  font-size: 1.125rem;
+  color: var(--text-color);
+}
+
