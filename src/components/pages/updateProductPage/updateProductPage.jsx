@@ -1,17 +1,27 @@
 import React, { useState } from "react";
+import { useParams } from "react-router-dom";
 import BackButton from "../../layouts/backButton/backButton";
 import InputComponent from "../../InputComponent/InputComponent";
 import ImageInputComponent from "../../ImageInputComponent/ImageInputComponent";
 
-import "./addProductPage.css";
+import "./updateProductPage.css";
 //TODO: handle submission through api
-function AddProductPage() {
-  const [name, setName] = useState("");
-  const [origin, setOrigin] = useState("");
-  const [description, setDescription] = useState("");
-  const [unitPrice, setUnitPrice] = useState("");
-  const [unit, setUnit] = useState("");
-  const [image, setImage] = useState("");
+
+function fetchProduct(id) {
+  let product = {};
+  //TODO: fetch product from api
+  return product;
+}
+
+function UpdateProductPage() {
+  const productId = useParams();
+  const product = fetchProduct(productId);
+  const [name, setName] = useState(product.name);
+  const [origin, setOrigin] = useState(product.origin);
+  const [description, setDescription] = useState(product.description);
+  const [unitPrice, setUnitPrice] = useState(product.unitPrice);
+  const [unit, setUnit] = useState(product.calculationUnit);
+  const [image, setImage] = useState(product.image);
 
   const handleClick = async (e) => {
     e.preventDefault();
@@ -53,7 +63,7 @@ function AddProductPage() {
   };
 
   return (
-    <div className="addProductPage">
+    <div className="updateProductPage">
       <BackButton content="Add Product" />
       <form>
         <InputComponent
@@ -98,4 +108,4 @@ function AddProductPage() {
   );
 }
 
-export default AddProductPage;
+export default UpdateProductPage;

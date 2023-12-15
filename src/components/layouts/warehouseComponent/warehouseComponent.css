@@ -1,0 +1,26 @@
+.warehouseComponent {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  border: 2px solid var(--frame-color);
+  border-radius: 20px;
+  padding: 24px;
+}
+
+.warehouseComponent > .warehouseIcon {
+  height: 48px;
+  width: 48px;
+}
+
+.warehouseComponent > .nextIcon {
+  height: 48px;
+  width: 48px;
+  margin-left: auto;
+}
+
+.warehouseComponent > div {
+  margin-left: 32px;
+  font-size: 24px;
+  font-weight: 400;
+}

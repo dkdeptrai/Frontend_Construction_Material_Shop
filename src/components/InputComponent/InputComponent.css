@@ -1,3 +1,7 @@
+div {
+  color: var(--text-color);
+}
+
 label {
   font-size: 1.125rem;
   display: block;
@@ -9,6 +13,8 @@ input {
   margin-bottom: 0.875rem;
   padding: 0.5rem;
   width: 100%;
+  background-color: transparent;
+  color: var(--text-color);
 }
 
 select {
@@ -19,6 +25,6 @@ select {
   border-radius: 7px;
   border: 2px solid var(--frame-color);
   font-size: 1.125rem;
+  background-color: transparent;
   color: var(--text-color);
 }
-
