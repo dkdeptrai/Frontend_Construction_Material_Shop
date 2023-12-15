@@ -36,6 +36,13 @@ const AddEmployee = () => {
       employeeType: position,
     };
 
+    for (let key in registerRequest) {
+      if (key !== "imageURL" && (registerRequest[key] === null || registerRequest[key] === "")) {
+        alert(`Please fill in the ${key}`);
+        return;
+      }
+    }
+
     try {
       const response = await fetch("/api/v1/auth/register", {
         method: "POST",
@@ -58,7 +65,11 @@ const AddEmployee = () => {
       <BackButton content="Add Employee" />
       <form>
         <InputComponent
-          label="Employee Code"
+          label={
+            <>
+              Employee Code<span className="required-star">*</span>
+            </>
+          }
           type="text"
           value={employeeCode}
           setValue={setEmployeeCode}
@@ -70,57 +81,93 @@ const AddEmployee = () => {
           setValue={setEmployeeName}
         />
         <InputComponent
-          label="Employee Image"
+          label={
+            <>
+              Employee Code<span className="required-star">*</span>
+            </>
+          }
           type="file"
           accept="image/*"
           value={employeeImage}
           setValue={setEmployeeImage}
         />
         <InputComponent
-          label="Email"
+          label={
+            <>
+              Email<span className="required-star">*</span>
+            </>
+          }
           type="email"
           value={email}
           setValue={setEmail}
         />
         <InputComponent
-          label="Password"
+          label={
+            <>
+              Password<span className="required-star">*</span>
+            </>
+          }
           type="password"
           value={password}
           setValue={setPassword}
         />
         <InputComponent
-          label="Phone"
+          label={
+            <>
+              Phone<span className="required-star">*</span>
+            </>
+          }
           type="tel"
           value={phone}
           setValue={setPhone}
         />
         <InputComponent
-          label="Address"
+          label={
+            <>
+              Address<span className="required-star">*</span>
+            </>
+          }
           type="text"
           value={address}
           setValue={setAddress}
         />
         <InputComponent
-          label="Date of Birth"
+          label={
+            <>
+              Date of birth<span className="required-star">*</span>
+            </>
+          }
           type="date"
           value={dateOfBirth}
           setValue={setDateOfBirth}
         />
         <InputComponent
-          label="Position"
+          label={
+            <>
+              Postition<span className="required-star">*</span>
+            </>
+          }
           type="select"
           value={position}
           setValue={setPosition}
           options={["SALE", "WAREHOUSE", "SHIPPING"]}
         />
         <InputComponent
-          label="Salary"
+          label={
+            <>
+              Salary<span className="required-star">*</span>
+            </>
+          }
           type="number"
           value={salary}
           setValue={setSalary}
         />
         <InputComponent
-          label="Start Date"
+          label={
+            <>
+              Start date<span className="required-star">*</span>
+            </>
+          }
           type="date"
           value={startDate}
           setValue={setStartDate}

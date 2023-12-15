@@ -29,6 +29,10 @@
   border: none;
 }
 
+.required-star {
+  color: red;
+}
+
 .button-margin {
   display: flex;
   flex-direction: row;
