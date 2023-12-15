@@ -1,0 +1,9 @@
+.imageContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 250px;
+  width: 250px;
+  border: 1px solid var(--border-color);
+  border-radius: 15px;
+}
