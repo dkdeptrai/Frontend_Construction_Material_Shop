@@ -8,8 +8,12 @@ const InputComponent = ({
   defaultValue,
   value,
   setValue,
-  options
+  options,
 }) => {
+  if (!label || !type) {
+    throw new Error("InputComponent: label and type are required");
+  }
+
   const handleChange = (e) => {
     setValue(e.target.value);
   };
