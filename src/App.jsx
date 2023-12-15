@@ -16,13 +16,14 @@ import Products from "./components/pages/productsPage/productsPage.jsx";
 import AddProductPage from "./components/pages/addProductPage/addProductPage.jsx";
 import PurchaseOrders from "./components/pages/purchaseOrdersPage.jsx";
 import Reports from "./components/pages/reportsPage.jsx";
-import Warehouse from "./components/pages/warehousePage.jsx";
+import Warehouse from "./components/pages/warehousePage/warehousePage.jsx";
 import SignInPage from "./components/pages/SignInPage/SignInPage.jsx";
 import Account from "./components/pages/Setting/account/account.jsx";
 import SettingModal from "./components/pages/Setting/SettingModal/SettingModal.jsx";
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import AddProduct from "./components/pages/addProductPage/addProductPage.jsx";
+import UpdateProductPages from "./components/pages/updateProductPage/updateProductPage.jsx";
 
 const ROUTE_TITLES = {
   "/": "Authentication",
@@ -66,6 +67,10 @@ function App() {
                 <Route path="/orders/add" element={<AddSaleOrderPage />} />
                 <Route path="/products" element={<Products />} />
                 <Route path="/products/add" element={<AddProductPage />} />
+                <Route
+                  path="/products/update/:id"
+                  element={<UpdateProductPages />}
+                />
                 <Route path="/purchaseorders" element={<PurchaseOrders />} />
                 <Route path="/reports" element={<Reports />} />
                 <Route path="/warehouse" element={<Warehouse />} />
