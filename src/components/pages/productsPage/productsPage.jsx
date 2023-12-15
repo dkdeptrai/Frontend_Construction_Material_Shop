@@ -12,10 +12,15 @@ function ProductsPage() {
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch(
-        "http://localhost:8080/api/v1/products?page=1&size=10",
-        { mode: "no-cors" }
-      );
+      console.log(sessionStorage.getItem("token"));
+      const response = await fetch("/api/v1/products?page=1&size=10", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+        },
+        // mode: "no-cors",
+      });
       const data = await response.json();
       setProducts(data);
       console.log("Products fetched:", data);
