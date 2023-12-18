@@ -28,22 +28,24 @@ function SearchBar(props) {
         type="text"
         placeholder={props.placeholder}
       />
-      <Select
-        placeholder="Filter"
-        className="searchOptions"
-        options={options}
-        isSearchable={false}
-        onChange={handleChange}
-        components={{
-          DropdownIndicator: (props) => {
-            return (
-              <div>
-                <FilterIcon {...props.innerProps} />
-              </div>
-            );
-          },
-        }}
-      />
+      {props.options.length > 0 && (
+        <Select
+          placeholder="Filter"
+          className="searchOptions"
+          options={options}
+          isSearchable={false}
+          onChange={handleChange}
+          components={{
+            DropdownIndicator: (props) => {
+              return (
+                <div>
+                  <FilterIcon {...props.innerProps} />
+                </div>
+              );
+            },
+          }}
+        />
+      )}
     </div>
   );
 }
