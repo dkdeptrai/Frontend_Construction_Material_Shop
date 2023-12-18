@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import SearchBar from "../../layouts/searchBar/searchBar.jsx";
 import Table from "../../core/table/table.jsx";
 import ExportButton from "../../layouts/exportButton/exportButton.jsx";
@@ -7,6 +8,7 @@ import NewButton from "../../layouts/newButton/newButton.jsx";
 import "./productsPage.css";
 
 function ProductsPage() {
+  const navigate = useNavigate();
   const options = ["product", "category", "brand", "price", "quantity"];
   const [products, setProducts] = useState([]);
 
@@ -19,7 +21,6 @@ function ProductsPage() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${sessionStorage.getItem("token")}`,
         },
-        // mode: "no-cors",
       });
       const data = await response.json();
       setProducts(data);
@@ -27,6 +28,10 @@ function ProductsPage() {
     } catch (error) {
       console.error("Error fetching products:", error);
     }
+  };
+
+  const navigateToNewProduct = () => {
+    navigate("/products/add");
   };
   const productRows = [
     {
@@ -154,7 +159,10 @@ function ProductsPage() {
         <div className="buttonContainer">
           <ExportButton onClick={() => {}} />
           <DeleteButton onClick={() => {}} />
-          <NewButton text="New Product" onClick={() => fetchProducts()} />
+          <NewButton
+            text="New Product"
+            onClick={() => navigateToNewProduct()}
+          />
         </div>
       </div>
       <Table className="table" columns={productColumns} rows={productRows} />

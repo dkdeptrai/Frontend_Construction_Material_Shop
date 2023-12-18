@@ -1,0 +1,10 @@
+.units {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.units > * {
+  width: 45%;
+}
