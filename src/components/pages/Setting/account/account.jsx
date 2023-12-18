@@ -43,7 +43,7 @@ const Account = () => {
         </div>
         <div className="image">
           <InputComponent
-            label="Image"
+            label={"Image"}
             type="file"
             accept="image/*"
             className="image-input"

@@ -37,7 +37,10 @@ const AddEmployee = () => {
     };
 
     for (let key in registerRequest) {
-      if (key !== "imageURL" && (registerRequest[key] === null || registerRequest[key] === "")) {
+      if (
+        key !== "imageURL" &&
+        (registerRequest[key] === null || registerRequest[key] === "")
+      ) {
         alert(`Please fill in the ${key}`);
         return;
       }
