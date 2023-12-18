@@ -1,0 +1,15 @@
+.input-field {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.input-field label {
+  white-space: nowrap;
+}
+
+.input-field input {
+  width: 50%;
+}

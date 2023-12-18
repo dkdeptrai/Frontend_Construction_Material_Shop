@@ -108,7 +108,7 @@ function SaleOrdersPage() {
         <div className="buttonContainer">
           <ExportButton onClick={() => {}} />
           <DeleteButton onClick={() => {}} />
-          <NewButton text="New Product" onClick={handleClick} />
+          <NewButton text="New Order" onClick={handleClick} />
         </div>
       </div>
       <Table className="table" columns={productColumns} rows={productRows} />
