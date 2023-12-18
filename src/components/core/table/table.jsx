@@ -1,10 +1,16 @@
 import React, { useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
+import { useNavigate } from "react-router-dom";
+
 import "./table.css";
 
 function Table(props) {
+  const navigate = useNavigate();
+
   const columns = props.columns;
   const rows = props.rows;
+  //Add cellName's field's name so that we can navigate to more information page
+  const cellName = props.cellName;
   const handleRowSelection = props.onRowSelection;
   const pageSizeOptions = [5, 10, 20];
   const [paginationModel, setPaginationModel] = useState({
@@ -22,6 +28,12 @@ function Table(props) {
     setPage(params.page);
   };
 
+  const handleCellClick = (params) => {
+    if (params.field === cellName) {
+      navigate(params.row.phoneNumber);
+    }
+  };
+
   return (
     <div>
       <DataGrid
@@ -34,6 +46,7 @@ function Table(props) {
         paginationModel={paginationModel}
         onPaginationModelChange={setPaginationModel}
         pageSizeOptions={pageSizeOptions}
+        onCellClick={handleCellClick}
         sx={{
           "& .MuiDataGrid-columnHeaders": {
             backgroundColor: "#FAFBFB",
