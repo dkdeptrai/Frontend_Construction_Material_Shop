@@ -131,7 +131,7 @@ function Customer(props) {
           <NewButton text="New Product" onClick={handleClick} />
         </div>
       </div>
-      <Table className="table" columns={customerColumns} rows={customerRows} />
+      <Table className="table" columns={customerColumns} rows={customerRows} cellName="customerName" />
     </div>
   );
 }
