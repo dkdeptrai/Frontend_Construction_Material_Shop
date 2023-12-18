@@ -25,6 +25,7 @@
 }
 
 .rightPanel {
+  min-width: 320px;
   width: 100%;
   flex: 1;
   display: flex;

@@ -6,6 +6,7 @@
   border: 2px solid var(--frame-color);
   border-radius: 20px;
   padding: 24px;
+  margin: 24px 0px;
 }
 
 .warehouseComponent > .warehouseIcon {
