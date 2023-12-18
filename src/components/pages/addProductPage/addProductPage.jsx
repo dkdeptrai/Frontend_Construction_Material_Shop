@@ -11,7 +11,7 @@ function AddProductPage() {
   const [description, setDescription] = useState("");
   const [unitPrice, setUnitPrice] = useState("");
   const [unit, setUnit] = useState("");
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState(null);
 
   const handleClick = async (e) => {
     e.preventDefault();
@@ -22,7 +22,6 @@ function AddProductPage() {
       description: description,
       unitPrice: unitPrice,
       calculationUnit: unit,
-      image: image,
     };
 
     for (let key in registerRequest) {
@@ -35,12 +34,30 @@ function AddProductPage() {
       }
     }
 
+    const formData = new FormData();
+
+    if (image) {
+      formData.append("image", image);
+    } else {
+      alert("Please choose an image");
+      return;
+    }
+    for (let key in registerRequest) {
+      formData.append(key, registerRequest[key]);
+    }
     try {
-      const response = await fetch("/api/v1/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(registerRequest),
-      });
+      console.log(formData.get("name"));
+      console.log(sessionStorage.getItem("token"));
+      const response = await fetch(
+        "http://localhost:8080/api/v1/products?image=",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+          },
+          body: formData,
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Something went wrong");

@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import UploadImageIcon from "../../assets/icons/uploadImage.svg?react";
 import "./ImageInputComponent.css";
+import Resizer from "react-image-file-resizer";
 
-const ImageInputComponent = ({ onClick, setImage }) => {
+const ImageInputComponent = ({ setImage }) => {
   const [backgroundImage, setBackgroundImage] = useState("");
   const [imageChosen, setImageChosen] = useState(false);
 
@@ -13,48 +14,37 @@ const ImageInputComponent = ({ onClick, setImage }) => {
     input.onchange = (e) => {
       // handle the selected image file
       const file = e.target.files[0];
-      const fileReader = new FileReader();
 
-      fileReader.onload = () => {
-        // create an image element
-        const img = new Image();
-        img.onload = () => {
-          // dynamically create a canvas element
-          const canvas = document.createElement("canvas");
-          const ctx = canvas.getContext("2d");
-
-          // calculate the new dimensions
-          const MAX_WIDTH = 250;
-          const MAX_HEIGHT = 250;
-          let width = img.width;
-          let height = img.height;
-          if (width > height) {
-            if (width > MAX_WIDTH) {
-              height *= MAX_WIDTH / width;
-              width = MAX_WIDTH;
-            }
-          } else {
-            if (height > MAX_HEIGHT) {
-              width *= MAX_HEIGHT / height;
-              height = MAX_HEIGHT;
-            }
+      // Resize the image
+      Resizer.imageFileResizer(
+        file,
+        250,
+        250,
+        file.type === "image/png" ? "PNG" : "JPEG",
+        100,
+        0,
+        (uri) => {
+          // Convert the data URI to a Blob
+          const byteString = atob(uri.split(",")[1]);
+          const mimeString = uri.split(",")[0].split(":")[1].split(";")[0];
+          const arrayBuffer = new ArrayBuffer(byteString.length);
+          const ia = new Uint8Array(arrayBuffer);
+          for (let i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i);
           }
+          const blob = new Blob([ia], { type: mimeString });
 
-          // resize the image
-          canvas.width = img.width;
-          canvas.height = img.height;
-          ctx.drawImage(img, 0, 0, img.width, img.height);
+          // set the image state in the parent component
+          setImage(blob);
 
           // set the background image of the component
-          setBackgroundImage(`url(${canvas.toDataURL(file.type)})`);
+          setBackgroundImage(`url(${uri})`);
+
           // set imageChosen to true after an image has been chosen
           setImageChosen(true);
-          // set the image state in the parent component
-          setImage(fileReader.result);
-        };
-        img.src = fileReader.result; // set the image source here
-      };
-      fileReader.readAsDataURL(file);
+        },
+        "base64"
+      );
     };
     input.click();
   };
