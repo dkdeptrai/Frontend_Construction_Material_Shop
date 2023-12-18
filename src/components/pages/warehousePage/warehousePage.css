@@ -1,0 +1,22 @@
+.warehousePageContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.warehousePageContainer .toolbar {
+  margin-bottom: 45px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.warehousesListContainer {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.warehousesListContainer .warehouse {
+  margin: 42px 0px;
+}

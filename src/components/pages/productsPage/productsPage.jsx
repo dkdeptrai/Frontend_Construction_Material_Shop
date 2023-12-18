@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import SearchBar from "../../layouts/searchBar/searchBar.jsx";
 import Table from "../../core/table/table.jsx";
@@ -15,13 +15,16 @@ function ProductsPage() {
   const fetchProducts = async () => {
     try {
       console.log(sessionStorage.getItem("token"));
-      const response = await fetch("/api/v1/products?page=1&size=10", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
-        },
-      });
+      const response = await fetch(
+        "http://localhost:8080/api/v1/products?page=0&size=10",
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+          },
+        }
+      );
       const data = await response.json();
       setProducts(data);
       console.log("Products fetched:", data);
@@ -30,126 +33,40 @@ function ProductsPage() {
     }
   };
 
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
   const navigateToNewProduct = () => {
     navigate("/products/add");
   };
-  const productRows = [
-    {
-      id: 1,
-      productName: "brick",
-      image: "https://picsum.photos/200",
-      productPrice: "100",
-      productCalculationUnit: "kg",
-      productOrigin: "China",
-    },
-    {
-      id: 2,
-      productName: "brick",
-      productPrice: "100",
-      productCalculationUnit: "kg",
-      productOrigin: "China",
-    },
-    {
-      id: 3,
-      productName: "brick",
-      productPrice: "100",
-      productCalculationUnit: "kg",
-      productOrigin: "China",
-    },
-    {
-      id: 4,
-      productName: "brick",
-      productPrice: "100",
-      productCalculationUnit: "kg",
-      productOrigin: "China",
-    },
-    {
-      id: 5,
-      productName: "brick",
-      productPrice: "100",
-      productCalculationUnit: "kg",
-      productOrigin: "China",
-    },
-    {
-      id: 6,
-      productName: "brick",
-      productPrice: "100",
-      productCalculationUnit: "kg",
-      productOrigin: "China",
-    },
-    {
-      id: 7,
-      productName: "brick",
-      productPrice: "100",
-      productCalculationUnit: "kg",
-      productOrigin: "China",
-    },
-    {
-      id: 8,
-      productName: "brick",
-      productPrice: "100",
-      productCalculationUnit: "kg",
-      productOrigin: "China",
-    },
-    {
-      id: 9,
-      productName: "brick",
-      productPrice: "100",
-      productCalculationUnit: "kg",
-      productOrigin: "China",
-    },
-    {
-      id: 10,
-      productName: "brick",
-      productPrice: "100",
-      productCalculationUnit: "kg",
-      productOrigin: "China",
-    },
-    {
-      id: 11,
-      productName: "brick",
-      productPrice: "100",
-      productCalculationUnit: "kg",
-      productOrigin: "China",
-    },
-    {
-      id: 12,
-      productName: "brick",
-      productPrice: "100",
-      productCalculationUnit: "kg",
-      productOrigin: "China",
-    },
-    {
-      id: 13,
-      productName: "brick",
-      productPrice: "100",
-      productCalculationUnit: "kg",
-      productOrigin: "China",
-    },
-  ];
   const productColumns = [
-    { field: "index", headerName: "No.", width: 50 },
     {
-      field: "productName",
+      field: "index",
+      headerName: "No.",
+      width: 50,
+    },
+    {
+      field: "name",
       headerName: "Product Name",
       flex: 1.5,
       renderCell: (params) => (
         <div className="productNameCell">
-          <img className="productImage" src={params.row.image} />
+          <img className="productImage" src={params.row.imageUrl} />
           <span>{params.value}</span>
         </div>
       ),
     },
-    { field: "productPrice", headerName: "Price", flex: 0.3 },
+    { field: "unitPrice", headerName: "Price", flex: 0.3 },
     {
-      field: "productCalculationUnit",
+      field: "calculationUnit",
       headerName: "Calculation unit",
       flex: 0.4,
     },
-    { field: "productOrigin", headerName: "Origin", flex: 1 },
+    { field: "origin", headerName: "Origin", flex: 1 },
   ];
   return (
-    <div className="pageContainer">
+    <div className="productPageContainer">
       <div className="toolBar">
         <SearchBar
           className="searchBar"
@@ -165,7 +82,7 @@ function ProductsPage() {
           />
         </div>
       </div>
-      <Table className="table" columns={productColumns} rows={productRows} />
+      <Table className="table" columns={productColumns} rows={products} />
     </div>
   );
 }

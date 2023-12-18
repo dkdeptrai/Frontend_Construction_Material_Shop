@@ -29,11 +29,16 @@ function SignInPage() {
     e.preventDefault();
 
     try {
-      const response = await fetch("/api/v1/auth/authenticate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email, password: password }),
-      });
+      const response = await fetch(
+        "http://localhost:8080/api/v1/auth/authenticate",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email: email, password: password }),
+        }
+      );
 
       const data = await response.json();
       const userData = data.user;
