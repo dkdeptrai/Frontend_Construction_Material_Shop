@@ -12,3 +12,9 @@
   align-items: center;
   justify-content: center;
 }
+
+.button-content:hover {
+  color: var(--white-color);
+}
+
+

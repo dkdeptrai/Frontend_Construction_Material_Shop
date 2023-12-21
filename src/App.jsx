@@ -32,7 +32,7 @@ const ROUTE_TITLES = {
   "/dashboard": "Dashboard",
   "/customers": "Customers",
   "/customers/add": "Add Customer",
-  "customers/:phoneNumber": "Customer Details",
+  "/customers/:id": "Customer Details",
   "/employees": "Employees",
   "/employees/add": "Add Employee",
   "/inventory": "Inventory",
@@ -65,7 +65,7 @@ function App() {
                 <Route path="/dashboard" element={<DashBoard />} />
                 <Route path="/customers" element={<Customer />} />
                 <Route path="/customers/add" element={<AddCustomerPage />} />
-                <Route path="customers/:phoneNumber" element={<CustomerInformationPage />} />
+                <Route path="/customers/:id" element={<CustomerInformationPage />} />
                 <Route path="/employees" element={<Employee />} />
                 <Route path="/employees/add" element={<AddEmployee />} /> */
                 <Route path="/inventory" element={<Inventory />} />
