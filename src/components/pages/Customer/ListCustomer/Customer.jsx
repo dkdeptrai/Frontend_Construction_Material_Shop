@@ -12,6 +12,7 @@ import NewButton from "../../../layouts/newButton/newButton";
 function Customer(props) {
   const navigate = useNavigate();
   const [customerRows, setCustomerRows] = useState([]);
+  const [selectedRows, setSelectedRows] = useState([]);
 
   useEffect(() => {
     fetch("http://localhost:8080/api/v1/customers", {
@@ -34,10 +35,29 @@ function Customer(props) {
       .catch((error) => console.error("Error:", error));
   }, []);
 
+  //Add customer
   const handleClick = () => {
     navigate("/customers/add");
   };
 
+  //Delete customer
+  const handleDelete = async () => {
+    for (const id of selectedRows) {
+      await fetch("http://localhost:8080/api/v1/customers/" + id, {
+        method: "DELETE",
+        headers: {
+          Authorization: "Bearer " + sessionStorage.getItem("token"),
+        },
+      });
+    }
+
+    const newCustomerRows = customerRows.filter(
+      (customer) => !selectedRows.includes(customer.id)
+    );
+    setCustomerRows(newCustomerRows);
+  };
+
+  //table
   const options = ["Name", "Phone", "Address", "Orders"];
 
   const customerColumns = [
@@ -76,7 +96,7 @@ function Customer(props) {
         />
         <div className="buttonContainer">
           <ExportButton onClick={() => {}} />
-          <DeleteButton onClick={() => {}} />
+          <DeleteButton onClick={handleDelete} />
           <NewButton text="New Product" onClick={handleClick} />
         </div>
       </div>
@@ -85,7 +105,10 @@ function Customer(props) {
         columns={customerColumns}
         rows={customerRows}
         cellName="customerName"
-        identifyRoute="id"      
+        identifyRoute="id"
+        onRowSelection={(newSelection) => {
+          setSelectedRows(newSelection); 
+        }}
       />
     </div>
   );
