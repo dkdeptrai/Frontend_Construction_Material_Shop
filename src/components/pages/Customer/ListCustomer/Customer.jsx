@@ -22,7 +22,6 @@ function Customer(props) {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         const newCustomerRows = data.map((customer) => ({
           id: customer.id,
           customerName: customer.name,
