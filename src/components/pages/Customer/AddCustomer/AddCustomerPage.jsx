@@ -10,6 +10,7 @@ function AddCustomerPage(props) {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [address, setAddress] = useState("");
+  const [tax, setTax] = useState("");
   
   const handleAddCustomer = () => {
     const customer = {
@@ -17,6 +18,7 @@ function AddCustomerPage(props) {
       phone: phoneNumber,
       dateOfBirth: dateOfBirth,
       contactAddress: address,
+      taxCode: tax,
     };
     fetch("http://localhost:8080/api/v1/customers", {
       method: "POST",
@@ -45,7 +47,7 @@ function AddCustomerPage(props) {
         <InputComponent label="Phone Number" type="text" value={phoneNumber} setValue={setPhoneNumber} />
         <InputComponent label="Address" type="text" value={address} setValue={setAddress} />
         <InputComponent label="Date of birth" type="date" value={dateOfBirth} setValue={setDateOfBirth} />
-        <InputComponent label="Tax" type="text" />
+        <InputComponent label="Tax" type="text" value={tax} setValue={setTax}/>
       </form>
       <div className="button-container">
         <button className="submit-button" onClick={handleAddCustomer}>Submit</button>

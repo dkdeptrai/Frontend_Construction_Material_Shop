@@ -15,6 +15,7 @@ const InputComponent = ({
   }
 
   const handleChange = (e) => {
+    value = e.target.value;
     setValue(e.target.value);
   };
 
