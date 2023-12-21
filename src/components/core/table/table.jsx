@@ -32,7 +32,7 @@ function Table(props) {
 
   const handleCellClick = (params) => {
     if (params.field === cellName) {
-      navigate(params.row[identifyRoute]);
+      navigate("/customers/" + params.row[identifyRoute]);
     }
   };
 

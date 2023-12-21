@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./Customer.css";
 import { useNavigate } from "react-router-dom";
 
@@ -11,91 +11,41 @@ import NewButton from "../../../layouts/newButton/newButton";
 
 function Customer(props) {
   const navigate = useNavigate();
+  const [customerRows, setCustomerRows] = useState([]);
+
+  useEffect(() => {
+    fetch("http://localhost:8080/api/v1/customers", {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + sessionStorage.getItem("token"),
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        const newCustomerRows = data.map((customer) => ({
+          id: customer.id,
+          customerName: customer.name,
+          phoneNumber: customer.phone,
+          address: customer.contactAddress,
+          orders: 0,
+        }));
+        setCustomerRows(newCustomerRows);
+      })
+      .catch((error) => console.error("Error:", error));
+  }, []);
 
   const handleClick = () => {
     navigate("/customers/add");
   };
 
   const options = ["Name", "Phone", "Address", "Orders"];
-  const customerRows = [
-    {
-      id: 1,
-      customerName: "John Doe",
-      phoneNumber: "123456789",
-      address: "Bishkek",
-      orders: "2",
-    },
-    {
-      id: 2,
-      customerName: "John Smith",
-      phoneNumber: "123456789",
-      address: "Ha Noi",
-      orders: "2",
-    },
-    {
-      id: 3,
-      customerName: "John Doe",
-      phoneNumber: "123456789",
-      address: "Bishkek",
-      orders: "2",
-    },
-    {
-      id: 4,
-      customerName: "John Smith",
-      phoneNumber: "123456789",
-      address: "Ha Noi",
-      orders: "2",
-    },
-    {
-      id: 5,
-      customerName: "John Doe",
-      phoneNumber: "123456789",
-      address: "Bishkek",
-      orders: "2",
-    },
-    {
-      id: 6,
-      customerName: "John Smith",
-      phoneNumber: "123456789",
-      address: "Ha Noi",
-      orders: "2",
-    },
-    {
-      id: 7,
-      customerName: "John Doe",
-      phoneNumber: "123456789",
-      address: "Bishkek",
-      orders: "2",
-    },
-    {
-      id: 8,
-      customerName: "John Smith",
-      phoneNumber: "123456789",
-      address: "Ha Noi",
-      orders: "2",
-    },
-    {
-      id: 9,
-      customerName: "John Doe",
-      phoneNumber: "123456789",
-      address: "Bishkek",
-      orders: "2",
-    },
-    {
-      id: 10,
-      customerName: "John Smith",
-      phoneNumber: "123456789",
-      address: "Ha Noi",
-      orders: "2",
-    },
-  ];
 
   const customerColumns = [
     {
-      field: "index",
+      field: "id",
       headerName: "No.",
       width: 50,
-      valueGetter: (params) => params.row.id,
     },
     {
       field: "customerName",
@@ -136,7 +86,7 @@ function Customer(props) {
         columns={customerColumns}
         rows={customerRows}
         cellName="customerName"
-        identifyRoute="phoneNumber"
+        identifyRoute="id"      
       />
     </div>
   );
