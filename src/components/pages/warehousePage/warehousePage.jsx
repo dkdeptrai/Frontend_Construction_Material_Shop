@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import SearchBar from "../../layouts/searchBar/searchBar";
 import WarehouseComponent from "../../layouts/warehouseComponent/warehouseComponent";
 
@@ -6,6 +7,7 @@ import "./warehousePage.css";
 import NewButton from "../../layouts/newButton/newButton";
 
 function Warehouse() {
+  const navigate = useNavigate();
   // TODO: handle api call
   let warehouses = [];
   // let [warehouses, setWarehouses] = useState([]);
@@ -26,6 +28,10 @@ function Warehouse() {
     { id: 4, name: "Warehouse 4", address: "Address 4" },
     { id: 5, name: "Warehouse 5", address: "Address 5" },
   ];
+
+  const navigateToNewWarehouse = () => {
+    navigate("/warehouses/add");
+  };
   return (
     <div className="warehousePageContainer">
       <div className="toolbar">
@@ -34,7 +40,11 @@ function Warehouse() {
           placeholder="Search Warehouse by address"
           options={[]}
         />
-        <NewButton className="newWarehouseButton" text="New Warehouse" />
+        <NewButton
+          className="newWarehouseButton"
+          text="New Warehouse"
+          onClick={() => navigateToNewWarehouse()}
+        />
       </div>
       <div className="warehousesListContainer">
         {warehouses.map((warehouse) => (
