@@ -29,7 +29,12 @@ function SaleOrdersPage() {
           customerPhone: order.customer.phone,
           customerName: order.customer.name,
           total: order.total,
-          date: order.createdTime,
+          date:
+            order.createdTime[0] +
+            "/" +
+            order.createdTime[1] +
+            "/" +
+            order.createdTime[2],
           status: order.status,
         }));
         setSaleOrders(newSaleOrders);
@@ -50,13 +55,13 @@ function SaleOrdersPage() {
     "Date",
     "Status",
   ];
-  
+
   const productColumns = [
     {
       field: "index",
       headerName: "No.",
       width: 50,
-      valueGetter: (params) => params.rowIndex + 1,
+      valueGetter: (params) => params.id,
     },
     {
       field: "customerPhone",
@@ -92,11 +97,16 @@ function SaleOrdersPage() {
         />
         <div className="buttonContainer">
           <ExportButton onClick={() => {}} />
-          <DeleteButton onClick={() => {}} />
           <NewButton text="New Order" onClick={handleClick} />
         </div>
       </div>
-      <Table className="table" columns={productColumns} rows={saleOrders} />
+      <Table
+        className="table"
+        columns={productColumns}
+        rows={saleOrders}
+        cellName="customerPhone"
+        identifyRoute="id"
+      />
     </div>
   );
 }

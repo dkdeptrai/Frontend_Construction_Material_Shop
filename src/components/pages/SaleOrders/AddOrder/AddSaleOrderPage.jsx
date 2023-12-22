@@ -1,3 +1,5 @@
+import React from "react";
+import { useNavigate } from "react-router-dom";
 import "./AddSaleOrderPage.css";
 
 //pages and components
@@ -9,11 +11,17 @@ import Table from "../../../core/table/table";
 import InlineInputComponent from "../../../InlineInputComponent/InlineInputComponent";
 
 function AddSaleOrderPage() {
+  const navigate = useNavigate();
+
   const options = ["productName", "productAmount", "productTotal"];
 
   const fetchProducts = async () => {
     console.log("fetching products");
   };
+
+  const handleNavigateAddCustomer = () => {
+    navigate("/customers/add");
+  }
 
   const productRows = [
     {
@@ -67,7 +75,7 @@ function AddSaleOrderPage() {
         ></InputComponent>
         <InputComponent label="Customer's name" type="text"></InputComponent>
       </div>
-      <NewButton text="Add Customer" className="add-customer-button" />
+      <NewButton text="Add Customer" className="add-customer-button" onClick={handleNavigateAddCustomer} />
       <div className="tool-bar">
         <label>List of products</label>
         <div className="button-container">

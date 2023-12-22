@@ -6,17 +6,27 @@ import { useSelector } from "react-redux";
 import Header from "./components/layouts/header/header.jsx";
 import MenuBar from "./components/layouts/menubar/menubar.jsx";
 import DashBoard from "./components/pages/dashBoardPage.jsx";
+
+//customer
 import Customer from "./components/pages/Customer/ListCustomer/Customer.jsx";
 import AddCustomerPage from "./components/pages/Customer/AddCustomer/AddCustomerPage.jsx";
 import CustomerInformationPage from "./components/pages/Customer/InfoCustomer/CustomerInformationPage.jsx";
+
+//employee
 import Employee from "./components/pages/Employee/ListEmployee/Employee.jsx";
 import AddEmployee from "./components/pages/Employee/AddEmployee/AddEmployeePage.jsx";
+
+//inventory
 import Inventory from "./components/pages/inventoryPage.jsx";
+
+//order
 import SaleOrdersPage from "./components/pages/SaleOrders/ListOrders/saleOrders.jsx";
 import AddSaleOrderPage from "./components/pages/SaleOrders/AddOrder/AddSaleOrderPage.jsx";
+import InfoOrder from "./components/pages/SaleOrders/InfoOrder/InfoOrder.jsx";
+
 import Products from "./components/pages/productsPage/productsPage.jsx";
 import AddProductPage from "./components/pages/addProductPage/addProductPage.jsx";
-import PurchaseOrders from "./components/pages/purchaseOrdersPage.jsx";
+import PurchaseOrders from "./components/pages/PurchaseOrders/ListPurchaseOrders/PurchaseOrders.jsx";
 import Reports from "./components/pages/reportsPage.jsx";
 import Warehouse from "./components/pages/warehousePage/warehousePage.jsx";
 import SignInPage from "./components/pages/SignInPage/SignInPage.jsx";
@@ -38,6 +48,7 @@ const ROUTE_TITLES = {
   "/inventory": "Inventory",
   "/orders": "Orders",
   "/orders/add": "Add Order",
+  "/orders/:id": "Order Details",
   "/products": "Products",
   "/purchaseorders": "Purchase Orders",
   "/reports": "Reports",
@@ -71,6 +82,7 @@ function App() {
                 <Route path="/inventory" element={<Inventory />} />
                 <Route path="/orders" element={<SaleOrdersPage />} />
                 <Route path="/orders/add" element={<AddSaleOrderPage />} />
+                <Route path="/orders/:id" element={<InfoOrder />} />
                 <Route path="/products" element={<Products />} />
                 <Route path="/products/add" element={<AddProductPage />} />
                 <Route

@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import "./table.css";
+import { current } from "@reduxjs/toolkit";
 
 function Table(props) {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const columns = props.columns;
   const rows = props.rows;
@@ -32,7 +34,7 @@ function Table(props) {
 
   const handleCellClick = (params) => {
     if (params.field === cellName) {
-      navigate("/customers/" + params.row[identifyRoute]);
+      navigate(location.pathname + "/" + params.row[identifyRoute]);
     }
   };
 

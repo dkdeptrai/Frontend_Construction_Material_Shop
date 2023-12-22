@@ -5,9 +5,8 @@ import { useParams } from "react-router-dom";
 import BackButton from "../../../layouts/backButton/backButton";
 import InputComponent from "../../../InputComponent/InputComponent";
 
-function CustomerInformationPage(props) {
+function CustomerInformationPage() {
   const { id } = useParams();
-  const [customer, setCustomer] = useState();
   const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
@@ -33,7 +32,6 @@ function CustomerInformationPage(props) {
           tax: data.taxCode,
           debt: 0,
         };
-        setCustomer(newCustomer);
         setName(newCustomer.name);
         setPhoneNumber(newCustomer.phone);
         setAddress(newCustomer.address);
