@@ -9,8 +9,9 @@ import "./productsPage.css";
 
 function ProductsPage() {
   const navigate = useNavigate();
-  const options = ["product", "category", "brand", "price", "quantity"];
+  const options = ["name", "origin"];
   const [products, setProducts] = useState([]);
+  const [filter, setFilter] = useState("");
 
   const fetchProducts = async () => {
     try {
@@ -65,6 +66,7 @@ function ProductsPage() {
     },
     { field: "origin", headerName: "Origin", flex: 1 },
   ];
+  console.log(filter);
   return (
     <div className="productPageContainer">
       <div className="toolBar">
@@ -72,6 +74,7 @@ function ProductsPage() {
           className="searchBar"
           options={options}
           placeholder="Search Products by name, ID or any related keywords"
+          setFilter={setFilter}
         />
         <div className="buttonContainer">
           <ExportButton onClick={() => {}} />
