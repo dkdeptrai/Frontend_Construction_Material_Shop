@@ -15,8 +15,8 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  align-items: center;
-  margin-top: 50px;
+  align-items: baseline;
+  margin-top: 20px;
 }
 
 .tool-bar .button-container {
@@ -28,12 +28,27 @@
 .price-calculation-input-container {
   display: flex;
   flex-direction: row;
+  width: 100%;
   justify-content: space-between;
-  gap: 350px;
+  gap: 500px;
 }
 
 .price-calculation-input-container > * {
   flex: 1;
+}
+
+.payment-button-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 76px auto;
+  width: 70%;
+  gap: 30%;
+}
+
+.payment-button-container > * {
+  flex: 1;
+  border: 2px solid black;
 }
 
 

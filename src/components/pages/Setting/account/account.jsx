@@ -1,7 +1,10 @@
 import React from "react";
 import "./account.css";
-import InputComponent from "../../../InputComponent/InputComponent";
 import { useSelector } from "react-redux";
+
+//pages and components
+import InputComponent from "../../../InputComponent/InputComponent";
+import ImageInputComponent from "../../../ImageInputComponent/ImageInputComponent";
 
 const Account = () => {
   const userData = useSelector((state) => state.user.userData);
@@ -42,12 +45,7 @@ const Account = () => {
           />
         </div>
         <div className="image">
-          <InputComponent
-            label={"Image"}
-            type="file"
-            accept="image/*"
-            className="image-input"
-          />
+          <ImageInputComponent />
         </div>
       </div>
     </div>

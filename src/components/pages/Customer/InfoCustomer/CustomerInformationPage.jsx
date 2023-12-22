@@ -34,13 +34,12 @@ function CustomerInformationPage(props) {
           debt: 0,
         };
         setCustomer(newCustomer);
-      }).then(() => {
-        setName(customer.name);
-        setPhoneNumber(customer.phone);
-        setAddress(customer.address);
-        setDateOfBirth(customer.dateOfBirth);
-        setTax(customer.tax);
-        setDebt(customer.debt);
+        setName(newCustomer.name);
+        setPhoneNumber(newCustomer.phone);
+        setAddress(newCustomer.address);
+        setDateOfBirth(newCustomer.dateOfBirth);
+        setTax(newCustomer.tax);
+        setDebt(newCustomer.debt);
       })
       .catch((error) => console.error("Error:", error));
   }, []);
@@ -101,12 +100,7 @@ function CustomerInformationPage(props) {
           value={dateOfBirth}
           setValue={setDateOfBirth}
         />
-        <InputComponent
-          label="Tax"
-          type="text"
-          value={tax}
-          setValue={setTax}
-        />
+        <InputComponent label="Tax" type="text" value={tax} setValue={setTax} />
         <InputComponent label="Debt" type="number" value={debt} />
         <label>Old orders:</label>
       </form>

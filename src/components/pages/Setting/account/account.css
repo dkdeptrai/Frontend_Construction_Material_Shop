@@ -30,7 +30,6 @@ label {
 }
 
 .image {
-  border: 1px solid var(--frame-color);
   width: 16.5vw;
   height: 16.5vw;
   margin-left: 4vw;
