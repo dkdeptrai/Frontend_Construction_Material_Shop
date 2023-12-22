@@ -18,15 +18,16 @@ function Warehouse() {
   //     .catch((error) => console.error(error));
   // }, []);
   warehouses = [
-    { id: 1, name: "Warehouse 1", address: "Address 1" },
+    { id: 1, name: "Warehouse 1", address: "Address 1", capacity: 100 },
     {
       id: 2,
       name: "Warehouse 2",
       address: "Address 2",
+      capacity: 100,
     },
-    { id: 3, name: "Warehouse 3", address: "Address 3" },
-    { id: 4, name: "Warehouse 4", address: "Address 4" },
-    { id: 5, name: "Warehouse 5", address: "Address 5" },
+    { id: 3, name: "Warehouse 3", address: "Address 3", capacity: 100 },
+    { id: 4, name: "Warehouse 4", address: "Address 4", capacity: 100 },
+    { id: 5, name: "Warehouse 5", address: "Address 5", capacity: 100 },
   ];
 
   const navigateToNewWarehouse = () => {

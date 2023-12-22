@@ -26,6 +26,7 @@ import SettingModal from "./components/pages/Setting/SettingModal/SettingModal.j
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import UpdateProductPages from "./components/pages/updateProductPage/updateProductPage.jsx";
 import AddWarehousePage from "./components/pages/addWarehousePage.jsx";
+import WarehouseInfoPage from "./components/pages/warehouseInfoPage/warehouseInfoPage.jsx";
 
 const ROUTE_TITLES = {
   "/": "Authentication",
@@ -84,6 +85,10 @@ function App() {
                 <Route path="/reports" element={<Reports />} />
                 <Route path="/warehouses" element={<Warehouse />} />
                 <Route path="/warehouses/add" element={<AddWarehousePage />} />
+                <Route
+                  path="/warehouses/:address"
+                  element={<WarehouseInfoPage />}
+                />
                 <Route path="/account" element={<Account />} />
               </Routes>
             </div>

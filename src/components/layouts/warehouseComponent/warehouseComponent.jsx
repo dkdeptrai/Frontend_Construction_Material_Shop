@@ -9,7 +9,7 @@ function WarehouseComponent({ warehouse }) {
   const navigate = useNavigate();
 
   function handleClick() {
-    navigate(`/warehouse/${warehouse.id}`);
+    navigate(`/warehouses/${warehouse.address}`, { state: { warehouse } });
   }
 
   return (

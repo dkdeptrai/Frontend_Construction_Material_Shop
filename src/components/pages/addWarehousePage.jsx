@@ -26,38 +26,7 @@ function AddWarehousePage() {
         return;
       }
     }
-
-    const formData = new FormData();
-
-    if (image) {
-      formData.append("image", image);
-    } else {
-      alert("Please choose an image");
-      return;
-    }
-    for (let key in registerRequest) {
-      formData.append(key, registerRequest[key]);
-    }
-    try {
-      console.log(formData.get("name"));
-      console.log(sessionStorage.getItem("token"));
-      const response = await fetch("http://localhost:8080/api/v1/warehouses", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
-          "Content-Type": "application/json",
-        },
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error("Something went wrong");
-      }
-
-      alert("Warehouse added successfully");
-    } catch (error) {
-      console.log(error);
-    }
+    //TODO: handle submission through api
   };
 
   return (
