@@ -24,7 +24,7 @@ import Account from "./components/pages/Setting/account/account.jsx";
 import SettingModal from "./components/pages/Setting/SettingModal/SettingModal.jsx";
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import UpdateProductPages from "./components/pages/updateProductPage/updateProductPage.jsx";
+import ProductInfoPage from "./components/pages/productInfoPage/productInfoPage.jsx";
 import AddWarehousePage from "./components/pages/addWarehousePage.jsx";
 import WarehouseInfoPage from "./components/pages/warehouseInfoPage/warehouseInfoPage.jsx";
 
@@ -79,7 +79,7 @@ function App() {
                 <Route path="/products/add" element={<AddProductPage />} />
                 <Route
                   path="/products/update/:id"
-                  element={<UpdateProductPages />}
+                  element={<ProductInfoPage />}
                 />
                 <Route path="/purchaseorders" element={<PurchaseOrders />} />
                 <Route path="/reports" element={<Reports />} />
