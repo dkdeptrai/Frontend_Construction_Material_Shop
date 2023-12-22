@@ -24,8 +24,9 @@ import Account from "./components/pages/Setting/account/account.jsx";
 import SettingModal from "./components/pages/Setting/SettingModal/SettingModal.jsx";
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import AddProduct from "./components/pages/addProductPage/addProductPage.jsx";
-import UpdateProductPages from "./components/pages/updateProductPage/updateProductPage.jsx";
+import ProductInfoPage from "./components/pages/productInfoPage/productInfoPage.jsx";
+import AddWarehousePage from "./components/pages/addWarehousePage.jsx";
+import WarehouseInfoPage from "./components/pages/warehouseInfoPage/warehouseInfoPage.jsx";
 
 const ROUTE_TITLES = {
   "/": "Authentication",
@@ -65,7 +66,10 @@ function App() {
                 <Route path="/dashboard" element={<DashBoard />} />
                 <Route path="/customers" element={<Customer />} />
                 <Route path="/customers/add" element={<AddCustomerPage />} />
-                <Route path="/customers/:id" element={<CustomerInformationPage />} />
+                <Route
+                  path="/customers/:id"
+                  element={<CustomerInformationPage />}
+                />
                 <Route path="/employees" element={<Employee />} />
                 <Route path="/employees/add" element={<AddEmployee />} /> */
                 <Route path="/inventory" element={<Inventory />} />
@@ -75,11 +79,16 @@ function App() {
                 <Route path="/products/add" element={<AddProductPage />} />
                 <Route
                   path="/products/update/:id"
-                  element={<UpdateProductPages />}
+                  element={<ProductInfoPage />}
                 />
                 <Route path="/purchaseorders" element={<PurchaseOrders />} />
                 <Route path="/reports" element={<Reports />} />
-                <Route path="/warehouse" element={<Warehouse />} />
+                <Route path="/warehouses" element={<Warehouse />} />
+                <Route path="/warehouses/add" element={<AddWarehousePage />} />
+                <Route
+                  path="/warehouses/:address"
+                  element={<WarehouseInfoPage />}
+                />
                 <Route path="/account" element={<Account />} />
               </Routes>
             </div>

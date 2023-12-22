@@ -4,7 +4,7 @@ import BackButton from "../../layouts/backButton/backButton";
 import InputComponent from "../../InputComponent/InputComponent";
 import ImageInputComponent from "../../ImageInputComponent/ImageInputComponent";
 
-import "./updateProductPage.css";
+import "./ProductInfoPage.css";
 //TODO: handle submission through api
 
 function fetchProduct(id) {
@@ -13,7 +13,7 @@ function fetchProduct(id) {
   return product;
 }
 
-function UpdateProductPage() {
+function ProductInfoPage() {
   const productId = useParams();
   const product = fetchProduct(productId);
   const [name, setName] = useState(product.name);
@@ -63,7 +63,10 @@ function UpdateProductPage() {
   };
 
   return (
-    <div className="updateProductPage">
+    <div
+      className="ProductInfoPage
+  "
+    >
       <BackButton content="Add Product" />
       <form>
         <InputComponent
@@ -108,4 +111,4 @@ function UpdateProductPage() {
   );
 }
 
-export default UpdateProductPage;
+export default ProductInfoPage;

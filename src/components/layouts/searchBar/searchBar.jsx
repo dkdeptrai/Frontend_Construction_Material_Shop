@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import SearchIcon from "../../../assets/icons/search.svg?react";
 import FilterIcon from "../../../assets/icons/filter.svg?react";
 import Select from "react-select";
+
 import "./searchBar.css";
 
 function SearchBar(props) {
@@ -10,14 +11,12 @@ function SearchBar(props) {
     label: option,
   }));
 
-  const [selectedOption, setSelectedOption] = useState(null);
-
-  useEffect(() => {
-    setSelectedOption(props.selectedOption);
-  }, [props.selectedOption]);
-
   const handleChange = (option) => {
-    setSelectedOption(option);
+    if (option === null) {
+      props.setFilter("");
+    } else {
+      props.setFilter(option.value);
+    }
   };
 
   return (
@@ -34,14 +33,21 @@ function SearchBar(props) {
           className="searchOptions"
           options={options}
           isSearchable={false}
+          isClearable={true}
           onChange={handleChange}
           components={{
             DropdownIndicator: (props) => {
               return (
                 <div>
-                  <FilterIcon {...props.innerProps} />
+                  <FilterIcon
+                    style={{ margin: "4px 10px 0px 10px" }}
+                    {...props.innerProps}
+                  />
                 </div>
               );
+            },
+            ClearIndicator: (props) => {
+              return <div onClick={props.clearValue}>x</div>;
             },
           }}
         />

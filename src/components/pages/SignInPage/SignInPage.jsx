@@ -32,6 +32,7 @@ function SignInPage() {
       const response = await fetch(
         "http://localhost:8080/api/v1/auth/authenticate",
         {
+          mode: "no-cors",
           method: "POST",
           headers: {
             "Content-Type": "application/json",
