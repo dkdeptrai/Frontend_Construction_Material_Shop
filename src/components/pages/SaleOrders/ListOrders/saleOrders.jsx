@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 //pages and components
@@ -12,11 +12,37 @@ import "./saleOrders.css";
 
 function SaleOrdersPage() {
   const navigate = useNavigate();
+  const [saleOrders, setSaleOrders] = useState([]);
 
+  //get all sale orders
+  useEffect(() => {
+    fetch("http://localhost:8080/api/v1/orders", {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + sessionStorage.getItem("token"),
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        const newSaleOrders = data.map((order) => ({
+          id: order.id,
+          customerPhone: order.customer.phone,
+          customerName: order.customer.name,
+          total: order.total,
+          date: order.createdTime,
+          status: order.status,
+        }));
+        setSaleOrders(newSaleOrders);
+      })
+      .catch((error) => console.error("Error:", error));
+  }, []);
+
+  //Navigate to add new sale order page
   const handleClick = () => {
     navigate("/orders/add");
   };
 
+  //table
   const options = [
     "Customer's phone number",
     "Customer's name",
@@ -24,54 +50,13 @@ function SaleOrdersPage() {
     "Date",
     "Status",
   ];
-  const productRows = [
-    {
-      id: 1,
-      customerPhone: "123456789",
-      customerName: "John Doe",
-      total: "1000$",
-      date: "2021-09-01",
-      status: "Processing",
-    },
-    {
-      id: 2,
-      customerPhone: "123456789",
-      customerName: "John Smith",
-      total: "1000$",
-      date: "2021-09-01",
-      status: "Processing",
-    },
-    {
-      id: 3,
-      customerPhone: "123456789",
-      customerName: "John Doe",
-      total: "1000$",
-      date: "2021-09-01",
-      status: "Processing",
-    },
-    {
-      id: 4,
-      customerPhone: "123456789",
-      customerName: "John Smith",
-      total: "1000$",
-      date: "2021-09-01",
-      status: "Processing",
-    },
-    {
-      id: 6,
-      customerPhone: "123456789",
-      customerName: "John Doe",
-      total: "1000$",
-      date: "2021-09-01",
-      status: "Processing",
-    },
-  ];
+  
   const productColumns = [
     {
       field: "index",
       headerName: "No.",
       width: 50,
-      valueGetter: (params) => params.row.id,
+      valueGetter: (params) => params.rowIndex + 1,
     },
     {
       field: "customerPhone",
@@ -111,7 +96,7 @@ function SaleOrdersPage() {
           <NewButton text="New Order" onClick={handleClick} />
         </div>
       </div>
-      <Table className="table" columns={productColumns} rows={productRows} />
+      <Table className="table" columns={productColumns} rows={saleOrders} />
     </div>
   );
 }

@@ -41,7 +41,7 @@ function AddSaleOrderPage() {
     {
       field: "productName",
       headerName: "Product Name",
-      flex: 1.5,
+      flex: 0.7,
       renderCell: (params) => (
         <div className="productNameCell">
           <img className="productImage" src={params.row.image} />
@@ -49,7 +49,7 @@ function AddSaleOrderPage() {
         </div>
       ),
     },
-    { field: "productAmount", headerName: "Amount", flex: 0.3 },
+    { field: "productAmount", headerName: "Amount", flex: 0.4 },
     {
       field: "productTotal",
       headerName: "Total",
@@ -78,10 +78,23 @@ function AddSaleOrderPage() {
       <Table className="table" columns={productColumns} rows={productRows} />
       <div className="price-calculation-input-container">
         <div className="left-inputs">
-          <InlineInputComponent label="Discount:" type="number" min="0" max="100" />
+          <InlineInputComponent
+            label="Discount:"
+            type="number"
+            min="0"
+            max="100"
+          />
           <InlineInputComponent label="Old debt:" type="number" />
+          <InlineInputComponent label="Deposit:" type="number" />
         </div>
-        <div className="right-inputs"></div>
+        <div className="right-inputs">
+          <InlineInputComponent label="Total:" type="number" />
+          <InlineInputComponent label="Debt:" type="number" />
+        </div>
+      </div>
+      <div className="payment-button-container">
+        <button style={{backgroundColor: "green", color: "white"}}>Deposit</button>
+        <button style={{backgroundColor: "red", color: "white"}}>Debt</button>
       </div>
     </div>
   );
