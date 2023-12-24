@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 //pages and components
 import BackButton from "../../../../components/layouts/backButton/backButton";
@@ -9,9 +10,10 @@ import { API_CONST } from "../../../../constants/apiConstants";
 const NewProducts = () => {
   const [inventoryItems, setInventoryItems] = useState([]);
   const [selectedInventoryItems, setSelectedInventoryItems] = useState([]);
+  const navigate = useNavigate();
 
   const handleAddProducts = () => {
-    console.log(selectedInventoryItems);
+    navigate(-1, { state: { selectedInventoryItems } });
   };
 
   const options = ["Product's name", "Product's code", "Price", "Quantity"];
@@ -103,12 +105,12 @@ const NewProducts = () => {
       field: "index",
       headerName: "No.",
       width: 50,
-      renderCell: (params) => inventoryItems.indexOf(params.row) + 1,
+      renderCell: (params) => selectedInventoryItems.indexOf(params.row) + 1,
     },
     {
       field: "name",
       headerName: "Product Name",
-      flex: 0.6,
+      flex: 0.7,
       renderCell: (params) => (
         <div className="productNameCell">
           <img className="productImage" src={params.row.imageUrl} />
@@ -119,12 +121,12 @@ const NewProducts = () => {
     {
       field: "amount",
       headerName: "Amount",
-      flex: 0.3,
+      flex: 0.4,
     },
     {
       field: "total",
       headerName: "Total",
-      flex: 0.3,
+      flex: 0.4,
     },
   ];
 
@@ -141,15 +143,14 @@ const NewProducts = () => {
         onRowSelection={(newSelection) => {
           const selectedItems = newSelection.map((id) => {
             const item = inventoryItems.find((item) => item.id === id);
-            
+
             return {
-                id: item.product.id,
-                name: item.product.name,
-                imageUrl: item.product.imageUrl,
-                amount: 0,
-                total: 0,
-            }
-            
+              id: item.product.id,
+              name: item.product.name,
+              imageUrl: item.product.imageUrl,
+              amount: 0,
+              total: 0,
+            };
           });
           setSelectedInventoryItems(selectedItems);
         }}
@@ -160,7 +161,7 @@ const NewProducts = () => {
         rows={selectedInventoryItems}
       />
       <button
-        style={{ marginTop: "80px", marginBottom: "80px" }}
+        style={{ marginTop: "80px", marginLeft: "auto" }}
         onClick={handleAddProducts}
       >
         Add products
