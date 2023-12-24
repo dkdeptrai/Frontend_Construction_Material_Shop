@@ -60,12 +60,12 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
   cursor: pointer;
   transition: border-color 0.25s;
 }
 button:hover {
   border-color: #646cff;
+  background-color: rgba(106, 16, 57, 0.9);
 }
 /* button:focus,
 button:focus-visible {
@@ -81,6 +81,7 @@ button:focus-visible {
     color: #747bff;
   }
   button {
-    background-color: #f9f9f9;
+    color: white;
+    background-color: var(--button-color);
   }
 }

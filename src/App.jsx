@@ -5,38 +5,38 @@ import { useSelector } from "react-redux";
 //pages and components
 import Header from "./components/layouts/header/header.jsx";
 import MenuBar from "./components/layouts/menubar/menubar.jsx";
-import DashBoard from "./components/pages/dashBoardPage.jsx";
+import DashBoard from "./pages/dashBoardPage.jsx";
 
 //customer
-import Customer from "./components/pages/Customer/ListCustomer/Customer.jsx";
-import AddCustomerPage from "./components/pages/Customer/AddCustomer/AddCustomerPage.jsx";
-import CustomerInformationPage from "./components/pages/Customer/InfoCustomer/CustomerInformationPage.jsx";
+import Customer from "./pages/Customer/ListCustomer/Customer.jsx";
+import AddCustomerPage from "./pages/Customer/AddCustomer/AddCustomerPage.jsx";
+import CustomerInformationPage from "./pages/Customer/InfoCustomer/CustomerInformationPage.jsx";
 
 //employee
-import Employee from "./components/pages/Employee/ListEmployee/Employee.jsx";
-import AddEmployee from "./components/pages/Employee/AddEmployee/AddEmployeePage.jsx";
+import Employee from "./pages/Employee/ListEmployee/Employee.jsx";
+import AddEmployee from "./pages/Employee/AddEmployee/AddEmployeePage.jsx";
 
 //inventory
-import Inventory from "./components/pages/inventoryPage.jsx";
+import Inventory from "./pages/inventoryPage.jsx";
 
 //order
-import SaleOrdersPage from "./components/pages/SaleOrders/ListOrders/saleOrders.jsx";
-import AddSaleOrderPage from "./components/pages/SaleOrders/AddOrder/AddSaleOrderPage.jsx";
-import InfoOrder from "./components/pages/SaleOrders/InfoOrder/InfoOrder.jsx";
+import SaleOrdersPage from "./pages/SaleOrders/ListOrders/saleOrders.jsx";
+import AddSaleOrderPage from "./pages/SaleOrders/AddOrder/AddSaleOrderPage.jsx";
+import InfoOrder from "./pages/SaleOrders/InfoOrder/InfoOrder.jsx";
 
-import Products from "./components/pages/productsPage/productsPage.jsx";
-import AddProductPage from "./components/pages/addProductPage/addProductPage.jsx";
-import PurchaseOrders from "./components/pages/PurchaseOrders/ListPurchaseOrders/PurchaseOrders.jsx";
-import Reports from "./components/pages/reportsPage.jsx";
-import Warehouse from "./components/pages/warehousePage/warehousePage.jsx";
-import SignInPage from "./components/pages/SignInPage/SignInPage.jsx";
-import Account from "./components/pages/Setting/account/account.jsx";
-import SettingModal from "./components/pages/Setting/SettingModal/SettingModal.jsx";
+import Products from "./pages/productsPage/productsPage.jsx";
+import AddProductPage from "./pages/addProductPage/addProductPage.jsx";
+import PurchaseOrders from "./pages/PurchaseOrders/ListPurchaseOrders/PurchaseOrders.jsx";
+import Reports from "./pages/reportsPage.jsx";
+import Warehouse from "./pages/warehousePage/warehousePage.jsx";
+import SignInPage from "./pages/SignInPage/SignInPage.jsx";
+import Account from "./pages/Setting/account/account.jsx";
+import SettingModal from "./pages/Setting/SettingModal/SettingModal.jsx";
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import ProductInfoPage from "./components/pages/productInfoPage/productInfoPage.jsx";
-import AddWarehousePage from "./components/pages/addWarehousePage.jsx";
-import WarehouseInfoPage from "./components/pages/warehouseInfoPage/warehouseInfoPage.jsx";
+import ProductInfoPage from "./pages/productInfoPage/productInfoPage.jsx";
+import AddWarehousePage from "./pages/addWarehousePage.jsx";
+import WarehouseInfoPage from "./pages/warehouseInfoPage/warehouseInfoPage.jsx";
 
 const ROUTE_TITLES = {
   "/": "Authentication",

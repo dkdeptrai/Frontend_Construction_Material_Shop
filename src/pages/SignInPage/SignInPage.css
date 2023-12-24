@@ -1,0 +1,61 @@
+body {
+  overflow: hidden;
+}
+
+.sign-in-page {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: baseline;
+  height: 100vh;
+}
+
+.sign-in-image {
+  margin-left: 7%;
+  width: 37.6vw;
+  height: 100%;
+  background-color: var(--button-color);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.sign-in-image h1 {
+  color: var(--frame-color);
+  margin-top: 20%;
+  margin-bottom: 18%;
+  font-weight: 400;
+}
+
+.sign-in-image img {
+  width: 60%;
+}
+
+.sign-in-fields {
+  margin: auto;
+  width: 39%;
+}
+
+.sign-in-fields h2 {
+  margin: 1.675rem 0;
+  font-weight: 600;
+}
+
+.sign-in-fields input {
+  margin-bottom: 1.6875rem;
+  padding: 0.5rem;
+  width: 100%;
+}
+
+.sign-in-fields button {
+  display: block;
+  margin: 1.5rem auto 0 auto;
+  padding: 0.5rem;
+  width: 16vw;
+  border-radius: 18px;
+  background-color: var(--button-color);
+  color: #fff;
+  cursor: pointer;
+  font-size: 20px;
+}

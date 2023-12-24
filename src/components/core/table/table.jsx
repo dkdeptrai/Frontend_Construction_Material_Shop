@@ -12,8 +12,10 @@ function Table(props) {
   const columns = props.columns;
   const rows = props.rows;
   //Add cellName's field's name so that we can navigate to more information page
+  
   const cellName = props.cellName;
   //IdentifyRoute is the field's name that we can identify each row
+
   const identifyRoute = props.identifyRoute;
   const handleRowSelection = props.onRowSelection;
   const pageSizeOptions = [5, 10, 20];
