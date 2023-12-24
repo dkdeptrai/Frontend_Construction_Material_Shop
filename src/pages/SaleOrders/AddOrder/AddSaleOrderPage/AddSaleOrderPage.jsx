@@ -3,24 +3,24 @@ import { useNavigate } from "react-router-dom";
 import "./AddSaleOrderPage.css";
 
 //pages and components
-import InputComponent from "../../../components/InputComponent/InputComponent";
-import BackButton from "../../../components/layouts/backButton/backButton";
-import NewButton from "../../../components/layouts/newButton/newButton";
-import DeleteButton from "../../../components/layouts/deleteButton/deleteButton";
-import Table from "../../../components/core/table/table";
-import InlineInputComponent from "../../../components/InlineInputComponent/InlineInputComponent";
+import InputComponent from "../../../../components/InputComponent/InputComponent";
+import BackButton from "../../../../components/layouts/backButton/backButton";
+import NewButton from "../../../../components/layouts/newButton/newButton";
+import DeleteButton from "../../../../components/layouts/deleteButton/deleteButton";
+import Table from "../../../../components/core/table/table";
+import InlineInputComponent from "../../../../components/InlineInputComponent/InlineInputComponent";
 
 function AddSaleOrderPage() {
   const navigate = useNavigate();
 
   const options = ["productName", "productAmount", "productTotal"];
 
-  const fetchProducts = async () => {
-    console.log("fetching products");
-  };
-
   const handleNavigateAddCustomer = () => {
     navigate("/customers/add");
+  }
+
+  const handleAddProducts = () => {
+    navigate("/orders/add/add-products");
   }
 
   const productRows = [
@@ -80,7 +80,7 @@ function AddSaleOrderPage() {
         <label>List of products</label>
         <div className="button-container">
           <DeleteButton onClick={() => {}} />
-          <NewButton text="New Product" onClick={() => fetchProducts()} />
+          <NewButton text="New Products" onClick={handleAddProducts} />
         </div>
       </div>
       <Table className="table" columns={productColumns} rows={productRows} />
@@ -91,6 +91,7 @@ function AddSaleOrderPage() {
             type="number"
             min="0"
             max="100"
+            isPercentage
           />
           <InlineInputComponent label="Old debt:" type="number" />
           <InlineInputComponent label="Deposit:" type="number" />
@@ -101,8 +102,8 @@ function AddSaleOrderPage() {
         </div>
       </div>
       <div className="payment-button-container">
-        <button style={{backgroundColor: "green", color: "white"}}>Deposit</button>
-        <button style={{backgroundColor: "red", color: "white"}}>Debt</button>
+        <button className="deposit-button">Deposit</button>
+        <button className="debt-button">Debt</button>
       </div>
     </div>
   );

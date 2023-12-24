@@ -24,7 +24,7 @@ function Customer(props) {
     })
       .then((response) => response.json())
       .then((data) => {
-        setCustomerRows(data);
+        setCustomerRows(data.results);
       })
       .catch((error) => console.error("Error:", error));
   }, []);
@@ -56,7 +56,7 @@ function Customer(props) {
 
   const customerColumns = [
     {
-      field: "index",
+      field: "id",
       headerName: "No.",
       width: 50,
     },

@@ -48,7 +48,23 @@
 
 .payment-button-container > * {
   flex: 1;
-  border: 2px solid black;
 }
 
+.payment-button-container .deposit-button {
+  border: 1px solid grey;
+  background-color: #77dd77;
+}
+
+.payment-button-container .deposit-button:hover {
+  background-color: #90ee90;
+}
+
+.payment-button-container .debt-button {
+  border: 1px solid grey;
+  background-color: #ff6961;
+}
+
+.payment-button-container .debt-button:hover {
+  background-color: #ff7f7f;
+}
 

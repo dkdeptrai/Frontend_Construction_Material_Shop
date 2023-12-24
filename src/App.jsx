@@ -21,7 +21,8 @@ import Inventory from "./pages/inventoryPage.jsx";
 
 //order
 import SaleOrdersPage from "./pages/SaleOrders/ListOrders/saleOrders.jsx";
-import AddSaleOrderPage from "./pages/SaleOrders/AddOrder/AddSaleOrderPage.jsx";
+import AddSaleOrderPage from "./pages/SaleOrders/AddOrder/AddSaleOrderPage/AddSaleOrderPage.jsx";
+import NewProducts from "./pages/SaleOrders/AddOrder/NewProducts/NewProducts.jsx";
 import InfoOrder from "./pages/SaleOrders/InfoOrder/InfoOrder.jsx";
 
 import Products from "./pages/productsPage/productsPage.jsx";
@@ -49,6 +50,7 @@ const ROUTE_TITLES = {
   "/inventory": "Inventory",
   "/orders": "Orders",
   "/orders/add": "Add Order",
+  "/orders/add/add-products": "Add Products",
   "/orders/:id": "Order Details",
   "/products": "Products",
   "/purchaseorders": "Purchase Orders",
@@ -86,6 +88,7 @@ function App() {
                 <Route path="/inventory" element={<Inventory />} />
                 <Route path="/orders" element={<SaleOrdersPage />} />
                 <Route path="/orders/add" element={<AddSaleOrderPage />} />
+                <Route path="/orders/add/add-products" element={<NewProducts />} />
                 <Route path="/orders/:id" element={<InfoOrder />} />
                 <Route path="/products" element={<Products />} />
                 <Route path="/products/add" element={<AddProductPage />} />

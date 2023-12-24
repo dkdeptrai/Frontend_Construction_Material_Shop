@@ -9,6 +9,7 @@ const InputComponent = ({
   value,
   setValue,
   options,
+  className,
 }) => {
   if (!label || !type) {
     throw new Error("InputComponent: label and type are required");
@@ -23,7 +24,7 @@ const InputComponent = ({
     return (
       <div>
         <label>{label}</label>
-        <select value={value} onChange={handleChange}>
+        <select value={value} onChange={handleChange} className={className}>
           {options.map((option) => (
             <option key={option}>{option}</option>
           ))}
@@ -41,6 +42,7 @@ const InputComponent = ({
         defaultValue={defaultValue}
         value={value}
         onChange={handleChange}
+        className={className}
       />
     </div>
   );
