@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+//states
+import { useDispatch } from "react-redux";
+import { setSelectedProducts } from "../../../../actions/selectedProductsAction.jsx";
+
 //pages and components
 import BackButton from "../../../../components/layouts/backButton/backButton";
 import SearchBar from "../../../../components/layouts/searchBar/searchBar.jsx";
@@ -11,9 +15,11 @@ const NewProducts = () => {
   const [inventoryItems, setInventoryItems] = useState([]);
   const [selectedInventoryItems, setSelectedInventoryItems] = useState([]);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const handleAddProducts = () => {
-    navigate(-1, { state: { selectedInventoryItems } });
+    dispatch(setSelectedProducts(selectedInventoryItems));
+    navigate(-1);
   };
 
   const options = ["Product's name", "Product's code", "Price", "Quantity"];
