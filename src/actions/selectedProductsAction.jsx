@@ -19,4 +19,19 @@ const deleteSelectedProducts = (ids) => {
   };
 };
 
-export { setSelectedProducts, addSelectedProducts, deleteSelectedProducts };
+const updateSelectedProductsAmount = (id, amount) => {
+  return {
+    type: "UPDATE_SELECTED_PRODUCTS_AMOUNT",
+    payload: {
+      id,
+      amount,
+    },
+  };
+};
+
+export {
+  setSelectedProducts,
+  addSelectedProducts,
+  deleteSelectedProducts,
+  updateSelectedProductsAmount,
+};

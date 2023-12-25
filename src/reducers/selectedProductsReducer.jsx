@@ -40,6 +40,18 @@ const selectedProductsReducer = (state = initialState, action) => {
           (product) => !action.payload.includes(product.id)
         ),
       };
+    case "UPDATE_SELECTED_PRODUCTS_AMOUNT":
+      const updatedProductsAmount = [...state.selectedProductsData];
+      const productIndex = updatedProductsAmount.findIndex(
+        (product) => product.id === action.payload.id
+      );
+      updatedProductsAmount[productIndex].amount = action.payload.amount;
+      updatedProductsAmount[productIndex].total =
+        action.payload.amount * updatedProductsAmount[productIndex].unitPrice;
+      return {
+        ...state,
+        selectedProductsData: updatedProductsAmount,
+      };
     default:
       return state;
   }
