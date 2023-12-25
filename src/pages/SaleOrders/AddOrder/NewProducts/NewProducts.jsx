@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 //states
-import { useDispatch } from "react-redux";
-import { setSelectedProducts } from "../../../../actions/selectedProductsAction.jsx";
+import { useDispatch, useSelector } from "react-redux";
+import { addSelectedProducts } from "../../../../actions/selectedProductsAction.jsx";
 
 //pages and components
 import BackButton from "../../../../components/layouts/backButton/backButton";
@@ -16,9 +16,24 @@ const NewProducts = () => {
   const [selectedInventoryItems, setSelectedInventoryItems] = useState([]);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const selectedProducts = useSelector(
+    (state) => state.selectedProducts.selectedProducts
+  );
 
   const handleAddProducts = () => {
-    dispatch(setSelectedProducts(selectedInventoryItems));
+    const selectedProducts = selectedInventoryItems.map((item) => {
+      const product = {
+        id: item.product.id,
+        name: item.product.name,
+        imageUrl: item.product.imageUrl,
+        unitPrice: item.product.unitPrice,
+        amount: 1,
+        total: 0,
+      };
+
+      return product;
+    });
+    dispatch(addSelectedProducts(selectedProducts));
     navigate(-1);
   };
 
@@ -106,36 +121,6 @@ const NewProducts = () => {
     },
   ];
 
-  const selectedInventoryItemsColumns = [
-    {
-      field: "index",
-      headerName: "No.",
-      width: 50,
-      renderCell: (params) => selectedInventoryItems.indexOf(params.row) + 1,
-    },
-    {
-      field: "name",
-      headerName: "Product Name",
-      flex: 0.7,
-      renderCell: (params) => (
-        <div className="productNameCell">
-          <img className="productImage" src={params.row.imageUrl} />
-          <span>{params.row.name}</span>
-        </div>
-      ),
-    },
-    {
-      field: "amount",
-      headerName: "Amount",
-      flex: 0.4,
-    },
-    {
-      field: "total",
-      headerName: "Total",
-      flex: 0.4,
-    },
-  ];
-
   return (
     <>
       <BackButton content="Add products to order" />
@@ -146,25 +131,21 @@ const NewProducts = () => {
       <Table
         columns={inventoryItemsColumns}
         rows={inventoryItems}
+        selectedRowIds={selectedInventoryItems.map((item) => item.id)}
         onRowSelection={(newSelection) => {
           const selectedItems = newSelection.map((id) => {
             const item = inventoryItems.find((item) => item.id === id);
 
-            return {
-              id: item.product.id,
-              name: item.product.name,
-              imageUrl: item.product.imageUrl,
-              amount: 0,
-              total: 0,
-            };
+            return item;
           });
           setSelectedInventoryItems(selectedItems);
         }}
       />
       <label style={{ marginTop: "80px" }}>Selected Items</label>
       <Table
-        columns={selectedInventoryItemsColumns}
+        columns={inventoryItemsColumns}
         rows={selectedInventoryItems}
+        noCheckboxSelection
       />
       <button
         style={{ marginTop: "80px", marginLeft: "auto" }}

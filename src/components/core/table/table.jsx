@@ -16,6 +16,10 @@ function Table(props) {
   const cellName = props.cellName;
   //IdentifyRoute is the field's name that we can identify each row
 
+  const selectedRowIds = props.selectedRowIds;
+
+  const noCheckboxSelection = props.noCheckboxSelection;
+
   const identifyRoute = props.identifyRoute;
   const handleRowSelection = props.onRowSelection;
   const pageSizeOptions = [5, 10, 20];
@@ -35,8 +39,11 @@ function Table(props) {
   };
 
   const handleCellClick = (params) => {
-    if (params.field === cellName) {
+    if (params.field === cellName && params.field === "name") {
       navigate(location.pathname + "/" + params.row[identifyRoute]);
+    }
+    if (params.field === cellName && params.field === "amount") {
+      
     }
   };
 
@@ -46,8 +53,9 @@ function Table(props) {
         className="table"
         rows={rows}
         columns={columns}
-        checkboxSelection
+        checkboxSelection={!noCheckboxSelection}
         onRowSelectionModelChange={handleRowSelection}
+        rowSelectionModel={selectedRowIds}
         pagination
         paginationModel={paginationModel}
         onPaginationModelChange={setPaginationModel}

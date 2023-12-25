@@ -15,7 +15,9 @@ import SignOutIcon from "../../../assets/icons/sign-out.svg?react";
 import SearchIcon from "../../../assets/icons/search.svg?react";
 import Logo from "./logo/logo.jsx";
 import "./menubar.css";
-import { resetUserData, setUserData } from "../../../actions/userActions.jsx";
+import { resetUserData} from "../../../actions/userActions.jsx";
+import { setSelectedProducts } from "../../../actions/selectedProductsAction.jsx";
+import { persistor } from "../../../store/index.jsx";
 
 function MenuItemComponent({ icon, link }) {
   const location = useLocation();
@@ -41,6 +43,8 @@ function MenuBar() {
 
   const handleSignOut = async (e) => {
     dispatch(resetUserData());
+    dispatch(setSelectedProducts([]));
+    await persistor.purge();
     navigate("/");
   };
   return (
