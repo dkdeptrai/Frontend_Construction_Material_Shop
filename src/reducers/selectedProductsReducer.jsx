@@ -19,11 +19,14 @@ const selectedProductsReducer = (state = initialState, action) => {
 
         if (existingProductIndex >= 0) {
           // The product already exists in the array, update the amount
-          updatedProducts[existingProductIndex].amount += newProduct.amount;
+          updatedProducts[existingProductIndex].amount++;
         } else {
           // The product doesn't exist in the array, add it
           updatedProducts.push(newProduct);
         }
+        updatedProducts.forEach((product) => {
+          product.total = product.amount * product.unitPrice;
+        });
       });
 
       return {

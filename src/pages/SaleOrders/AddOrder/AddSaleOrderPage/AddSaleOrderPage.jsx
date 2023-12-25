@@ -13,11 +13,13 @@ import NewButton from "../../../../components/layouts/newButton/newButton";
 import DeleteButton from "../../../../components/layouts/deleteButton/deleteButton";
 import Table from "../../../../components/core/table/table";
 import InlineInputComponent from "../../../../components/InlineInputComponent/InlineInputComponent";
+import AmountInputModal from "../../../../components/AmountInputModal/AmountInputModal";
 
 function AddSaleOrderPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [deletedItems, setDeletedItems] = useState([]);
+  const [open, setOpen] = useState(false);
 
   const selectedProducts = useSelector(
     (state) => state.selectedProducts.selectedProductsData
@@ -32,27 +34,6 @@ function AddSaleOrderPage() {
   const handleAddProducts = () => {
     navigate("/orders/add/add-products");
   };
-
-  const productRows = [
-    {
-      id: 1,
-      productName: "brick",
-      amount: 10,
-      total: 0,
-    },
-    {
-      id: 2,
-      productName: "brick",
-      amount: 5,
-      total: 0,
-    },
-    {
-      id: 3,
-      productName: "brick",
-      amount: 8,
-      total: 0,
-    },
-  ];
 
   const productColumns = [
     {
@@ -72,6 +53,11 @@ function AddSaleOrderPage() {
         </div>
       ),
     },
+    {
+      field: "unitPrice",
+      headerName: "Price/unit",
+      flex: 0.4,
+    },
     { field: "amount", headerName: "Amount", flex: 0.4 },
     {
       field: "total",
@@ -82,6 +68,7 @@ function AddSaleOrderPage() {
 
   return (
     <div className="adding-page">
+      {open === "true" ? <AmountInputModal open={open} setOpen={setOpen} /> : null}
       <BackButton content="Add Order" />
       <div className="customer-info">
         <InputComponent
@@ -110,6 +97,7 @@ function AddSaleOrderPage() {
         className="table"
         columns={productColumns}
         rows={selectedProducts || []}
+        cellName="amount"
         onRowSelection={(newSelection) => {
           setDeletedItems(newSelection);
         }}
