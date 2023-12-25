@@ -1,6 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./AddSaleOrderPage.css";
+
+//states
+import { useDispatch, useSelector } from "react-redux";
+import { deleteSelectedProducts } from "../../../../actions/selectedProductsAction";
 
 //pages and components
 import InputComponent from "../../../../components/InputComponent/InputComponent";
@@ -12,16 +16,22 @@ import InlineInputComponent from "../../../../components/InlineInputComponent/In
 
 function AddSaleOrderPage() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [deletedItems, setDeletedItems] = useState([]);
+
+  const selectedProducts = useSelector(
+    (state) => state.selectedProducts.selectedProductsData
+  );
 
   const options = ["productName", "productAmount", "productTotal"];
 
   const handleNavigateAddCustomer = () => {
     navigate("/customers/add");
-  }
+  };
 
   const handleAddProducts = () => {
     navigate("/orders/add/add-products");
-  }
+  };
 
   const productRows = [
     {
@@ -45,9 +55,14 @@ function AddSaleOrderPage() {
   ];
 
   const productColumns = [
-    { field: "index", headerName: "No.", width: 50 },
     {
-      field: "productName",
+      field: "index",
+      headerName: "No.",
+      width: 50,
+      renderCell: (params) => selectedProducts.indexOf(params.row) + 1,
+    },
+    {
+      field: "name",
       headerName: "Product Name",
       flex: 0.7,
       renderCell: (params) => (
@@ -57,9 +72,9 @@ function AddSaleOrderPage() {
         </div>
       ),
     },
-    { field: "productAmount", headerName: "Amount", flex: 0.4 },
+    { field: "amount", headerName: "Amount", flex: 0.4 },
     {
-      field: "productTotal",
+      field: "total",
       headerName: "Total",
       flex: 0.4,
     },
@@ -75,15 +90,30 @@ function AddSaleOrderPage() {
         ></InputComponent>
         <InputComponent label="Customer's name" type="text"></InputComponent>
       </div>
-      <NewButton text="Add Customer" className="add-customer-button" onClick={handleNavigateAddCustomer} />
+      <NewButton
+        text="Add Customer"
+        className="add-customer-button"
+        onClick={handleNavigateAddCustomer}
+      />
       <div className="tool-bar">
         <label>List of products</label>
         <div className="button-container">
-          <DeleteButton onClick={() => {}} />
+          <DeleteButton
+            onClick={() => {
+              dispatch(deleteSelectedProducts(deletedItems));
+            }}
+          />
           <NewButton text="New Products" onClick={handleAddProducts} />
         </div>
       </div>
-      <Table className="table" columns={productColumns} rows={productRows} />
+      <Table
+        className="table"
+        columns={productColumns}
+        rows={selectedProducts || []}
+        onRowSelection={(newSelection) => {
+          setDeletedItems(newSelection);
+        }}
+      />
       <div className="price-calculation-input-container">
         <div className="left-inputs">
           <InlineInputComponent
