@@ -67,7 +67,7 @@ function AddSaleOrderPage() {
       flex: 0.7,
       renderCell: (params) => (
         <div className="productNameCell">
-          <img className="productImage" src={params.row.image} />
+          <img className="productImage" src={params.row.imageUrl} />
           <span>{params.value}</span>
         </div>
       ),

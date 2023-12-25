@@ -5,6 +5,13 @@ const setSelectedProducts = (products) => {
   };
 };
 
+const addSelectedProducts = (products) => {
+  return {
+    type: "ADD_SELECTED_PRODUCTS",
+    payload: products,
+  };
+};
+
 const deleteSelectedProducts = (ids) => {
   return {
     type: "DELETE_SELECTED_PRODUCTS",
@@ -12,4 +19,4 @@ const deleteSelectedProducts = (ids) => {
   };
 };
 
-export { setSelectedProducts, deleteSelectedProducts };
+export { setSelectedProducts, addSelectedProducts, deleteSelectedProducts };

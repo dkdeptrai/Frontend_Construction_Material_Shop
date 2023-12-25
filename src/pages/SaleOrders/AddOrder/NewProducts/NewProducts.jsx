@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 //states
 import { useDispatch } from "react-redux";
-import { setSelectedProducts } from "../../../../actions/selectedProductsAction.jsx";
+import { addSelectedProducts } from "../../../../actions/selectedProductsAction.jsx";
 
 //pages and components
 import BackButton from "../../../../components/layouts/backButton/backButton";
@@ -18,7 +18,7 @@ const NewProducts = () => {
   const dispatch = useDispatch();
 
   const handleAddProducts = () => {
-    dispatch(setSelectedProducts(selectedInventoryItems));
+    dispatch(addSelectedProducts(selectedInventoryItems));
     navigate(-1);
   };
 
