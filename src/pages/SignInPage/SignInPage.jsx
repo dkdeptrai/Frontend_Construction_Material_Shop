@@ -4,10 +4,10 @@ import "./SignInPage.css";
 import { setUserData } from "../../actions/userActions";
 import { useDispatch } from "react-redux";
 import { API_CONST } from "../../constants/apiConstants";
+import { CircularProgress } from "@mui/material";
 
 //pages and components
 import pic from "../../assets/Group.png";
-
 
 function SignInPage() {
   const navigate = useNavigate();
@@ -16,6 +16,7 @@ function SignInPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [authError, setAuthError] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleEmailChange = (e) => {
     setEmail(e.target.value);
@@ -30,17 +31,16 @@ function SignInPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    setLoading(true);
+
     try {
-      const response = await fetch(
-        API_CONST + "/auth/authenticate",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email: email, password: password }),
-        }
-      );
+      const response = await fetch(API_CONST + "/auth/authenticate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email: email, password: password }),
+      });
 
       const data = await response.json();
       const userData = data.user;
@@ -58,6 +58,8 @@ function SignInPage() {
         setAuthError(true);
       }
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 

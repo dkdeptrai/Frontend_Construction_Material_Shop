@@ -6,6 +6,7 @@ import SearchBar from "../../../components/layouts/searchBar/searchBar.jsx";
 import Table from "../../../components/core/table/table.jsx";
 import ExportButton from "../../../components/layouts/exportButton/exportButton.jsx";
 import NewButton from "../../../components/layouts/newButton/newButton.jsx";
+import StatusContainer from "../../../components/StatusContainer/StatusContainer.jsx";
 
 import "./saleOrders.css";
 
@@ -84,7 +85,14 @@ function SaleOrdersPage() {
       flex: 0.4,
     },
     { field: "date", headerName: "Date", flex: 0.4 },
-    { field: "status", headerName: "Status", flex: 0.4 },
+    {
+      field: "status",
+      headerName: "Status",
+      flex: 0.4,
+      renderCell: (params) => (
+        <StatusContainer status={params.value} />
+      ),
+    },
   ];
   return (
     <div className="pageContainer">

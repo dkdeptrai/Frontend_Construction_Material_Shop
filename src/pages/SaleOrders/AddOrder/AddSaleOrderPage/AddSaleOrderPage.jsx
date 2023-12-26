@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./AddSaleOrderPage.css";
 
 //states
 import { useDispatch, useSelector } from "react-redux";
-import { deleteSelectedProducts } from "../../../../actions/selectedProductsAction";
+import {
+  deleteSelectedProducts,
+  updateSelectedProductsAmount,
+} from "../../../../actions/selectedProductsAction";
 
 //pages and components
 import InputComponent from "../../../../components/InputComponent/InputComponent";
@@ -20,10 +23,21 @@ function AddSaleOrderPage() {
   const dispatch = useDispatch();
   const [deletedItems, setDeletedItems] = useState([]);
   const [open, setOpen] = useState(false);
+  const [total, setTotal] = useState(0);
 
   const selectedProducts = useSelector(
     (state) => state.selectedProducts.selectedProductsData
   );
+
+  useEffect(() => {
+    if (selectedProducts) {
+      const newTotal = selectedProducts.reduce(
+        (sum, product) => sum + product.amount * product.unitPrice,
+        0
+      );
+      setTotal(newTotal);
+    }
+  }, [selectedProducts]);
 
   const options = ["productName", "productAmount", "productTotal"];
 
@@ -58,17 +72,42 @@ function AddSaleOrderPage() {
       headerName: "Price/unit",
       flex: 0.4,
     },
-    { field: "amount", headerName: "Amount", flex: 0.4 },
+    {
+      field: "amount",
+      headerName: "Amount",
+      flex: 0.4,
+      disableClickEventBubbling: true,
+      renderCell: (params) => (
+        <input
+          type="number"
+          style={{ margin: "auto auto", border: "none" }}
+          value={params.value}
+          min={1}
+          onChange={(e) => {
+            let newAmount = e.target.value;
+
+            if (!newAmount || isNaN(newAmount)) {
+              newAmount = 1;
+            }
+
+            dispatch(updateSelectedProductsAmount(params.id, newAmount));
+          }}
+        />
+      ),
+    },
     {
       field: "total",
       headerName: "Total",
       flex: 0.4,
+      renderCell: (params) => params.value + " $",
     },
   ];
 
   return (
     <div className="adding-page">
-      {open === "true" ? <AmountInputModal open={open} setOpen={setOpen} /> : null}
+      {open === "true" ? (
+        <AmountInputModal open={open} setOpen={setOpen} />
+      ) : null}
       <BackButton content="Add Order" />
       <div className="customer-info">
         <InputComponent
@@ -107,16 +146,15 @@ function AddSaleOrderPage() {
           <InlineInputComponent
             label="Discount:"
             type="number"
-            min="0"
-            max="100"
-            isPercentage
+            min={0}
+            max={100}
           />
           <InlineInputComponent label="Old debt:" type="number" />
           <InlineInputComponent label="Deposit:" type="number" />
         </div>
         <div className="right-inputs">
-          <InlineInputComponent label="Total:" type="number" />
-          <InlineInputComponent label="Debt:" type="number" />
+          <InlineInputComponent label="Total:" type="text" value={total + " $"} />
+          <InlineInputComponent label="Total debt:" type="number" />
         </div>
       </div>
       <div className="payment-button-container">
