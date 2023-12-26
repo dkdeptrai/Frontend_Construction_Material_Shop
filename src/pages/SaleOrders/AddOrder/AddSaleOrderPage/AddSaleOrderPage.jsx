@@ -32,7 +32,7 @@ function AddSaleOrderPage() {
   useEffect(() => {
     if (selectedProducts) {
       const newTotal = selectedProducts.reduce(
-        (sum, product) => sum + product.amount,
+        (sum, product) => sum + product.amount * product.unitPrice,
         0
       );
       setTotal(newTotal);
@@ -99,6 +99,7 @@ function AddSaleOrderPage() {
       field: "total",
       headerName: "Total",
       flex: 0.4,
+      renderCell: (params) => params.value + " $",
     },
   ];
 
@@ -152,7 +153,7 @@ function AddSaleOrderPage() {
           <InlineInputComponent label="Deposit:" type="number" />
         </div>
         <div className="right-inputs">
-          <InlineInputComponent label="Total:" type="number" value={total} />
+          <InlineInputComponent label="Total:" type="text" value={total + " $"} />
           <InlineInputComponent label="Total debt:" type="number" />
         </div>
       </div>

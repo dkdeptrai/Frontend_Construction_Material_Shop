@@ -41,14 +41,16 @@ function Table(props) {
   };
 
   const handleCellClick = (params, event) => {
-    if (params.field === cellName && params.field === "name") {
+    if (
+      params.field === cellName &&
+      (params.field === "name" || params.field === "customerPhone")
+    ) {
       navigate(location.pathname + "/" + params.row[identifyRoute]);
     }
     if (params.field === cellName && params.field === "amount") {
       event.stopPropagation();
     }
   };
-
 
   return (
     <div>

@@ -1,0 +1,24 @@
+.status-container {
+  border: none;
+  border-radius: 20px;
+  padding: 10px 20px;
+  margin: auto;
+  color: var(--text-color);
+  font-weight: 500;
+}
+
+.processing {
+  background-color: var(--yellow-pastel);
+}
+
+.delivering {
+  background-color: var(--orange-pastel);
+}
+
+.completed {
+  background-color: var(--green-pastel);
+}
+
+.cancelled {
+  background-color: var(--red-pastel);
+}
