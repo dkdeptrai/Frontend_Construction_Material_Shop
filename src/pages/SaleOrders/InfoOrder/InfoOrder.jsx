@@ -16,14 +16,14 @@ const InfoOrder = () => {
   const [customerName, setCustomerName] = useState("");
   const [date, setDate] = useState("");
   const [discount, setDiscount] = useState(0);
-  const [status, setStatus] = useState("");
+  const [status, setStatus] = useState("COMPLETED");
   const [products, setProducts] = useState([]);
   const [total, setTotal] = useState(0);
 
   const [orderStatus, setOrderStatus] = useState();
 
-  const handleChangeStatus = (newStatus) => {
-    fetch(API_CONST + "/orders/" + id + "?status=" + newStatus, {
+  const handleChangeStatus = async (newStatus) => {
+    await fetch(API_CONST + "/orders/" + id + "?status=" + newStatus, {
       method: "PUT",
       headers: {
         Authorization: "Bearer " + sessionStorage.getItem("token"),
@@ -146,7 +146,7 @@ const InfoOrder = () => {
         </select>
       </div>
 
-      {status !== "COMPLETED" || status !== "CANCELLED" ? (
+      {status !== "COMPLETED" && status !== "CANCELLED" ? (
         <button className="cancel-button">Cancel this order</button>
       ) : null}
     </div>

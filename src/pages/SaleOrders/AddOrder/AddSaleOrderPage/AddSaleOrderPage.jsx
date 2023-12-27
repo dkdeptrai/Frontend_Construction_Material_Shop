@@ -15,7 +15,7 @@ import BackButton from "../../../../components/layouts/backButton/backButton";
 import NewButton from "../../../../components/layouts/newButton/newButton";
 import DeleteButton from "../../../../components/layouts/deleteButton/deleteButton";
 import Table from "../../../../components/core/table/table";
-import InlineInputComponent from "../../../../components/InlineInputComponent/InlineInputComponent";
+import InlineInputComponent from "../../../../components/inlineInputComponent/inlineInputComponent";
 import AmountInputModal from "../../../../components/AmountInputModal/AmountInputModal";
 
 function AddSaleOrderPage() {
@@ -24,10 +24,14 @@ function AddSaleOrderPage() {
   const [deletedItems, setDeletedItems] = useState([]);
   const [open, setOpen] = useState(false);
   const [total, setTotal] = useState(0);
+  const [discount, setDiscount] = useState(0);
+  const [deposit, setDeposit] = useState(0);
 
   const selectedProducts = useSelector(
     (state) => state.selectedProducts.selectedProductsData
   );
+
+  const userData = useSelector((state) => state.user.userData);
 
   useEffect(() => {
     if (selectedProducts) {
@@ -39,14 +43,43 @@ function AddSaleOrderPage() {
     }
   }, [selectedProducts]);
 
-  const options = ["productName", "productAmount", "productTotal"];
-
   const handleNavigateAddCustomer = () => {
     navigate("/customers/add");
   };
 
   const handleAddProducts = () => {
     navigate("/orders/add/add-products");
+  };
+
+  const handleDeposit = async () => {
+    const yourData = {
+      createdUser: {
+        id: userData.id,
+      },
+      customer: {
+        id: 5,
+      },
+      createdTime: new Date().toISOString().slice(0, -1),
+      depositedMoney: deposit,
+      discount: discount,
+      status: "PROCESSING",
+      orderItems: selectedProducts.map((product) => {
+        return {
+          product: {
+            id: product.id,
+          },
+          quantity: product.amount,
+        };
+      }),
+    };
+
+    await fetch(API_CONST + "/orders", {
+      method: "POST",
+      headers: {
+        Authorization: "Bearer " + sessionStorage.getItem("token"),
+      },
+      body: JSON.stringify(yourData),
+    });
   };
 
   const productColumns = [
@@ -148,17 +181,30 @@ function AddSaleOrderPage() {
             type="number"
             min={0}
             max={100}
+            value={discount}
+            setValue={setDiscount}
           />
           <InlineInputComponent label="Old debt:" type="number" />
-          <InlineInputComponent label="Deposit:" type="number" />
+          <InlineInputComponent
+            label="Deposit:"
+            type="number"
+            value={deposit}
+            setValue={setDeposit}
+          />
         </div>
         <div className="right-inputs">
-          <InlineInputComponent label="Total:" type="text" value={total + " $"} />
+          <InlineInputComponent
+            label="Total:"
+            type="text"
+            value={total + " $"}
+          />
           <InlineInputComponent label="Total debt:" type="number" />
         </div>
       </div>
       <div className="payment-button-container">
-        <button className="deposit-button">Deposit</button>
+        <button className="deposit-button" onClick={handleDeposit}>
+          Deposit
+        </button>
         <button className="debt-button">Debt</button>
       </div>
     </div>

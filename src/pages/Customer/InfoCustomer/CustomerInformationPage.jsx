@@ -4,6 +4,8 @@ import { useParams } from "react-router-dom";
 //pages and components
 import BackButton from "../../../components/layouts/backButton/backButton";
 import InputComponent from "../../../components/InputComponent/InputComponent";
+import Table from "../../../components/core/table/table";
+import { API_CONST } from "../../../constants/apiConstants";
 
 function CustomerInformationPage() {
   const { id } = useParams();
@@ -14,9 +16,11 @@ function CustomerInformationPage() {
   const [tax, setTax] = useState("");
   const [debt, setDebt] = useState(0);
 
+  const [customerOrders, setCustomerOrders] = useState([]);
+
   //get customer information
   useEffect(() => {
-    fetch("http://localhost:8080/api/v1/customers/" + id, {
+    fetch(API_CONST + "/customers/" + id, {
       method: "GET",
       headers: {
         Authorization: "Bearer " + sessionStorage.getItem("token"),
@@ -28,7 +32,12 @@ function CustomerInformationPage() {
           name: data.name,
           phone: data.phone,
           address: data.contactAddress,
-          dateOfBirth: data.dateOfBirth[0] + "-" + data.dateOfBirth[1] + "-" + data.dateOfBirth[2],
+          dateOfBirth:
+            data.dateOfBirth[0] +
+            "-" +
+            data.dateOfBirth[1] +
+            "-" +
+            data.dateOfBirth[2],
           tax: data.taxCode,
           debt: 0,
         };
@@ -40,6 +49,19 @@ function CustomerInformationPage() {
         setDebt(newCustomer.debt);
       })
       .catch((error) => console.error("Error:", error));
+  }, []);
+
+  useEffect(() => {
+    fetch(API_CONST + "/customers/" + id + "/orders", {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + sessionStorage.getItem("token"),
+      },
+    })
+      .then((respone) => respone.json())
+      .then((data) => {
+        setCustomerOrders(data);
+      });
   }, []);
 
   //update customer
@@ -69,6 +91,33 @@ function CustomerInformationPage() {
         alert("Update customer failed!");
       });
   };
+
+  const orderColumns = [
+    {
+      headerName: "No.",
+      field: "index",
+      renderCell: (params) => customerOrders.indexOf(params.row) + 1,
+      width: 50,
+    },
+    {
+      headerName: "Purchase Date",
+      field: "date",
+      renderCell: (params) =>
+        params.row.createdTime[2] +
+        "/" +
+        params.row.createdTime[1] +
+        "/" +
+        params.row.createdTime[0],
+      flex: 0.4,
+    },
+    {
+      headerName: "Number of items",
+      field: "numberOfItems",
+      renderCell: (params) => params.row.orderItems.length,
+      flex: 0.4,
+    },
+    { headerName: "Total", field: "total", flex: 0.4 },
+  ];
 
   return (
     <div>
@@ -101,6 +150,7 @@ function CustomerInformationPage() {
         <InputComponent label="Tax" type="text" value={tax} setValue={setTax} />
         <InputComponent label="Debt" type="number" value={debt} />
         <label>Old orders:</label>
+        <Table columns={orderColumns} rows={customerOrders} noCheckboxSelection/>
       </form>
       <div className="button-container">
         <button onClick={handleUpdate}>Update</button>

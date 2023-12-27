@@ -57,7 +57,16 @@ label {
   margin-bottom: 0.875rem;
 }
 
-.close-button {
-  background-color: red;
+.exit-button {
+  width: 4vw;
+  height: 4vw;
+  background-color: transparent;
+  color: var(--text-color);
+  border: none;
+  margin-left: auto;
+  margin-right: 60px;
+  border: 2px solid var(--border-color);
+  border-radius: 50%;
+  padding: 0;
 }
 

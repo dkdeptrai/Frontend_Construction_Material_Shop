@@ -20,9 +20,10 @@ const SettingModal = () => {
             onMenuItemClick={setSelectedItem}
           />
           <div>
-            <div>
+            <button className="exit-button">
               <ExitIcon />
-            </div>
+            </button>
+
             {selectedItem === "account" && <Account />}
             {selectedItem === "password" && <Password />}
             {selectedItem === "notifications" && <Notifications />}
