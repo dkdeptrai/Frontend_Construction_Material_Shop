@@ -40,12 +40,12 @@ function AddSaleOrderPage() {
   useEffect(() => {
     if (selectedProducts) {
       const newTotal = selectedProducts.reduce(
-        (sum, product) => sum + product.amount * product.unitPrice,
+        (sum, product) => (sum + product.amount * product.unitPrice) * (1 - discount / 100),
         0
       );
-      setTotal(newTotal);
+      setTotal(newTotal.toFixed(2));
     }
-  }, [selectedProducts]);
+  }, [selectedProducts, discount]);
 
   const handleNavigateAddCustomer = () => {
     navigate("/customers/add");

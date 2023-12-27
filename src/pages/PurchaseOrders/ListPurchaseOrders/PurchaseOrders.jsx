@@ -8,12 +8,21 @@ import ExportButton from "../../../components/layouts/exportButton/exportButton.
 import NewButton from "../../../components/layouts/newButton/newButton.jsx";
 import StatusContainer from "../../../components/StatusContainer/StatusContainer.jsx";
 
+//selected products state
+import { useDispatch } from "react-redux";
+import { setSelectedProducts } from "../../../actions/selectedProductsAction.jsx";
+
 const PurchaseOrders = () => {
   const navigate = useNavigate();
-  const [saleOrders, setSaleOrders] = useState([]);
+  const dispatch = useDispatch();
+  const [purchaseOrders, setSaleOrders] = useState([]);
+
+  useEffect(() => {
+    dispatch(setSelectedProducts([]));
+  }, []);
 
   const handleClick = () => {
-    navigate("/orders/add");
+    navigate("/purchaseorders/add");
   };
 
   const options = [
@@ -24,7 +33,7 @@ const PurchaseOrders = () => {
     "Status",
   ];
 
-  const productColumns = [
+  const orderColumns = [
     {
       field: "index",
       headerName: "No.",
@@ -32,12 +41,12 @@ const PurchaseOrders = () => {
       valueGetter: (params) => saleOrders.indexOf(params.row) + 1,
     },
     {
-      field: "customerPhone",
+      field: "employeeCode",
       headerName: "Customer's phone number",
       flex: 0.4,
     },
     {
-      field: "customerName",
+      field: "employeeName",
       headerName: "Customer's name",
       flex: 0.6,
       renderCell: (params) => (
@@ -76,9 +85,9 @@ const PurchaseOrders = () => {
       </div>
       <Table
         className="table"
-        columns={productColumns}
-        rows={saleOrders}
-        cellName="customerPhone"
+        columns={orderColumns}
+        rows={purchaseOrders}
+        cellName="employeeCode"
         identifyRoute="id"
       />
     </div>
