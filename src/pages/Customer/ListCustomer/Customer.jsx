@@ -9,14 +9,16 @@ import ExportButton from "../../../components/layouts/exportButton/exportButton"
 import DeleteButton from "../../../components/layouts/deleteButton/deleteButton";
 import NewButton from "../../../components/layouts/newButton/newButton";
 import CustomerIcon from "../../../assets/icons/customer_default.png";
+import { API_CONST } from "../../../constants/apiConstants";
 
 function Customer(props) {
   const navigate = useNavigate();
   const [customerRows, setCustomerRows] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
 
+  //get customer list
   useEffect(() => {
-    fetch("http://localhost:8080/api/v1/customers", {
+    fetch(API_CONST + "/customers", {
       method: "GET",
       headers: {
         Authorization: "Bearer " + sessionStorage.getItem("token"),
@@ -24,10 +26,33 @@ function Customer(props) {
     })
       .then((response) => response.json())
       .then((data) => {
-        setCustomerRows(data.results);
+        const updatedCustomerRows = data.results.map(customer => ({
+          ...customer,
+          orders: 0, // Replace 'newProperty' and 'newValue' with your actual property name and value
+        }));
+        setCustomerRows(updatedCustomerRows);
       })
       .catch((error) => console.error("Error:", error));
   }, []);
+
+  //get customer amount of orders
+  useEffect(() => {
+    for (const customer of customerRows) {
+      fetch(API_CONST + "/customers/" + customer.id + "/orders", {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + sessionStorage.getItem("token"),
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          customer.orders = data.length;
+          setCustomerRows([...customerRows]);
+        })
+        .catch((error) => console.error("Error:", error));
+    }
+  }
+  , [customerRows]);
 
   //Add customer
   const handleClick = () => {
