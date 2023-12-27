@@ -27,6 +27,10 @@ function AddSaleOrderPage() {
   const [discount, setDiscount] = useState(0);
   const [deposit, setDeposit] = useState(0);
 
+  //search for customer by phone number
+  const [searchedCustomerPhone, setSearchedCustomerPhone] = useState("");
+  const [searchedCustomerName, setSearchedCustomerName] = useState("");
+
   const selectedProducts = useSelector(
     (state) => state.selectedProducts.selectedProductsData
   );
@@ -52,12 +56,33 @@ function AddSaleOrderPage() {
   };
 
   const handleDeposit = async () => {
+    //fetch for customer id
+    const customerData = await fetch(
+      API_CONST +
+        "/customers?phone=" +
+        searchedCustomerPhone +
+        "&customerName=" +
+        searchedCustomerName,
+      {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + sessionStorage.getItem("token"),
+        },
+      }
+    ).then((response) => response.json());
+
+    if (customerData.results.length === 0) {
+      alert("Customer does not exist!");
+      return;
+    }
+
+    //Add order to database
     const yourData = {
       createdUser: {
         id: userData.id,
       },
       customer: {
-        id: 5,
+        id: customerData.results[0].id,
       },
       createdTime: new Date().toISOString().slice(0, -1),
       depositedMoney: deposit,
@@ -146,8 +171,15 @@ function AddSaleOrderPage() {
         <InputComponent
           label="Customer's phone number"
           type="text"
+          value={searchedCustomerPhone}
+          setValue={setSearchedCustomerPhone}
         ></InputComponent>
-        <InputComponent label="Customer's name" type="text"></InputComponent>
+        <InputComponent
+          label="Customer's name"
+          type="text"
+          value={searchedCustomerName}
+          setValue={setSearchedCustomerName}
+        ></InputComponent>
       </div>
       <NewButton
         text="Add Customer"
@@ -176,14 +208,17 @@ function AddSaleOrderPage() {
       />
       <div className="price-calculation-input-container">
         <div className="left-inputs">
-          <InlineInputComponent
-            label="Discount:"
-            type="number"
-            min={0}
-            max={100}
-            value={discount}
-            setValue={setDiscount}
-          />
+          
+            <InlineInputComponent
+              label="Discount(%):"
+              type="number"
+              min={0}
+              max={100}
+              value={discount}
+              setValue={setDiscount}
+            />
+            
+
           <InlineInputComponent label="Old debt:" type="number" />
           <InlineInputComponent
             label="Deposit:"
@@ -192,6 +227,7 @@ function AddSaleOrderPage() {
             setValue={setDeposit}
           />
         </div>
+        
         <div className="right-inputs">
           <InlineInputComponent
             label="Total:"

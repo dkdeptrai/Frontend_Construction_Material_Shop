@@ -61,7 +61,7 @@ function SaleOrdersPage() {
       field: "index",
       headerName: "No.",
       width: 50,
-      valueGetter: (params) => params.id,
+      valueGetter: (params) => saleOrders.indexOf(params.row) + 1,
     },
     {
       field: "customerPhone",

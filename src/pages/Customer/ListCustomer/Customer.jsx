@@ -84,6 +84,7 @@ function Customer(props) {
       field: "id",
       headerName: "No.",
       width: 50,
+      valueGetter: (params) => customerRows.indexOf(params.row) + 1,
     },
     {
       field: "name",
