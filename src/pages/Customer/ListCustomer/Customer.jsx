@@ -62,7 +62,7 @@ function Customer(props) {
   //Delete customer
   const handleDelete = async () => {
     for (const id of selectedRows) {
-      await fetch("http://localhost:8080/api/v1/customers/" + id, {
+      await fetch(API_CONST + "/customers/" + id, {
         method: "DELETE",
         headers: {
           Authorization: "Bearer " + sessionStorage.getItem("token"),

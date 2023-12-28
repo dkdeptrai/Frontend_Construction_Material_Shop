@@ -1,5 +1,5 @@
 import React from "react";
-import "./password.css";
+import "./Password.css";
 import InputComponent from "../../../components/InputComponent/InputComponent";
 
 const Password = () => {

@@ -17,6 +17,7 @@ import DeleteButton from "../../../../components/layouts/deleteButton/deleteButt
 import Table from "../../../../components/core/table/table";
 import InlineInputComponent from "../../../../components/inlineInputComponent/inlineInputComponent";
 import AmountInputModal from "../../../../components/AmountInputModal/AmountInputModal";
+import { API_CONST } from "../../../../constants/apiConstants";
 
 function AddSaleOrderPage() {
   const navigate = useNavigate();
@@ -30,6 +31,26 @@ function AddSaleOrderPage() {
   //search for customer by phone number
   const [searchedCustomerPhone, setSearchedCustomerPhone] = useState("");
   const [searchedCustomerName, setSearchedCustomerName] = useState("");
+
+  useEffect(() => {
+    if (searchedCustomerPhone) {
+      // Fetch the customer data from your backend
+      fetch(API_CONST + "/customers?phone=" + searchedCustomerPhone, {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + sessionStorage.getItem("token"),
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.results.length > 0) {
+            // Update the customer name input with the fetched customer name
+            setSearchedCustomerName(data.results[0].name);
+          }
+        })
+        .catch((error) => console.error("Error:", error));
+    }
+  }, [searchedCustomerPhone]);
 
   const selectedProducts = useSelector(
     (state) => state.selectedProducts.selectedProductsData

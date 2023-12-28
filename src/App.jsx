@@ -19,8 +19,8 @@ import AddEmployee from "./pages/Employee/AddEmployee/AddEmployeePage.jsx";
 //inventory
 import Inventory from "./pages/inventoryPage.jsx";
 
-//order
-import SaleOrdersPage from "./pages/SaleOrders/ListOrders/saleOrders.jsx";
+//sale order
+import SaleOrdersPage from "./pages/SaleOrders/ListOrders/SaleOrders.jsx";
 import AddSaleOrderPage from "./pages/SaleOrders/AddOrder/AddSaleOrderPage/AddSaleOrderPage.jsx";
 import NewProducts from "./pages/SaleOrders/AddOrder/NewProducts/NewProducts.jsx";
 import InfoOrder from "./pages/SaleOrders/InfoOrder/InfoOrder.jsx";

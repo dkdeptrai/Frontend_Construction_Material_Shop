@@ -73,7 +73,7 @@ function CustomerInformationPage() {
       contactAddress: address,
       taxCode: tax,
     };
-    fetch("http://localhost:8080/api/v1/customers/" + id, {
+    fetch(API_CONST + "/customers/" + id, {
       method: "PUT",
       headers: {
         Authorization: "Bearer " + sessionStorage.getItem("token"),

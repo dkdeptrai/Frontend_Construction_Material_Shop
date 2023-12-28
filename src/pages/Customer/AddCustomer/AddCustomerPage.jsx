@@ -5,6 +5,7 @@ import "./AddCustomerPage.css";
 import BackButton from "../../../components/layouts/backButton/backButton";
 import InputComponent from "../../../components/InputComponent/InputComponent";
 import RequiredStar from "../../../components/RequiredStar";
+import { API_CONST } from "../../../constants/apiConstants";
 
 function AddCustomerPage(props) {
   const [name, setName] = useState("");
@@ -38,7 +39,7 @@ function AddCustomerPage(props) {
       contactAddress: address,
       taxCode: tax,
     };
-    fetch("http://localhost:8080/api/v1/customers", {
+    fetch(API_CONST + "/customers", {
       method: "POST",
       headers: {
         Authorization: "Bearer " + sessionStorage.getItem("token"),

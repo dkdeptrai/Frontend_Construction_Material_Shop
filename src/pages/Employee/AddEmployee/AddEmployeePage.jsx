@@ -4,6 +4,7 @@ import { useState } from "react";
 //compoents
 import InputComponent from "../../../components/InputComponent/InputComponent";
 import BackButton from "../../../components/layouts/backButton/backButton.jsx";
+import { API_CONST } from "../../../constants/apiConstants.jsx";
 
 const AddEmployee = () => {
   const [employeeCode, setEmployeeCode] = useState("");
@@ -47,7 +48,7 @@ const AddEmployee = () => {
     }
 
     try {
-      const response = await fetch("/api/v1/auth/register", {
+      const response = await fetch(API_CONST + "/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(registerRequest),

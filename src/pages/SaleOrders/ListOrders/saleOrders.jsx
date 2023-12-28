@@ -7,8 +7,7 @@ import Table from "../../../components/core/table/table.jsx";
 import ExportButton from "../../../components/layouts/exportButton/exportButton.jsx";
 import NewButton from "../../../components/layouts/newButton/newButton.jsx";
 import StatusContainer from "../../../components/StatusContainer/StatusContainer.jsx";
-
-import "./saleOrders.css";
+import { API_CONST } from "../../../constants/apiConstants.jsx";
 
 function SaleOrdersPage() {
   const navigate = useNavigate();
@@ -16,7 +15,7 @@ function SaleOrdersPage() {
 
   //get all sale orders
   useEffect(() => {
-    fetch("http://localhost:8080/api/v1/orders", {
+    fetch(API_CONST + "/orders", {
       method: "GET",
       headers: {
         Authorization: "Bearer " + sessionStorage.getItem("token"),
