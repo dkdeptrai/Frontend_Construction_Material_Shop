@@ -3,8 +3,10 @@
   border-radius: 20px;
   padding: 10px 20px;
   margin: auto;
-  color: var(--text-color);
-  font-weight: 500;
+  color: var(--text);
+  font-weight: 550;
+  width: 40%;
+  text-align: center;
 }
 
 .processing {

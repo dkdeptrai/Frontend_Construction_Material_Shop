@@ -5,6 +5,7 @@ import { useState } from "react";
 import InputComponent from "../../../components/InputComponent/InputComponent";
 import BackButton from "../../../components/layouts/backButton/backButton.jsx";
 import { API_CONST } from "../../../constants/apiConstants.jsx";
+import ImageInputComponent from "../../../components/imageInputComponent/imageInputComponent.jsx";
 
 const AddEmployee = () => {
   const [employeeCode, setEmployeeCode] = useState("");
@@ -26,7 +27,7 @@ const AddEmployee = () => {
       email: email,
       password: password,
       name: employeeName,
-      imageUrl: "",
+      imageUrl: employeeImage,
       phone: phone,
       dateOfBirth: dateOfBirth,
       contactAddress: address,
@@ -84,17 +85,14 @@ const AddEmployee = () => {
           value={employeeName}
           setValue={setEmployeeName}
         />
-        <InputComponent
-          label={
+        <label>
+          {
             <>
-              Employee Code<span className="required-star">*</span>
+              Image<span className="required-star">*</span>
             </>
           }
-          type="file"
-          accept="image/*"
-          value={employeeImage}
-          setValue={setEmployeeImage}
-        />
+        </label>
+        <ImageInputComponent setImage={setEmployeeImage}/>
         <InputComponent
           label={
             <>

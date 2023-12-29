@@ -3,7 +3,6 @@
   color: var(--text-color);
   height: auto;
   width: auto;
-  aspect-ratio: 1/1;
   border-radius: 8px;
   border: 1px solid var(--border-color);
 }

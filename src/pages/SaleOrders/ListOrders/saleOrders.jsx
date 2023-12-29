@@ -6,8 +6,11 @@ import SearchBar from "../../../components/layouts/searchBar/searchBar.jsx";
 import Table from "../../../components/core/table/table.jsx";
 import ExportButton from "../../../components/layouts/exportButton/exportButton.jsx";
 import NewButton from "../../../components/layouts/newButton/newButton.jsx";
+import DeleteButton from "../../../components/layouts/deleteButton/deleteButton.jsx";
 import StatusContainer from "../../../components/StatusContainer/StatusContainer.jsx";
 import { API_CONST } from "../../../constants/apiConstants.jsx";
+
+import "./SaleOrders.css";
 
 function SaleOrdersPage() {
   const navigate = useNavigate();
@@ -23,7 +26,7 @@ function SaleOrdersPage() {
     })
       .then((response) => response.json())
       .then((data) => {
-        const newSaleOrders = data.map((order) => ({
+        const newSaleOrders = data.results.map((order) => ({
           id: order.id,
           customerPhone: order.customer.phone,
           customerName: order.customer.name,
@@ -103,6 +106,7 @@ function SaleOrdersPage() {
         />
         <div className="buttonContainer">
           <ExportButton onClick={() => {}} />
+          
           <NewButton text="New Order" onClick={handleClick} />
         </div>
       </div>

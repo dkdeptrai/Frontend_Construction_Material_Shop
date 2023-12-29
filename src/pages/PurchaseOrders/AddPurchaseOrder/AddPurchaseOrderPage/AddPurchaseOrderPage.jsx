@@ -26,10 +26,6 @@ function AddSaleOrderPage() {
   const [total, setTotal] = useState(0);
   const [discount, setDiscount] = useState(0);
 
-  //search for employee by phone number
-  const [searchedEmployeePhone, setSearchedEmployeePhone] = useState("");
-  const [searchedEmployeeName, setSearchedEmployeeName] = useState("");
-
   const selectedProducts = useSelector(
     (state) => state.selectedProducts.selectedProductsData
   );
@@ -112,14 +108,14 @@ function AddSaleOrderPage() {
         <InputComponent
           label="Employee Code"
           type="text"
-          value={searchedEmployeePhone}
-          setValue={setSearchedEmployeePhone}
+          value={userData.employeeCode || "Manager doesn't have an employee code."}
+       
         ></InputComponent>
         <InputComponent
           label="Employee's name"
           type="text"
-          value={searchedEmployeeName}
-          setValue={setSearchedEmployeeName}
+          value={userData.name}
+       
         ></InputComponent>
       </div>
       <div style={{ marginRight: "57%" }}>
