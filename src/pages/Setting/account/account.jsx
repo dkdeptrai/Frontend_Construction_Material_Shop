@@ -1,5 +1,5 @@
 import React from "react";
-import "./account.css";
+import "./Account.css";
 import { useSelector } from "react-redux";
 
 //pages and components

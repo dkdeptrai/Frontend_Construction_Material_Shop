@@ -19,15 +19,18 @@ import AddEmployee from "./pages/Employee/AddEmployee/AddEmployeePage.jsx";
 //inventory
 import Inventory from "./pages/inventoryPage.jsx";
 
-//order
-import SaleOrdersPage from "./pages/SaleOrders/ListOrders/saleOrders.jsx";
+//sale order
+import SaleOrdersPage from "./pages/SaleOrders/ListOrders/SaleOrders.jsx";
 import AddSaleOrderPage from "./pages/SaleOrders/AddOrder/AddSaleOrderPage/AddSaleOrderPage.jsx";
 import NewProducts from "./pages/SaleOrders/AddOrder/NewProducts/NewProducts.jsx";
 import InfoOrder from "./pages/SaleOrders/InfoOrder/InfoOrder.jsx";
 
 import Products from "./pages/productsPage/productsPage.jsx";
 import AddProductPage from "./pages/addProductPage/addProductPage.jsx";
+
+//purchase order
 import PurchaseOrders from "./pages/PurchaseOrders/ListPurchaseOrders/PurchaseOrders.jsx";
+import AddPurchaseOrderPage from "./pages/PurchaseOrders/AddPurchaseOrder/AddPurchaseOrderPage/AddPurchaseOrderPage.jsx";
 import Reports from "./pages/reportsPage.jsx";
 import Warehouse from "./pages/warehousePage/warehousePage.jsx";
 import SignInPage from "./pages/SignInPage/SignInPage.jsx";
@@ -54,6 +57,8 @@ const ROUTE_TITLES = {
   "/orders/:id": "Order Details",
   "/products": "Products",
   "/purchaseorders": "Purchase Orders",
+  "/purchaseorders/add": "Add Purchase Order",
+  "/purchaseorders/add/add-products": "Add Products",
   "/reports": "Reports",
   "/warehouse": "Warehouse",
   "/account": "Account",
@@ -88,7 +93,10 @@ function App() {
                 <Route path="/inventory" element={<Inventory />} />
                 <Route path="/orders" element={<SaleOrdersPage />} />
                 <Route path="/orders/add" element={<AddSaleOrderPage />} />
-                <Route path="/orders/add/add-products" element={<NewProducts />} />
+                <Route
+                  path="/orders/add/add-products"
+                  element={<NewProducts />}
+                />
                 <Route path="/orders/:id" element={<InfoOrder />} />
                 <Route path="/products" element={<Products />} />
                 <Route path="/products/add" element={<AddProductPage />} />
@@ -97,6 +105,14 @@ function App() {
                   element={<ProductInfoPage />}
                 />
                 <Route path="/purchaseorders" element={<PurchaseOrders />} />
+                <Route
+                  path="/purchaseorders/add"
+                  element={<AddPurchaseOrderPage />}
+                />
+                <Route
+                  path="/purchaseorders/add/add-products"
+                  element={<NewProducts />}
+                />
                 <Route path="/reports" element={<Reports />} />
                 <Route path="/warehouses" element={<Warehouse />} />
                 <Route path="/warehouses/add" element={<AddWarehousePage />} />

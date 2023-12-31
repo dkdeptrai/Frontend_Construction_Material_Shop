@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 
-import Account from "../account/account.jsx";
-import Password from "../password/password.jsx";
-import Notifications from "../notifications/notifications.jsx";
-import Tax from "../tax/tax.jsx";
-import SidebarComponent from "../setting_sidebar/sidebar.jsx";
+import Account from "../Account/Account.jsx";
+import Password from "../Password/Password.jsx";
+import Notifications from "../Notifications/Notifications.jsx";
+import Tax from "../Tax/Tax.jsx";
+import SidebarComponent from "../Sidebar/Sidebar.jsx";
 import ExitIcon from "../../../assets/icons/exit.svg?react";
 import "./SettingModal.css";
 
@@ -20,9 +20,9 @@ const SettingModal = () => {
             onMenuItemClick={setSelectedItem}
           />
           <div>
-            <button className="exit-button">
+            {/* <button className="exit-button">
               <ExitIcon />
-            </button>
+            </button> */}
 
             {selectedItem === "account" && <Account />}
             {selectedItem === "password" && <Password />}

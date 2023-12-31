@@ -17,6 +17,7 @@ import DeleteButton from "../../../../components/layouts/deleteButton/deleteButt
 import Table from "../../../../components/core/table/table";
 import InlineInputComponent from "../../../../components/inlineInputComponent/inlineInputComponent";
 import AmountInputModal from "../../../../components/AmountInputModal/AmountInputModal";
+import { API_CONST } from "../../../../constants/apiConstants";
 
 function AddSaleOrderPage() {
   const navigate = useNavigate();
@@ -27,6 +28,30 @@ function AddSaleOrderPage() {
   const [discount, setDiscount] = useState(0);
   const [deposit, setDeposit] = useState(0);
 
+  //search for customer by phone number
+  const [searchedCustomerPhone, setSearchedCustomerPhone] = useState("");
+  const [searchedCustomerName, setSearchedCustomerName] = useState("");
+
+  useEffect(() => {
+    if (searchedCustomerPhone) {
+      // Fetch the customer data from your backend
+      fetch(API_CONST + "/customers?phone=" + searchedCustomerPhone, {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + sessionStorage.getItem("token"),
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.results.length > 0) {
+            // Update the customer name input with the fetched customer name
+            setSearchedCustomerName(data.results[0].name);
+          }
+        })
+        .catch((error) => console.error("Error:", error));
+    }
+  }, [searchedCustomerPhone]);
+
   const selectedProducts = useSelector(
     (state) => state.selectedProducts.selectedProductsData
   );
@@ -36,12 +61,12 @@ function AddSaleOrderPage() {
   useEffect(() => {
     if (selectedProducts) {
       const newTotal = selectedProducts.reduce(
-        (sum, product) => sum + product.amount * product.unitPrice,
+        (sum, product) => (sum + product.amount * product.unitPrice) * (1 - discount / 100),
         0
       );
-      setTotal(newTotal);
+      setTotal(newTotal.toFixed(2));
     }
-  }, [selectedProducts]);
+  }, [selectedProducts, discount]);
 
   const handleNavigateAddCustomer = () => {
     navigate("/customers/add");
@@ -52,12 +77,33 @@ function AddSaleOrderPage() {
   };
 
   const handleDeposit = async () => {
+    //fetch for customer id
+    const customerData = await fetch(
+      API_CONST +
+        "/customers?phone=" +
+        searchedCustomerPhone +
+        "&customerName=" +
+        searchedCustomerName,
+      {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + sessionStorage.getItem("token"),
+        },
+      }
+    ).then((response) => response.json());
+
+    if (customerData.results.length === 0) {
+      alert("Customer does not exist!");
+      return;
+    }
+
+    //Add order to database
     const yourData = {
       createdUser: {
         id: userData.id,
       },
       customer: {
-        id: 5,
+        id: customerData.results[0].id,
       },
       createdTime: new Date().toISOString().slice(0, -1),
       depositedMoney: deposit,
@@ -146,8 +192,15 @@ function AddSaleOrderPage() {
         <InputComponent
           label="Customer's phone number"
           type="text"
+          value={searchedCustomerPhone}
+          setValue={setSearchedCustomerPhone}
         ></InputComponent>
-        <InputComponent label="Customer's name" type="text"></InputComponent>
+        <InputComponent
+          label="Customer's name"
+          type="text"
+          value={searchedCustomerName}
+          setValue={setSearchedCustomerName}
+        ></InputComponent>
       </div>
       <NewButton
         text="Add Customer"
@@ -176,14 +229,17 @@ function AddSaleOrderPage() {
       />
       <div className="price-calculation-input-container">
         <div className="left-inputs">
-          <InlineInputComponent
-            label="Discount:"
-            type="number"
-            min={0}
-            max={100}
-            value={discount}
-            setValue={setDiscount}
-          />
+          
+            <InlineInputComponent
+              label="Discount(%):"
+              type="number"
+              min={0}
+              max={100}
+              value={discount}
+              setValue={setDiscount}
+            />
+            
+
           <InlineInputComponent label="Old debt:" type="number" />
           <InlineInputComponent
             label="Deposit:"
@@ -192,6 +248,7 @@ function AddSaleOrderPage() {
             setValue={setDeposit}
           />
         </div>
+        
         <div className="right-inputs">
           <InlineInputComponent
             label="Total:"

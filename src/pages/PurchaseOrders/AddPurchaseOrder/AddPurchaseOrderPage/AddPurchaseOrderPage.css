@@ -1,0 +1,40 @@
+.employee-info {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-end;
+  width: 100%;
+  gap: 14%;
+}
+
+.employee-info > * {
+  flex: 1;
+}
+
+.tool-bar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-top: 20px;
+}
+
+.tool-bar .button-container {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.total {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-between;
+  gap: 450px;
+}
+
+.total > * {
+  flex: 1;
+}
+
+

@@ -4,7 +4,7 @@ import "./SignInPage.css";
 import { setUserData } from "../../actions/userActions";
 import { useDispatch } from "react-redux";
 import { API_CONST } from "../../constants/apiConstants";
-import { CircularProgress } from "@mui/material";
+import { ClipLoader } from "react-spinners";
 
 //pages and components
 import pic from "../../assets/Group.png";
@@ -65,6 +65,11 @@ function SignInPage() {
 
   return (
     <div className="sign-in-page">
+      {loading && (
+        <div className="blur-background">
+          <ClipLoader color={"#123abc"} size={150} />
+        </div>
+      )}
       <div className="sign-in-image">
         <h1 style={{ color: "white" }}>ABC SHOP</h1>
         <img src={pic} alt="sign-in-pic" />

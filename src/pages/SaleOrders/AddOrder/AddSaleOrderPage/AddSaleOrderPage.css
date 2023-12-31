@@ -30,7 +30,7 @@
   flex-direction: row;
   width: 100%;
   justify-content: space-between;
-  gap: 500px;
+  gap: 450px;
 }
 
 .price-calculation-input-container > * {
@@ -67,4 +67,8 @@
 .payment-button-container .debt-button:hover {
   background-color: #ff7f7f;
 }
+
+
+
+
 

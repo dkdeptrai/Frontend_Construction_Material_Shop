@@ -5,8 +5,13 @@ import "./AddCustomerPage.css";
 import BackButton from "../../../components/layouts/backButton/backButton";
 import InputComponent from "../../../components/InputComponent/InputComponent";
 import RequiredStar from "../../../components/RequiredStar";
+import { API_CONST } from "../../../constants/apiConstants";
+import { ClipLoader } from "react-spinners";
 
 function AddCustomerPage(props) {
+  const [loading, setLoading] = useState(false);
+
+  //valid states
   const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
@@ -21,13 +26,21 @@ function AddCustomerPage(props) {
   const [isTaxValid, setIsTaxValid] = useState(true);
 
   const handleAddCustomer = () => {
+    setLoading(true);
     setIsNameValid(name !== "");
     setIsPhoneNumberValid(phoneNumber !== "");
     setIsDateOfBirthValid(dateOfBirth !== "");
     setIsAddressValid(address !== "");
     setIsTaxValid(tax !== "");
 
-    if (name === "" || phoneNumber === "" || dateOfBirth === "" || address === "" || tax === "") {
+    if (
+      name === "" ||
+      phoneNumber === "" ||
+      dateOfBirth === "" ||
+      address === "" ||
+      tax === ""
+    ) {
+      setLoading(false);
       return;
     }
 
@@ -38,7 +51,7 @@ function AddCustomerPage(props) {
       contactAddress: address,
       taxCode: tax,
     };
-    fetch("http://localhost:8080/api/v1/customers", {
+    fetch(API_CONST + "/customers", {
       method: "POST",
       headers: {
         Authorization: "Bearer " + sessionStorage.getItem("token"),
@@ -54,6 +67,10 @@ function AddCustomerPage(props) {
       .catch((error) => {
         console.error("Error:", error);
         alert("Add customer failed!");
+      })
+      .finally(() => {
+        setLoading(false);
+        window.history.back();
       });
   };
 

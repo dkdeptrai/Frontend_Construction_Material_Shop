@@ -4,96 +4,84 @@ import { useState } from "react";
 //compoents
 import InputComponent from "../../../components/InputComponent/InputComponent";
 import BackButton from "../../../components/layouts/backButton/backButton.jsx";
+import { API_CONST } from "../../../constants/apiConstants.jsx";
+import ImageInputComponent from "../../../components/imageInputComponent/imageInputComponent.jsx";
+import { ClipLoader } from "react-spinners";
 
 const AddEmployee = () => {
-  const [employeeCode, setEmployeeCode] = useState("");
   const [employeeName, setEmployeeName] = useState("");
   const [employeeImage, setEmployeeImage] = useState("");
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
-  const [position, setPosition] = useState("");
+  const [employeeType, setEmployeeType] = useState("SALE"); //["SALE", "WAREHOUSE", "SHIPPING"]
   const [salary, setSalary] = useState("");
   const [startDate, setStartDate] = useState("");
+
+  const [loading, setLoading] = useState(false);
 
   const handleClick = async (e) => {
     e.preventDefault();
 
+    setLoading(true);
+
     const registerRequest = {
       email: email,
-      password: password,
       name: employeeName,
-      imageUrl: "",
+      image: employeeImage,
       phone: phone,
       dateOfBirth: dateOfBirth,
       contactAddress: address,
-      userType: "EMPLOYEE",
-      employeeCode: employeeCode,
+      employeeType: employeeType,
       salary: salary,
       startedWorkingDate: startDate,
-      employeeType: position,
     };
 
+    const formData = new FormData();
+
     for (let key in registerRequest) {
-      if (
-        key !== "imageURL" &&
-        (registerRequest[key] === null || registerRequest[key] === "")
-      ) {
+      if (registerRequest[key] === null || registerRequest[key] === "") {
         alert(`Please fill in the ${key}`);
         return;
       }
+      formData.append(key, registerRequest[key]);
     }
 
     try {
-      const response = await fetch("/api/v1/auth/register", {
+      const response = await fetch(API_CONST + "/users/employees", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(registerRequest),
+        headers: {
+          Authorization: "Bearer " + sessionStorage.getItem("token"),
+        },
+        body: formData,
       });
 
       if (!response.ok) {
         throw new Error("Something went wrong");
       }
 
-      alert("Employee added successfully");
+      setLoading(false);
+      
     } catch (error) {
       console.log(error);
+    } finally {
+      if (loading) {
+        setLoading(false);
+      }
+      window.history.back();
     }
   };
 
   return (
     <div className="employee-page">
+      {loading && (
+        <div className="blur-background">
+          <ClipLoader color={"#123abc"} size={100} />
+        </div>
+      )}
       <BackButton content="Add Employee" />
       <form>
-        <InputComponent
-          label={
-            <>
-              Employee Code<span className="required-star">*</span>
-            </>
-          }
-          type="text"
-          value={employeeCode}
-          setValue={setEmployeeCode}
-        />
-        <InputComponent
-          label="Employee Name"
-          type="text"
-          value={employeeName}
-          setValue={setEmployeeName}
-        />
-        <InputComponent
-          label={
-            <>
-              Employee Code<span className="required-star">*</span>
-            </>
-          }
-          type="file"
-          accept="image/*"
-          value={employeeImage}
-          setValue={setEmployeeImage}
-        />
         <InputComponent
           label={
             <>
@@ -105,15 +93,20 @@ const AddEmployee = () => {
           setValue={setEmail}
         />
         <InputComponent
-          label={
+          label="Name"
+          type="text"
+          value={employeeName}
+          setValue={setEmployeeName}
+        />
+        <label>
+          {
             <>
-              Password<span className="required-star">*</span>
+              Image<span className="required-star">*</span>
             </>
           }
-          type="password"
-          value={password}
-          setValue={setPassword}
-        />
+        </label>
+        <ImageInputComponent setImage={setEmployeeImage} />
+
         <InputComponent
           label={
             <>
@@ -123,16 +116,6 @@ const AddEmployee = () => {
           type="tel"
           value={phone}
           setValue={setPhone}
-        />
-        <InputComponent
-          label={
-            <>
-              Address<span className="required-star">*</span>
-            </>
-          }
-          type="text"
-          value={address}
-          setValue={setAddress}
         />
         <InputComponent
           label={
@@ -147,12 +130,22 @@ const AddEmployee = () => {
         <InputComponent
           label={
             <>
-              Postition<span className="required-star">*</span>
+              Address<span className="required-star">*</span>
+            </>
+          }
+          type="text"
+          value={address}
+          setValue={setAddress}
+        />
+        <InputComponent
+          label={
+            <>
+              Employee type<span className="required-star">*</span>
             </>
           }
           type="select"
-          value={position}
-          setValue={setPosition}
+          value={employeeType}
+          setValue={setEmployeeType}
           options={["SALE", "WAREHOUSE", "SHIPPING"]}
         />
         <InputComponent

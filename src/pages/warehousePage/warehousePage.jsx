@@ -42,7 +42,6 @@ function Warehouse() {
           options={[]}
         />
         <NewButton
-          className="newWarehouseButton"
           text="New Warehouse"
           onClick={() => navigateToNewWarehouse()}
         />

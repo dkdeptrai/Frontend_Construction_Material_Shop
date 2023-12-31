@@ -58,6 +58,8 @@
 
     "react-select": "^5.8.0",
 
+    "react-spinners": "^0.13.8",
+
     "react-svg": "^16.1.31",
 
     "react-widgets": "^5.8.4",

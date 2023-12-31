@@ -6,9 +6,11 @@ import SearchBar from "../../../components/layouts/searchBar/searchBar.jsx";
 import Table from "../../../components/core/table/table.jsx";
 import ExportButton from "../../../components/layouts/exportButton/exportButton.jsx";
 import NewButton from "../../../components/layouts/newButton/newButton.jsx";
+import DeleteButton from "../../../components/layouts/deleteButton/deleteButton.jsx";
 import StatusContainer from "../../../components/StatusContainer/StatusContainer.jsx";
+import { API_CONST } from "../../../constants/apiConstants.jsx";
 
-import "./saleOrders.css";
+import "./SaleOrders.css";
 
 function SaleOrdersPage() {
   const navigate = useNavigate();
@@ -16,7 +18,7 @@ function SaleOrdersPage() {
 
   //get all sale orders
   useEffect(() => {
-    fetch("http://localhost:8080/api/v1/orders", {
+    fetch(API_CONST + "/orders", {
       method: "GET",
       headers: {
         Authorization: "Bearer " + sessionStorage.getItem("token"),
@@ -24,7 +26,7 @@ function SaleOrdersPage() {
     })
       .then((response) => response.json())
       .then((data) => {
-        const newSaleOrders = data.map((order) => ({
+        const newSaleOrders = data.results.map((order) => ({
           id: order.id,
           customerPhone: order.customer.phone,
           customerName: order.customer.name,
@@ -61,7 +63,7 @@ function SaleOrdersPage() {
       field: "index",
       headerName: "No.",
       width: 50,
-      valueGetter: (params) => params.id,
+      valueGetter: (params) => saleOrders.indexOf(params.row) + 1,
     },
     {
       field: "customerPhone",
@@ -102,7 +104,7 @@ function SaleOrdersPage() {
           options={options}
           placeholder="Search Products by name, ID or any related keywords"
         />
-        <div className="buttonContainer">
+        <div className="buttonContainer-order">
           <ExportButton onClick={() => {}} />
           <NewButton text="New Order" onClick={handleClick} />
         </div>
@@ -113,6 +115,7 @@ function SaleOrdersPage() {
         rows={saleOrders}
         cellName="customerPhone"
         identifyRoute="id"
+        noCheckboxSelection
       />
     </div>
   );

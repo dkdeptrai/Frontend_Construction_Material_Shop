@@ -1,5 +1,5 @@
 import React from "react";
-import "./sidebar.css";
+import "./Sidebar.css";
 import { Sidebar, Menu, MenuItem } from "react-pro-sidebar";
 import { useDispatch } from "react-redux";
 import { closeModal } from "../../../store/Modal.jsx";

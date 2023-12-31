@@ -1,5 +1,5 @@
 import React from "react";
-import "./tax.css";
+import "./Tax.css";
 import InputComponent from "../../../components/InputComponent/InputComponent";
 
 const Tax = () => {

@@ -9,14 +9,15 @@ import { API_CONST } from "../../../constants/apiConstants";
 
 function CustomerInformationPage() {
   const { id } = useParams();
-  const [name, setName] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [dateOfBirth, setDateOfBirth] = useState("");
+  const [employeeName, setEmployeeName] = useState("");
+  const [employeeImage, setEmployeeImage] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
-  const [tax, setTax] = useState("");
-  const [debt, setDebt] = useState(0);
-
-  const [customerOrders, setCustomerOrders] = useState([]);
+  const [dateOfBirth, setDateOfBirth] = useState("");
+  const [employeeType, setEmployeeType] = useState("SALE"); //["SALE", "WAREHOUSE", "SHIPPING"]
+  const [salary, setSalary] = useState("");
+  const [startDate, setStartDate] = useState("");
 
   //get customer information
   useEffect(() => {
@@ -96,7 +97,11 @@ function CustomerInformationPage() {
     {
       headerName: "No.",
       field: "index",
-      renderCell: (params) => customerOrders.indexOf(params.row) + 1,
+      renderCell: (params) => (
+        <span style={{ alignSelf: "center" }}>
+          {customerOrders.indexOf(params.row) + 1}
+        </span>
+      ),
       width: 50,
     },
     {
@@ -150,7 +155,11 @@ function CustomerInformationPage() {
         <InputComponent label="Tax" type="text" value={tax} setValue={setTax} />
         <InputComponent label="Debt" type="number" value={debt} />
         <label>Old orders:</label>
-        <Table columns={orderColumns} rows={customerOrders} noCheckboxSelection/>
+        <Table
+          columns={orderColumns}
+          rows={customerOrders}
+          noCheckboxSelection
+        />
       </form>
       <div className="button-container">
         <button onClick={handleUpdate}>Update</button>
