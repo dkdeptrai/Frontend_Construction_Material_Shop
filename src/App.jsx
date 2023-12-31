@@ -15,6 +15,7 @@ import CustomerInformationPage from "./pages/Customer/InfoCustomer/CustomerInfor
 //employee
 import Employee from "./pages/Employee/ListEmployee/Employee.jsx";
 import AddEmployee from "./pages/Employee/AddEmployee/AddEmployeePage.jsx";
+import EmployeeInformationPage from "./pages/Employee/InfoEmployee/EmployeeInformationPage.jsx";
 
 //inventory
 import Inventory from "./pages/inventoryPage.jsx";
@@ -50,6 +51,7 @@ const ROUTE_TITLES = {
   "/customers/:id": "Customer Details",
   "/employees": "Employees",
   "/employees/add": "Add Employee",
+  "/employees/:id": "Employee Details",
   "/inventory": "Inventory",
   "/orders": "Orders",
   "/orders/add": "Add Order",
@@ -89,7 +91,11 @@ function App() {
                   element={<CustomerInformationPage />}
                 />
                 <Route path="/employees" element={<Employee />} />
-                <Route path="/employees/add" element={<AddEmployee />} /> */
+                <Route path="/employees/add" element={<AddEmployee />} /> 
+                <Route
+                  path="/employees/:id"
+                  element={<EmployeeInformationPage />}
+                />
                 <Route path="/inventory" element={<Inventory />} />
                 <Route path="/orders" element={<SaleOrdersPage />} />
                 <Route path="/orders/add" element={<AddSaleOrderPage />} />

@@ -97,6 +97,8 @@ function Employee() {
         className="table"
         columns={employeeColumns}
         rows={employeeRows}
+        cellName="name"
+        identifyRoute="id"
         onRowSelection={(newSelection) => {
           setSelectedRows(newSelection);
         }}

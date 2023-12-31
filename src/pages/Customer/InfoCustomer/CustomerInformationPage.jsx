@@ -6,6 +6,7 @@ import BackButton from "../../../components/layouts/backButton/backButton";
 import InputComponent from "../../../components/InputComponent/InputComponent";
 import Table from "../../../components/core/table/table";
 import { API_CONST } from "../../../constants/apiConstants";
+import LoadingCircle from "../../../components/LoadingCircle/LoadingCircle";
 
 function CustomerInformationPage() {
   const { id } = useParams();
@@ -17,6 +18,8 @@ function CustomerInformationPage() {
   const [debt, setDebt] = useState(0);
 
   const [customerOrders, setCustomerOrders] = useState([]);
+
+  const [loading, setLoading] = useState(false);
 
   //get customer information
   useEffect(() => {
@@ -35,9 +38,9 @@ function CustomerInformationPage() {
           dateOfBirth:
             data.dateOfBirth[0] +
             "-" +
-            data.dateOfBirth[1] +
+            String(data.dateOfBirth[1]).padStart(2, "0") +
             "-" +
-            data.dateOfBirth[2],
+            String(data.dateOfBirth[2]).padStart(2, "0"),
           tax: data.taxCode,
           debt: 0,
         };
@@ -66,6 +69,7 @@ function CustomerInformationPage() {
 
   //update customer
   const handleUpdate = () => {
+    setLoading(true);
     const customer = {
       name: name,
       phone: phoneNumber,
@@ -83,8 +87,8 @@ function CustomerInformationPage() {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("Success:", data);
-        alert("Update customer successfully!");
+        setLoading(false);
+        window.history.back();
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -121,6 +125,7 @@ function CustomerInformationPage() {
 
   return (
     <div>
+      {loading && <LoadingCircle />}
       <BackButton content="Customer Information" />
       <form>
         <InputComponent
@@ -150,7 +155,11 @@ function CustomerInformationPage() {
         <InputComponent label="Tax" type="text" value={tax} setValue={setTax} />
         <InputComponent label="Debt" type="number" value={debt} />
         <label>Old orders:</label>
-        <Table columns={orderColumns} rows={customerOrders} noCheckboxSelection/>
+        <Table
+          columns={orderColumns}
+          rows={customerOrders}
+          noCheckboxSelection
+        />
       </form>
       <div className="button-container">
         <button onClick={handleUpdate}>Update</button>

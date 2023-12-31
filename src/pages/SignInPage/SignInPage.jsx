@@ -8,6 +8,7 @@ import { ClipLoader } from "react-spinners";
 
 //pages and components
 import pic from "../../assets/Group.png";
+import LoadingCircle from "../../components/LoadingCircle/LoadingCircle";
 
 function SignInPage() {
   const navigate = useNavigate();
@@ -65,11 +66,7 @@ function SignInPage() {
 
   return (
     <div className="sign-in-page">
-      {loading && (
-        <div className="blur-background">
-          <ClipLoader color={"#123abc"} size={150} />
-        </div>
-      )}
+      {loading && <LoadingCircle />}
       <div className="sign-in-image">
         <h1 style={{ color: "white" }}>ABC SHOP</h1>
         <img src={pic} alt="sign-in-pic" />
