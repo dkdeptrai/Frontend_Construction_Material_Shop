@@ -4,14 +4,15 @@ import { useParams } from "react-router-dom";
 //pages and components
 import BackButton from "../../../components/layouts/backButton/backButton";
 import InputComponent from "../../../components/InputComponent/InputComponent";
-import Table from "../../../components/core/table/table";
+import ImageInputComponent from "../../../components/ImageInputComponent/ImageInputComponent";
 import { API_CONST } from "../../../constants/apiConstants";
+import LoadingCircle from "../../../components/LoadingCircle/LoadingCircle";
 
-function CustomerInformationPage() {
+function EmployeeInformationPage() {
   const { id } = useParams();
+  const [email, setEmail] = useState("");
   const [employeeName, setEmployeeName] = useState("");
   const [employeeImage, setEmployeeImage] = useState("");
-  const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
@@ -19,9 +20,11 @@ function CustomerInformationPage() {
   const [salary, setSalary] = useState("");
   const [startDate, setStartDate] = useState("");
 
-  //get customer information
+  const [loading, setLoading] = useState(false);
+
+  //get employee information
   useEffect(() => {
-    fetch(API_CONST + "/customers/" + id, {
+    fetch(API_CONST + "/users/employees/" + id, {
       method: "GET",
       headers: {
         Authorization: "Bearer " + sessionStorage.getItem("token"),
@@ -29,63 +32,76 @@ function CustomerInformationPage() {
     })
       .then((respone) => respone.json())
       .then((data) => {
-        const newCustomer = {
+        const employee = {
+          email: data.email,
           name: data.name,
+          imageUrl: data.imageUrl,
           phone: data.phone,
-          address: data.contactAddress,
           dateOfBirth:
             data.dateOfBirth[0] +
             "-" +
-            data.dateOfBirth[1] +
+            String(data.dateOfBirth[1]).padStart(2, "0") +
             "-" +
-            data.dateOfBirth[2],
-          tax: data.taxCode,
-          debt: 0,
+            String(data.dateOfBirth[2]).padStart(2, "0"),
+          contactAddress: data.contactAddress,
+          employeeType: data.employeeType,
+          salary: data.salary,
+          startedWorkingDate:
+            data.startedWorkingDate[0] +
+            "-" +
+            String(data.dateOfBirth[1]).padStart(2, "0") +
+            "-" +
+            String(data.dateOfBirth[2]).padStart(2, "0"),
         };
-        setName(newCustomer.name);
-        setPhoneNumber(newCustomer.phone);
-        setAddress(newCustomer.address);
-        setDateOfBirth(newCustomer.dateOfBirth);
-        setTax(newCustomer.tax);
-        setDebt(newCustomer.debt);
+        setEmail(employee.email);
+        setEmployeeName(employee.name);
+        setEmployeeImage(employee.imageUrl);
+        setPhone(employee.phone);
+        setDateOfBirth(employee.dateOfBirth);
+        setAddress(employee.contactAddress);
+        setEmployeeType(employee.employeeType);
+        setSalary(employee.salary);
+        setStartDate(employee.startedWorkingDate);
       })
       .catch((error) => console.error("Error:", error));
   }, []);
 
-  useEffect(() => {
-    fetch(API_CONST + "/customers/" + id + "/orders", {
-      method: "GET",
-      headers: {
-        Authorization: "Bearer " + sessionStorage.getItem("token"),
-      },
-    })
-      .then((respone) => respone.json())
-      .then((data) => {
-        setCustomerOrders(data);
-      });
-  }, []);
-
-  //update customer
+  //update employee
   const handleUpdate = () => {
-    const customer = {
-      name: name,
-      phone: phoneNumber,
+    const employee = {
+      email: email,
+      name: employeeName,
+      imageUrl: employeeImage,
+      phone: phone,
       dateOfBirth: dateOfBirth,
       contactAddress: address,
-      taxCode: tax,
+      employeeType: employeeType,
+      salary: salary,
+      startedWorkingDate: startDate,
     };
-    fetch(API_CONST + "/customers/" + id, {
+
+    const formData = new FormData();
+
+    for (let key in employee) {
+      if (employee[key] === null || employee[key] === "") {
+        alert(`Please fill in the ${key}`);
+        return;
+      }
+      formData.append(key, employee[key]);
+    }
+
+    fetch(API_CONST + "/users/employees" + id, {
       method: "PUT",
       headers: {
         Authorization: "Bearer " + sessionStorage.getItem("token"),
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(customer),
+      body: formData,
     })
       .then((response) => response.json())
-      .then((data) => {
-        console.log("Success:", data);
-        alert("Update customer successfully!");
+      .then(() => {
+        setLoading(false);
+        window.history.back();
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -93,72 +109,67 @@ function CustomerInformationPage() {
       });
   };
 
-  const orderColumns = [
-    {
-      headerName: "No.",
-      field: "index",
-      renderCell: (params) => (
-        <span style={{ alignSelf: "center" }}>
-          {customerOrders.indexOf(params.row) + 1}
-        </span>
-      ),
-      width: 50,
-    },
-    {
-      headerName: "Purchase Date",
-      field: "date",
-      renderCell: (params) =>
-        params.row.createdTime[2] +
-        "/" +
-        params.row.createdTime[1] +
-        "/" +
-        params.row.createdTime[0],
-      flex: 0.4,
-    },
-    {
-      headerName: "Number of items",
-      field: "numberOfItems",
-      renderCell: (params) => params.row.orderItems.length,
-      flex: 0.4,
-    },
-    { headerName: "Total", field: "total", flex: 0.4 },
-  ];
-
   return (
     <div>
-      <BackButton content="Customer Information" />
+      {loading && <LoadingCircle />}
+      <BackButton content="Employee Information" />
       <form>
+        <InputComponent
+          label="Email"
+          type="text"
+          value={email}
+          onChange={setEmail}
+        />
+
         <InputComponent
           label="Name"
           type="text"
-          value={name}
-          setValue={setName}
+          value={employeeName}
+          onChange={setEmployeeName}
         />
+
+        <label>Image</label>
+        <ImageInputComponent
+          setImage={setEmployeeImage}
+          imageUrl={employeeImage}
+        />
+
         <InputComponent
           label="Phone"
-          type="tel"
-          value={phoneNumber}
-          setValue={setPhoneNumber}
+          type="text"
+          value={phone}
+          onChange={setPhone}
         />
+
         <InputComponent
           label="Address"
           type="text"
           value={address}
-          setValue={setAddress}
+          onChange={setAddress}
         />
         <InputComponent
           label="Date of birth"
           type="date"
           value={dateOfBirth}
-          setValue={setDateOfBirth}
+          onChange={setDateOfBirth}
         />
-        <InputComponent label="Tax" type="text" value={tax} setValue={setTax} />
-        <InputComponent label="Debt" type="number" value={debt} />
-        <label>Old orders:</label>
-        <Table
-          columns={orderColumns}
-          rows={customerOrders}
-          noCheckboxSelection
+        <InputComponent
+          label="Employee type"
+          type="text"
+          value={employeeType}
+          onChange={setEmployeeType}
+        />
+        <InputComponent
+          label="Salary"
+          type="text"
+          value={salary}
+          onChange={setSalary}
+        />
+        <InputComponent
+          label="Start date"
+          type="date"
+          value={startDate}
+          onChange={setStartDate}
         />
       </form>
       <div className="button-container">
@@ -168,4 +179,4 @@ function CustomerInformationPage() {
   );
 }
 
-export default CustomerInformationPage;
+export default EmployeeInformationPage;

@@ -6,7 +6,7 @@ import BackButton from "../../../components/layouts/backButton/backButton";
 import InputComponent from "../../../components/InputComponent/InputComponent";
 import RequiredStar from "../../../components/RequiredStar";
 import { API_CONST } from "../../../constants/apiConstants";
-import { ClipLoader } from "react-spinners";
+import LoadingCircle from "../../../components/LoadingCircle/LoadingCircle";
 
 function AddCustomerPage(props) {
   const [loading, setLoading] = useState(false);
@@ -61,21 +61,18 @@ function AddCustomerPage(props) {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log("Success:", data);
-        alert("Add customer successfully!");
+        setLoading(false);
+        window.history.back();
       })
       .catch((error) => {
         console.error("Error:", error);
         alert("Add customer failed!");
-      })
-      .finally(() => {
-        setLoading(false);
-        window.history.back();
       });
   };
 
   return (
     <div>
+      {loading && <LoadingCircle />}
       <BackButton content="Add Customer" />
       <form>
         <InputComponent

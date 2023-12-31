@@ -6,7 +6,7 @@ import InputComponent from "../../../components/InputComponent/InputComponent";
 import BackButton from "../../../components/layouts/backButton/backButton.jsx";
 import { API_CONST } from "../../../constants/apiConstants.jsx";
 import ImageInputComponent from "../../../components/imageInputComponent/imageInputComponent.jsx";
-import { ClipLoader } from "react-spinners";
+import LoadingCircle from "../../../components/LoadingCircle/LoadingCircle.jsx";
 
 const AddEmployee = () => {
   const [employeeName, setEmployeeName] = useState("");
@@ -75,11 +75,7 @@ const AddEmployee = () => {
 
   return (
     <div className="employee-page">
-      {loading && (
-        <div className="blur-background">
-          <ClipLoader color={"#123abc"} size={100} />
-        </div>
-      )}
+      {loading && <LoadingCircle />}
       <BackButton content="Add Employee" />
       <form>
         <InputComponent
