@@ -15,6 +15,7 @@ import "./Employee.css";
 function Employee() {
   const navigate = useNavigate();
   const [employeeRows, setEmployeeRows] = useState([]);
+  const [selectedRows, setSelectedRows] = useState([]);
 
   const handleClick = () => {
     navigate("/employees/add");
@@ -34,8 +35,24 @@ function Employee() {
       .catch((error) => console.error("Error:", error));
   }, []);
 
+  const handleDelete = async () => {
+    for (const id of selectedRows) {
+      await fetch(API_CONST + "/users/employees/" + id, {
+        method: "DELETE",
+        headers: {
+          Authorization: "Bearer " + sessionStorage.getItem("token"),
+        },
+      });
+    }
+
+    const newEmployeeRows = employeeRows.filter(
+      (employee) => !selectedRows.includes(employee.id)
+    );
+    setEmployeeRows(newEmployeeRows);
+  };
+
   const options = ["Name", "Phone number", "Address", "Position"];
-  
+
   const employeeColumns = [
     {
       field: "index",
@@ -72,11 +89,18 @@ function Employee() {
         />
         <div className="buttonContainer">
           <ExportButton onClick={() => {}} />
-          <DeleteButton onClick={() => {}} />
+          <DeleteButton onClick={handleDelete} />
           <NewButton text="New Employee" onClick={handleClick} />
         </div>
       </div>
-      <Table className="table" columns={employeeColumns} rows={employeeRows} />
+      <Table
+        className="table"
+        columns={employeeColumns}
+        rows={employeeRows}
+        onRowSelection={(newSelection) => {
+          setSelectedRows(newSelection);
+        }}
+      />
     </div>
   );
 }

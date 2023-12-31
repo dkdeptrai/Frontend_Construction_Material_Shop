@@ -10,6 +10,7 @@ input {
   display: flex;
   flex-direction: row;
   margin-left: auto;
+  
 }
 
 .buttonContainer > * {
@@ -45,5 +46,4 @@ input {
 .table {
   width: 100%;
 }
-
 

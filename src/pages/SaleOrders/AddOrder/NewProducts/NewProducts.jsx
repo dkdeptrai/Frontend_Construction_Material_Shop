@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 //states
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { addSelectedProducts } from "../../../../actions/selectedProductsAction.jsx";
 
 //pages and components
@@ -16,9 +16,6 @@ const NewProducts = () => {
   const [selectedInventoryItems, setSelectedInventoryItems] = useState([]);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const selectedProducts = useSelector(
-    (state) => state.selectedProducts.selectedProducts
-  );
 
   const handleAddProducts = () => {
     const selectedProducts = selectedInventoryItems.map((item) => {

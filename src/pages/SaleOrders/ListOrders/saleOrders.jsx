@@ -104,9 +104,8 @@ function SaleOrdersPage() {
           options={options}
           placeholder="Search Products by name, ID or any related keywords"
         />
-        <div className="buttonContainer">
+        <div className="buttonContainer-order">
           <ExportButton onClick={() => {}} />
-          
           <NewButton text="New Order" onClick={handleClick} />
         </div>
       </div>
@@ -116,6 +115,7 @@ function SaleOrdersPage() {
         rows={saleOrders}
         cellName="customerPhone"
         identifyRoute="id"
+        noCheckboxSelection
       />
     </div>
   );

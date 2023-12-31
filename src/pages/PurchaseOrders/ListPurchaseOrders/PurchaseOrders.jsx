@@ -89,6 +89,7 @@ const PurchaseOrders = () => {
         rows={purchaseOrders}
         cellName="employeeCode"
         identifyRoute="id"
+        noCheckboxSelection
       />
     </div>
   );

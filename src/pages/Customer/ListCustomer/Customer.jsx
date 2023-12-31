@@ -35,7 +35,7 @@ function Customer(props) {
       .catch((error) => console.error("Error:", error));
   }, []);
 
-  //get customer amount of orders
+  //get each customer amount of orders
   useEffect(() => {
     for (const customer of customerRows) {
       fetch(API_CONST + "/customers/" + customer.id + "/orders", {
@@ -47,12 +47,11 @@ function Customer(props) {
         .then((response) => response.json())
         .then((data) => {
           customer.orders = data.length;
-          setCustomerRows([...customerRows]);
         })
         .catch((error) => console.error("Error:", error));
     }
   }
-  , [customerRows]);
+  , []);
 
   //Add customer
   const handleClick = () => {
