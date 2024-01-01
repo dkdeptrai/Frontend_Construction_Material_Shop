@@ -24,15 +24,18 @@ function Table(props) {
 
   const identifyRoute = props.identifyRoute;
   const handleRowSelection = props.onRowSelection;
-  const pageSizeOptions = [5, 10, 20];
   const [paginationModel, setPaginationModel] = useState({
-    pageSize: 5,
+    pageSize: 10,
     page: 0,
   });
 
-  const handlePageSizeChange = (params) => {
-    console.log("Page size changed", params);
-    setPageSize(params.pageSize);
+  const handlePaginationChange = (params) => {
+    const newPaginationModel = {
+      pageSize: params.pageSize,
+      page: params.page,
+    };
+
+    props.fetchPageData(newPaginationModel.page, newPaginationModel.pageSize);
   };
 
   const handlePageChange = (params) => {
@@ -64,7 +67,7 @@ function Table(props) {
         pagination
         paginationModel={paginationModel}
         onPaginationModelChange={setPaginationModel}
-        pageSizeOptions={pageSizeOptions}
+        pageSizeOptions={[10]}
         onCellClick={handleCellClick}
         sx={{
           "& .MuiDataGrid-columnHeaders": {
