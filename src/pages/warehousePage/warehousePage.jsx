@@ -28,6 +28,11 @@ function Warehouse() {
     { id: 3, name: "Warehouse 3", address: "Address 3", capacity: 100 },
     { id: 4, name: "Warehouse 4", address: "Address 4", capacity: 100 },
     { id: 5, name: "Warehouse 5", address: "Address 5", capacity: 100 },
+    { id: 6, name: "Warehouse 6", address: "Address 6", capacity: 100 },
+    { id: 7, name: "Warehouse 7", address: "Address 7", capacity: 100 },
+    { id: 8, name: "Warehouse 8", address: "Address 8", capacity: 100 },
+    { id: 9, name: "Warehouse 9", address: "Address 9", capacity: 100 },
+    { id: 10, name: "Warehouse 10", address: "Address 10", capacity: 100 },
   ];
 
   const navigateToNewWarehouse = () => {
