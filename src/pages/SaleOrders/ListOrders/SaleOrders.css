@@ -1,0 +1,9 @@
+.buttonContainer-order {
+  display: flex;
+  flex-direction: row;
+  margin-left: auto;
+}
+
+.buttonContainer-order > * {
+  margin: 0px 10px;
+}

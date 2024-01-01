@@ -54,9 +54,11 @@
 
     "react-redux": "^9.0.1",
 
-    "react-router-dom": "^6.20.1",
+    "react-router-dom": "^6.21.1",
 
     "react-select": "^5.8.0",
+
+    "react-spinners": "^0.13.8",
 
     "react-svg": "^16.1.31",
 

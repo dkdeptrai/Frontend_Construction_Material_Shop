@@ -1,17 +1,27 @@
 import React, { useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { updateSelectedProductsAmount } from "../../../actions/selectedProductsAction";
 
 import "./table.css";
 
 function Table(props) {
   const navigate = useNavigate();
+  const location = useLocation();
+  const dispatch = useDispatch();
 
   const columns = props.columns;
   const rows = props.rows;
   //Add cellName's field's name so that we can navigate to more information page
+
   const cellName = props.cellName;
   //IdentifyRoute is the field's name that we can identify each row
+
+  const selectedRowIds = props.selectedRowIds;
+
+  const noCheckboxSelection = props.noCheckboxSelection;
+
   const identifyRoute = props.identifyRoute;
   const handleRowSelection = props.onRowSelection;
   const pageSizeOptions = [5, 10, 20];
@@ -30,9 +40,15 @@ function Table(props) {
     setPage(params.page);
   };
 
-  const handleCellClick = (params) => {
-    if (params.field === cellName) {
-      navigate("/customers/" + params.row[identifyRoute]);
+  const handleCellClick = (params, event) => {
+    if (
+      params.field === cellName &&
+      (params.field === "name" || params.field === "customerPhone")
+    ) {
+      navigate(location.pathname + "/" + params.row[identifyRoute]);
+    }
+    if (params.field === cellName && params.field === "amount") {
+      event.stopPropagation();
     }
   };
 
@@ -42,8 +58,9 @@ function Table(props) {
         className="table"
         rows={rows}
         columns={columns}
-        checkboxSelection
+        checkboxSelection={!noCheckboxSelection}
         onRowSelectionModelChange={handleRowSelection}
+        rowSelectionModel={selectedRowIds}
         pagination
         paginationModel={paginationModel}
         onPaginationModelChange={setPaginationModel}

@@ -5,28 +5,43 @@ import { useSelector } from "react-redux";
 //pages and components
 import Header from "./components/layouts/header/header.jsx";
 import MenuBar from "./components/layouts/menubar/menubar.jsx";
-import DashBoard from "./components/pages/dashBoardPage.jsx";
-import Customer from "./components/pages/Customer/ListCustomer/Customer.jsx";
-import AddCustomerPage from "./components/pages/Customer/AddCustomer/AddCustomerPage.jsx";
-import CustomerInformationPage from "./components/pages/Customer/InfoCustomer/CustomerInformationPage.jsx";
-import Employee from "./components/pages/Employee/ListEmployee/Employee.jsx";
-import AddEmployee from "./components/pages/Employee/AddEmployee/AddEmployeePage.jsx";
-import Inventory from "./components/pages/inventoryPage.jsx";
-import SaleOrdersPage from "./components/pages/SaleOrders/ListOrders/saleOrders.jsx";
-import AddSaleOrderPage from "./components/pages/SaleOrders/AddOrder/AddSaleOrderPage.jsx";
-import Products from "./components/pages/productsPage/productsPage.jsx";
-import AddProductPage from "./components/pages/addProductPage/addProductPage.jsx";
-import PurchaseOrders from "./components/pages/purchaseOrdersPage.jsx";
-import Reports from "./components/pages/reportsPage.jsx";
-import Warehouse from "./components/pages/warehousePage/warehousePage.jsx";
-import SignInPage from "./components/pages/SignInPage/SignInPage.jsx";
-import Account from "./components/pages/Setting/account/account.jsx";
-import SettingModal from "./components/pages/Setting/SettingModal/SettingModal.jsx";
+import DashBoard from "./pages/dashBoardPage.jsx";
+
+//customer
+import Customer from "./pages/Customer/ListCustomer/Customer.jsx";
+import AddCustomerPage from "./pages/Customer/AddCustomer/AddCustomerPage.jsx";
+import CustomerInformationPage from "./pages/Customer/InfoCustomer/CustomerInformationPage.jsx";
+
+//employee
+import Employee from "./pages/Employee/ListEmployee/Employee.jsx";
+import AddEmployee from "./pages/Employee/AddEmployee/AddEmployeePage.jsx";
+import EmployeeInformationPage from "./pages/Employee/InfoEmployee/EmployeeInformationPage.jsx";
+
+//inventory
+import Inventory from "./pages/inventoryPage.jsx";
+
+//sale order
+import SaleOrdersPage from "./pages/SaleOrders/ListOrders/SaleOrders.jsx";
+import AddSaleOrderPage from "./pages/SaleOrders/AddOrder/AddSaleOrderPage/AddSaleOrderPage.jsx";
+import NewProducts from "./pages/SaleOrders/AddOrder/NewProducts/NewProducts.jsx";
+import InfoOrder from "./pages/SaleOrders/InfoOrder/InfoOrder.jsx";
+
+import Products from "./pages/productsPage/productsPage.jsx";
+import AddProductPage from "./pages/addProductPage/addProductPage.jsx";
+
+//purchase order
+import PurchaseOrders from "./pages/PurchaseOrders/ListPurchaseOrders/PurchaseOrders.jsx";
+import AddPurchaseOrderPage from "./pages/PurchaseOrders/AddPurchaseOrder/AddPurchaseOrderPage/AddPurchaseOrderPage.jsx";
+import Reports from "./pages/reportsPage.jsx";
+import Warehouse from "./pages/warehousePage/warehousePage.jsx";
+import SignInPage from "./pages/SignInPage/SignInPage.jsx";
+import Account from "./pages/Setting/account/account.jsx";
+import SettingModal from "./pages/Setting/SettingModal/SettingModal.jsx";
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import ProductInfoPage from "./components/pages/productInfoPage/productInfoPage.jsx";
-import AddWarehousePage from "./components/pages/addWarehousePage.jsx";
-import WarehouseInfoPage from "./components/pages/warehouseInfoPage/warehouseInfoPage.jsx";
+import ProductInfoPage from "./pages/productInfoPage/productInfoPage.jsx";
+import AddWarehousePage from "./pages/addWarehousePage.jsx";
+import WarehouseInfoPage from "./pages/warehouseInfoPage/warehouseInfoPage.jsx";
 
 const ROUTE_TITLES = {
   "/": "Authentication",
@@ -36,11 +51,16 @@ const ROUTE_TITLES = {
   "/customers/:id": "Customer Details",
   "/employees": "Employees",
   "/employees/add": "Add Employee",
+  "/employees/:id": "Employee Details",
   "/inventory": "Inventory",
   "/orders": "Orders",
   "/orders/add": "Add Order",
+  "/orders/add/add-products": "Add Products",
+  "/orders/:id": "Order Details",
   "/products": "Products",
   "/purchaseorders": "Purchase Orders",
+  "/purchaseorders/add": "Add Purchase Order",
+  "/purchaseorders/add/add-products": "Add Products",
   "/reports": "Reports",
   "/warehouse": "Warehouse",
   "/account": "Account",
@@ -71,10 +91,19 @@ function App() {
                   element={<CustomerInformationPage />}
                 />
                 <Route path="/employees" element={<Employee />} />
-                <Route path="/employees/add" element={<AddEmployee />} /> */
+                <Route path="/employees/add" element={<AddEmployee />} /> 
+                <Route
+                  path="/employees/:id"
+                  element={<EmployeeInformationPage />}
+                />
                 <Route path="/inventory" element={<Inventory />} />
                 <Route path="/orders" element={<SaleOrdersPage />} />
                 <Route path="/orders/add" element={<AddSaleOrderPage />} />
+                <Route
+                  path="/orders/add/add-products"
+                  element={<NewProducts />}
+                />
+                <Route path="/orders/:id" element={<InfoOrder />} />
                 <Route path="/products" element={<Products />} />
                 <Route path="/products/add" element={<AddProductPage />} />
                 <Route
@@ -82,6 +111,14 @@ function App() {
                   element={<ProductInfoPage />}
                 />
                 <Route path="/purchaseorders" element={<PurchaseOrders />} />
+                <Route
+                  path="/purchaseorders/add"
+                  element={<AddPurchaseOrderPage />}
+                />
+                <Route
+                  path="/purchaseorders/add/add-products"
+                  element={<NewProducts />}
+                />
                 <Route path="/reports" element={<Reports />} />
                 <Route path="/warehouses" element={<Warehouse />} />
                 <Route path="/warehouses/add" element={<AddWarehousePage />} />

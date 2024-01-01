@@ -1,0 +1,33 @@
+.discount-total {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.cancel-button {
+  border: 1px solid grey;
+  background-color: #ff6961;
+  margin: 40px auto;
+}
+
+.cancel-button:hover {
+  background-color: #ff7f7f;
+}
+
+.order-state-line {
+  display: flex;
+  flex-direction: row;
+  width: 40%;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.order-state-line > select {
+  width: 41%;
+}
+
+
+
+
+
+
