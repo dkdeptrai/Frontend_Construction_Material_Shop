@@ -5,6 +5,7 @@ import Table from "../../components/core/table/table.jsx";
 import ExportButton from "../../components/layouts/exportButton/exportButton.jsx";
 import DeleteButton from "../../components/layouts/deleteButton/deleteButton.jsx";
 import NewButton from "../../components/layouts/newButton/newButton.jsx";
+import Product from "../../models/Product.jsx";
 import "./productsPage.css";
 
 function ProductsPage() {
@@ -23,7 +24,7 @@ function ProductsPage() {
     try {
       console.log(sessionStorage.getItem("token"));
       const response = await fetch(
-        "http://localhost:8080/api/v1/products?page=0&size=10",
+        "http://localhost:8080/api/v1/products?page=0&size=2",
         {
           method: "GET",
           headers: {
@@ -33,8 +34,24 @@ function ProductsPage() {
         }
       );
       const data = await response.json();
-      setProducts(data);
-      console.log("Products fetched:", data);
+      const products = data.results.map(
+        (item) =>
+          new Product(
+            item.id,
+            item.name,
+            item.origin,
+            item.imageUrl,
+            item.description,
+            item.unitPrice,
+            item.calculationUnit,
+            item.quantitySold,
+            item.quantityRemaining,
+            item.deleted
+          )
+      );
+      console.log(products);
+      setProducts(products);
+      console.log("Products fetched:", products);
     } catch (error) {
       console.error("Error fetching products:", error);
     }
