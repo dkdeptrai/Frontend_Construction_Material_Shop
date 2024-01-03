@@ -19,6 +19,7 @@ import EmployeeInformationPage from "./pages/Employee/InfoEmployee/EmployeeInfor
 
 //inventory
 import Inventory from "./pages/inventoryPage.jsx";
+import InventoryItemList from "./pages/Inventory/InventoryItemsList/InventoryItemList.jsx";
 
 //sale order
 import SaleOrdersPage from "./pages/SaleOrders/ListOrders/SaleOrders.jsx";
@@ -96,7 +97,7 @@ function App() {
                   path="/employees/:id"
                   element={<EmployeeInformationPage />}
                 />
-                <Route path="/inventory" element={<Inventory />} />
+                <Route path="/inventory" element={<InventoryItemList />} />
                 <Route path="/orders" element={<SaleOrdersPage />} />
                 <Route path="/orders/add" element={<AddSaleOrderPage />} />
                 <Route

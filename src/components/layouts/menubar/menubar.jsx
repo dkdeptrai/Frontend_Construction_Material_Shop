@@ -45,6 +45,7 @@ function MenuBar() {
     dispatch(resetUserData());
     dispatch(setSelectedProducts([]));
     await persistor.purge();
+    sessionStorage.removeItem('token');
     navigate("/");
   };
   return (
