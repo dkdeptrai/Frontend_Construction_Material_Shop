@@ -9,7 +9,13 @@ import "./productsPage.css";
 
 function ProductsPage() {
   const navigate = useNavigate();
-  const options = ["name", "origin"];
+  const options = [
+    "name",
+    "origin",
+    "calculation unit",
+    "price start",
+    "price end",
+  ];
   const [products, setProducts] = useState([]);
   const [filter, setFilter] = useState("");
 
@@ -22,7 +28,7 @@ function ProductsPage() {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+            Authorization: `Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJlbXBsb3llZTFAZ21haWwuY29tIiwiaWF0IjoxNzAxOTE1NzE4fQ.04Zj0HZ4aK9qUJOU7_5EGGfm-5pCjQ-dmbz2fG_njRijxfTg5g9sbmM6BwE12eHy`,
           },
         }
       );

@@ -17,6 +17,7 @@ input {
 }
 
 .toolBar {
+  align-items: flex-start;
   display: flex;
   flex-direction: row;
   width: 100%;
