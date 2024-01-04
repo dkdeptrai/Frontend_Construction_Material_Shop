@@ -1,30 +1,40 @@
 import React from "react";
 import "./InputComponent.css";
+import { render } from "react-dom";
 
 const InputComponent = ({
   label,
   type,
   accept,
   defaultValue,
-  value,
+  value = "",
   setValue,
   options,
   className,
+  placeholder,
 }) => {
-  if (!label || !type) {
-    throw new Error("InputComponent: label and type are required");
+  if (!type) {
+    throw new Error("InputComponent: type is required!");
   }
 
   const handleChange = (e) => {
-    value = e.target.value;
     setValue(e.target.value);
   };
 
+  let renderedLabel = null;
+  if (label) {
+    renderedLabel = <label>{label}</label>;
+  }
+
   if (type === "select") {
+    options.sort((a, b) => a.localeCompare(b));
     return (
       <div>
-        <label>{label}</label>
+        {renderedLabel}
         <select value={value} onChange={handleChange} className={className}>
+          <option value="" disabled>
+            {placeholder}
+          </option>
           {options.map((option) => (
             <option key={option}>{option}</option>
           ))}
@@ -35,9 +45,10 @@ const InputComponent = ({
 
   return (
     <div>
-      <label>{label}</label>
+      {renderedLabel}
       <input
         type={type}
+        placeholder={placeholder}
         accept={accept}
         defaultValue={defaultValue}
         value={value}

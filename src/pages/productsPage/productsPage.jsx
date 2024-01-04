@@ -14,20 +14,33 @@ import InputComponent from "../../components/InputComponent/InputComponent.jsx";
 function ProductsPage() {
   const navigate = useNavigate();
   const options = [
-    "name",
-    "origin",
-    "calculation unit",
-    "price start",
-    "price end",
+    "Vietnam",
+    "China",
+    "USA",
+    "Japan",
+    "Korea",
+    "Germany",
+    "Russia",
   ];
   const [products, setProducts] = useState([]);
-  const [filter, setFilter] = useState("");
+  const [name, setName] = useState("");
+  const [origin, setOrigin] = useState("");
+  const [calculationUnit, setCalculationUnit] = useState("");
+  const [priceStart, setPriceStart] = useState("");
+  const [priceEnd, setPriceEnd] = useState("");
   const [selectedRowIds, setSelectedRowIds] = useState([]);
   const [paginationModel, setPaginationModel] = useState({
     pageSize: 10,
     page: 0,
     total: 0,
   });
+  const [searchPaginationModel, setSearchPaginationModel] = useState({
+    pageSize: 10,
+    page: 0,
+    total: 0,
+  });
+  const [searchResults, setSearchResults] = useState([]);
+  const [showSearchResults, setShowSearchResults] = useState(false);
 
   const fetchProducts = async (page, size) => {
     try {
@@ -60,9 +73,59 @@ function ProductsPage() {
       setProducts(products);
       console.log("Products fetched:", products);
       setPaginationModel((prevState) => ({ ...prevState, total: data.total }));
-      return data.total;
     } catch (error) {
       console.error("Error fetching products:", error);
+    }
+  };
+
+  const handleSearch = async () => {
+    try {
+      let query = `q=${name}&page=0&size=10`;
+      if (origin) {
+        query += `&origin=${origin}`;
+      }
+      if (calculationUnit) {
+        query += `&calculationUnit=${calculationUnit}`;
+      }
+      if (priceStart) {
+        query += `&priceStart=${priceStart}`;
+      }
+      if (priceEnd) {
+        query += `&priceEnd=${priceEnd}`;
+      }
+      console.log(`QUERY: ${API_CONST}/products/search?${query}`);
+      const response = await fetch(`${API_CONST}/products/search?${query}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+        },
+      });
+      const data = await response.json();
+      const products = data.results.map(
+        (item) =>
+          new Product(
+            item.id,
+            item.name,
+            item.origin,
+            item.imageUrl,
+            item.description,
+            item.unitPrice,
+            item.calculationUnit,
+            item.quantitySold,
+            item.quantityRemaining,
+            item.deleted
+          )
+      );
+      setSearchResults(products);
+      setSearchPaginationModel((prevState) => ({
+        ...prevState,
+        total: data.total,
+      }));
+      setShowSearchResults(true);
+      console.log("Search results fetched:", searchResults);
+    } catch (e) {
+      console.error("Error fetching search results:", e);
     }
   };
 
@@ -83,9 +146,20 @@ function ProductsPage() {
           })
         )
       );
-      fetchProducts(paginationModel.page, paginationModel.pageSize);
+      searchResults.length > 0
+        ? handleSearch()
+        : fetchProducts(paginationModel.page, paginationModel.pageSize);
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const handleSearchQueryChange = (event) => {
+    setName(event.target.value);
+    if (event.target.value === "" || event.target.value === null) {
+      setShowSearchResults(false);
+      setSearchResults([]);
+      fetchProducts(paginationModel.page, paginationModel.pageSize);
     }
   };
 
@@ -97,7 +171,10 @@ function ProductsPage() {
       field: "index",
       headerName: "No.",
       width: 50,
-      valueGetter: (params) => products.indexOf(params.row) + 1,
+      valueGetter: (params) =>
+        searchResults.length > 0
+          ? searchResults.indexOf(params.row) + 1
+          : products.indexOf(params.row) + 1,
     },
     {
       field: "name",
@@ -118,16 +195,15 @@ function ProductsPage() {
     },
     { field: "origin", headerName: "Origin", flex: 1 },
   ];
-  console.log(filter);
   return (
     <div className="productPageContainer">
       <div>
         <div className="toolBar">
           <SearchBar
+            handleSearch={handleSearch}
             className="searchBar"
-            options={options}
-            placeholder="Search Products by name, ID or any related keywords"
-            setFilter={setFilter}
+            placeholder="Search for Products by Name"
+            handleSearchQueryChange={handleSearchQueryChange}
           />
           <div className="buttonContainer">
             <ExportButton onClick={() => {}} />
@@ -139,25 +215,52 @@ function ProductsPage() {
           </div>
         </div>
         <div className="filters">
-          <InputComponent label="Price Start" type="number" />
-          <InputComponent label="Price End" type="number" />
-          <InputComponent label="Calculation Unit" type="text" />
-          <InputComponent label="Origin" type="text" />
+          <InputComponent
+            type="number"
+            placeholder="Price Start"
+            value={priceStart}
+            setValue={setPriceStart}
+          />
+
+          <InputComponent
+            type="number"
+            placeholder="Price End"
+            value={priceEnd}
+            setValue={setPriceEnd}
+          />
+          <InputComponent
+            type="text"
+            placeholder="Calculation Unit"
+            value={calculationUnit}
+            setValue={setCalculationUnit}
+          />
+          <InputComponent
+            type="select"
+            options={options}
+            placeholder="Origin"
+            value={origin}
+            setValue={setOrigin}
+          />
         </div>
       </div>
       <Table
         className="table"
         columns={productColumns}
-        rows={products}
+        rows={showSearchResults ? searchResults : products}
         cellName="name"
         identifyRoute="id"
         onDeleteSelectedRows={handleDelete}
         onRowSelection={(newSelection) => {
           setSelectedRowIds(newSelection);
+          console.log(newSelection);
         }}
-        paginationModel={paginationModel}
+        paginationModel={
+          showSearchResults ? searchPaginationModel : paginationModel
+        }
         fetchPageData={fetchProducts}
-        onPaginationModelChange={setPaginationModel}
+        onPaginationModelChange={
+          showSearchResults ? setSearchPaginationModel : setPaginationModel
+        }
       />
     </div>
   );

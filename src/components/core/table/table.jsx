@@ -15,8 +15,6 @@ function Table(props) {
   const cellName = props.cellName;
   //IdentifyRoute is the field's name that we can identify each row
 
-  const selectedRowIds = props.selectedRowIds;
-
   const noCheckboxSelection = props.noCheckboxSelection;
 
   const identifyRoute = props.identifyRoute;
@@ -31,11 +29,6 @@ function Table(props) {
     });
 
     props.fetchPageData(params.page, params.pageSize);
-  };
-
-  const handlePageChange = (params) => {
-    console.log("Page changed", params);
-    setPage(params.page);
   };
 
   const handleCellClick = (params, event) => {

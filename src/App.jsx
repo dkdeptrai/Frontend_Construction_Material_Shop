@@ -117,6 +117,7 @@ function App() {
                 <Route path="/orders/:id" element={<InfoOrder />} />
                 <Route path="/products" element={<Products />} />
                 <Route path="/products/add" element={<ProductInfoPage />} />
+                <Route path="/products/:id" element={<ProductInfoPage />} />
                 <Route
                   path="/products/update/:id"
                   element={<ProductInfoPage />}
