@@ -9,32 +9,28 @@ import NewButton from "../../components/layouts/newButton/newButton";
 function Warehouse() {
   const navigate = useNavigate();
   // TODO: handle api call
-  let warehouses = [];
-  // let [warehouses, setWarehouses] = useState([]);
+  const [warehouses, setWarehouses] = useState([]);
   // useEffect(() => {
   //   fetch("YOUR_API_URL")
   //     .then((response) => response.json())
   //     .then((data) => setWarehouses(data))
   //     .catch((error) => console.error(error));
   // }, []);
-  warehouses = [
-    { id: 1, name: "Warehouse 1", address: "Address 1", capacity: 100 },
-    {
-      id: 2,
-      name: "Warehouse 2",
-      address: "Address 2",
-      capacity: 100,
-    },
-    { id: 3, name: "Warehouse 3", address: "Address 3", capacity: 100 },
-    { id: 4, name: "Warehouse 4", address: "Address 4", capacity: 100 },
-    { id: 5, name: "Warehouse 5", address: "Address 5", capacity: 100 },
-    { id: 6, name: "Warehouse 6", address: "Address 6", capacity: 100 },
-    { id: 7, name: "Warehouse 7", address: "Address 7", capacity: 100 },
-    { id: 8, name: "Warehouse 8", address: "Address 8", capacity: 100 },
-    { id: 9, name: "Warehouse 9", address: "Address 9", capacity: 100 },
-    { id: 10, name: "Warehouse 10", address: "Address 10", capacity: 100 },
-  ];
-
+  const fetchWarehouses = async () => {
+    try {
+      console.log(sessionStorage.getItem("token"));
+      const response = await fetch("http://localhost:8080/api/v1/warehouses", {
+        method: "GET",
+        headers: {
+          Authorization: `bearer ${sessionStorage.getItem("token")}`,
+        },
+      });
+      const data = await response.json();
+      const warehouses = data.results.map;
+      setWarehouses(warehouses);
+      console.log(warehouses);
+    } catch (e) {}
+  };
   const navigateToNewWarehouse = () => {
     navigate("/warehouses/add");
   };

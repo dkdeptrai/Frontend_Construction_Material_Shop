@@ -29,6 +29,8 @@ function Table(props) {
     page: 0,
   });
 
+  const onDeleteSelectedRows = props.onDeleteSelectedRows;
+
   const handlePaginationChange = (params) => {
     const newPaginationModel = {
       pageSize: params.pageSize,

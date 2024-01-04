@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import UploadImageIcon from "../../assets/icons/uploadImage.svg?react";
 import "./ImageInputComponent.css";
 import Resizer from "react-image-file-resizer";
@@ -6,6 +6,7 @@ import Resizer from "react-image-file-resizer";
 const ImageInputComponent = ({ setImage, imageUrl }) => {
   const [backgroundImage, setBackgroundImage] = useState("");
   const [imageChosen, setImageChosen] = useState(false);
+  const fileInputRef = useRef(); // Create a ref for the file input
 
   const handleImageClick = () => {
     const input = document.createElement("input");
@@ -49,18 +50,34 @@ const ImageInputComponent = ({ setImage, imageUrl }) => {
     input.click();
   };
 
+  const clearImage = () => {
+    // Clear the file input
+    fileInputRef.current.value = "";
+
+    // Reset other states
+    setImage(null);
+    setBackgroundImage("");
+    setImageChosen(false);
+  };
+
   return (
     <div
       className="imageContainer"
       style={{
         backgroundImage: imageUrl ? `url(${imageUrl})` : backgroundImage,
-        backgroundSize: "cover", // Add this line
-        backgroundPosition: "center", // Add this line
-        backgroundRepeat: "no-repeat", // Add this line
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
       }}
       onClick={handleImageClick}
     >
       {!imageUrl && !imageChosen && <UploadImageIcon />}
+      <input
+        ref={fileInputRef} // Attach the ref to the file input
+        type="file"
+        accept="image/jpeg, image/png"
+        style={{ display: "none" }} // Hide the file input
+      />
     </div>
   );
 };

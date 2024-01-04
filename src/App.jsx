@@ -27,7 +27,7 @@ import NewProducts from "./pages/SaleOrders/AddOrder/NewProducts/NewProducts.jsx
 import InfoOrder from "./pages/SaleOrders/InfoOrder/InfoOrder.jsx";
 
 import Products from "./pages/productsPage/productsPage.jsx";
-import AddProductPage from "./pages/addProductPage/addProductPage.jsx";
+import ProductInfoPage from "./pages/addProductPage/ProductInfoPage.jsx";
 
 //purchase order
 import PurchaseOrders from "./pages/PurchaseOrders/ListPurchaseOrders/PurchaseOrders.jsx";
@@ -39,7 +39,6 @@ import Account from "./pages/Setting/account/account.jsx";
 import SettingModal from "./pages/Setting/SettingModal/SettingModal.jsx";
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import ProductInfoPage from "./pages/productInfoPage/productInfoPage.jsx";
 import AddWarehousePage from "./pages/addWarehousePage.jsx";
 import WarehouseInfoPage from "./pages/warehouseInfoPage/warehouseInfoPage.jsx";
 
@@ -91,7 +90,7 @@ function App() {
                   element={<CustomerInformationPage />}
                 />
                 <Route path="/employees" element={<Employee />} />
-                <Route path="/employees/add" element={<AddEmployee />} /> 
+                <Route path="/employees/add" element={<AddEmployee />} />
                 <Route
                   path="/employees/:id"
                   element={<EmployeeInformationPage />}
@@ -105,7 +104,7 @@ function App() {
                 />
                 <Route path="/orders/:id" element={<InfoOrder />} />
                 <Route path="/products" element={<Products />} />
-                <Route path="/products/add" element={<AddProductPage />} />
+                <Route path="/products/add" element={<ProductInfoPage />} />
                 <Route
                   path="/products/update/:id"
                   element={<ProductInfoPage />}

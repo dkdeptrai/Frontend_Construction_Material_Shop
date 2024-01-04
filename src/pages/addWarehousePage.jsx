@@ -3,7 +3,6 @@ import BackButton from "../components/layouts/backButton/backButton";
 import InputComponent from "../components/InputComponent/InputComponent";
 
 function AddWarehousePage() {
-  //TODO: handle submission through api
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [capacity, setCapacity] = useState(0);
@@ -18,20 +17,16 @@ function AddWarehousePage() {
     };
 
     for (let key in registerRequest) {
-      if (
-        key !== "imageURL" &&
-        (registerRequest[key] === null || registerRequest[key] === "")
-      ) {
+      if (registerRequest[key] === null || registerRequest[key] === "") {
         alert(`Please fill in the ${key}`);
         return;
       }
     }
-    //TODO: handle submission through api
   };
 
   return (
     <div className="addProductPage">
-      <BackButton content="Add Product" />
+      <BackButton content="Add Warehouse" />
       <form>
         <InputComponent
           label="Name"

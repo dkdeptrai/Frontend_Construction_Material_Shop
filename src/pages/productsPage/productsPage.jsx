@@ -7,6 +7,7 @@ import DeleteButton from "../../components/layouts/deleteButton/deleteButton.jsx
 import NewButton from "../../components/layouts/newButton/newButton.jsx";
 import Product from "../../models/Product.jsx";
 import "./productsPage.css";
+import { API_CONST } from "../../constants/apiConstants.jsx";
 
 function ProductsPage() {
   const navigate = useNavigate();
@@ -19,17 +20,18 @@ function ProductsPage() {
   ];
   const [products, setProducts] = useState([]);
   const [filter, setFilter] = useState("");
+  const [selectedRowIds, setSelectedRowIds] = useState([]);
 
   const fetchProducts = async () => {
     try {
       console.log(sessionStorage.getItem("token"));
       const response = await fetch(
-        "http://localhost:8080/api/v1/products?page=0&size=2",
+        "http://localhost:8080/api/v1/products?page=0&size=10",
         {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJlbXBsb3llZTFAZ21haWwuY29tIiwiaWF0IjoxNzAxOTE1NzE4fQ.04Zj0HZ4aK9qUJOU7_5EGGfm-5pCjQ-dmbz2fG_njRijxfTg5g9sbmM6BwE12eHy`,
+            Authorization: `Bearer ${sessionStorage.getItem("token")}`,
           },
         }
       );
@@ -60,6 +62,27 @@ function ProductsPage() {
   useEffect(() => {
     fetchProducts();
   }, []);
+
+  const handleDelete = async (selectedRowIds) => {
+    try {
+      await Promise.all(
+        selectedRowIds.map((id) =>
+          fetch(`${API_CONST}/products/${id}`, {
+            method: "DELETE",
+            headers: {
+              Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+              "Content-Type": "application/json",
+            },
+          })
+        )
+      );
+      setProducts(
+        products.filter((product) => !selectedRowIds.includes(product.id))
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const navigateToNewProduct = () => {
     navigate("/products/add");
@@ -101,14 +124,24 @@ function ProductsPage() {
         />
         <div className="buttonContainer">
           <ExportButton onClick={() => {}} />
-          <DeleteButton onClick={() => {}} />
+          <DeleteButton onClick={() => handleDelete(selectedRowIds)} />
           <NewButton
             text="New Product"
             onClick={() => navigateToNewProduct()}
           />
         </div>
       </div>
-      <Table className="table" columns={productColumns} rows={products} />
+      <Table
+        className="table"
+        columns={productColumns}
+        rows={products}
+        cellName="name"
+        identifyRoute="id"
+        onDeleteSelectedRows={handleDelete}
+        onRowSelection={(newSelection) => {
+          setSelectedRowIds(newSelection);
+        }}
+      />
     </div>
   );
 }
