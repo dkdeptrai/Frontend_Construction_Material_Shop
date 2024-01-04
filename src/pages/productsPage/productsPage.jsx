@@ -28,12 +28,12 @@ function ProductsPage() {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer eyJhbGciOiJIUzM4NCJ9.eyJzdWIiOiJlbXBsb3llZTFAZ21haWwuY29tIiwiaWF0IjoxNzAxOTE1NzE4fQ.04Zj0HZ4aK9qUJOU7_5EGGfm-5pCjQ-dmbz2fG_njRijxfTg5g9sbmM6BwE12eHy`,
+            Authorization: `Bearer ${sessionStorage.getItem("token")}`,
           },
         }
       );
       const data = await response.json();
-      setProducts(data);
+      setProducts(data.results);
       console.log("Products fetched:", data);
     } catch (error) {
       console.error("Error fetching products:", error);
@@ -52,6 +52,7 @@ function ProductsPage() {
       field: "index",
       headerName: "No.",
       width: 50,
+      valueGetter: (params) => products.indexOf(params.row) + 1,
     },
     {
       field: "name",

@@ -26,7 +26,7 @@ function Customer(props) {
     })
       .then((response) => response.json())
       .then((data) => {
-        const updatedCustomerRows = data.results.map(customer => ({
+        const updatedCustomerRows = data.results.map((customer) => ({
           ...customer,
           orders: 0, // Replace 'newProperty' and 'newValue' with your actual property name and value
         }));
@@ -50,8 +50,7 @@ function Customer(props) {
         })
         .catch((error) => console.error("Error:", error));
     }
-  }
-  , []);
+  }, []);
 
   //Add customer
   const handleClick = () => {
@@ -60,19 +59,23 @@ function Customer(props) {
 
   //Delete customer
   const handleDelete = async () => {
-    for (const id of selectedRows) {
-      await fetch(API_CONST + "/customers/" + id, {
-        method: "DELETE",
-        headers: {
-          Authorization: "Bearer " + sessionStorage.getItem("token"),
-        },
-      });
-    }
+    if (
+      window.confirm("Are you sure you want to delete the selected customers?")
+    ) {
+      for (const id of selectedRows) {
+        await fetch(API_CONST + "/customers/" + id, {
+          method: "DELETE",
+          headers: {
+            Authorization: "Bearer " + sessionStorage.getItem("token"),
+          },
+        });
+      }
 
-    const newCustomerRows = customerRows.filter(
-      (customer) => !selectedRows.includes(customer.id)
-    );
-    setCustomerRows(newCustomerRows);
+      const newCustomerRows = customerRows.filter(
+        (customer) => !selectedRows.includes(customer.id)
+      );
+      setCustomerRows(newCustomerRows);
+    }
   };
 
   //table

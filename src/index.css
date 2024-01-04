@@ -20,10 +20,14 @@
   --button-color: #6a1039;
   --border-color: #eaecf0;
   --hover-color: #fafbfb;
-  --yellow-pastel: #F6FDC3;
-  --green-pastel: #CDFAD5;
-  --orange-pastel: #FFCF96;
-  --red-pastel: #FF8080;
+  --processing-backgroundcolor: #C3E1FD;
+  --delivering-backgroundcolor: #FFE5A3;
+  --cancelled-backgroundcolor: #FFC5C5;
+  --completed-backgroundcolor: #CDFAD5;
+  --processing-color: #455DE1;
+  --delivering-color: #F29239;
+  --cancelled-color: #E93737;
+  --completed-color: #3B774F;
 }
 
 a {
