@@ -6,7 +6,7 @@ label {
   display: flex;
   flex-direction: column;
   background-color: white;
-  margin: 30px 60px 0 60px;
+  margin: 0px 60px 0 60px;
   border-top-right-radius: 14px;
   border-top-left-radius: 14px;
 }

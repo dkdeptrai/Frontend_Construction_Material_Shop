@@ -18,6 +18,7 @@ import Table from "../../../../components/core/table/table";
 import InlineInputComponent from "../../../../components/inlineInputComponent/inlineInputComponent";
 import AmountInputModal from "../../../../components/AmountInputModal/AmountInputModal";
 import { API_CONST } from "../../../../constants/apiConstants";
+import LoadingCircle from "../../../../components/LoadingCircle/LoadingCircle";
 
 function AddSaleOrderPage() {
   const navigate = useNavigate();
@@ -32,6 +33,9 @@ function AddSaleOrderPage() {
   const [searchedCustomerPhone, setSearchedCustomerPhone] = useState("");
   const [searchedCustomerName, setSearchedCustomerName] = useState("");
 
+  //loading
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     if (searchedCustomerPhone) {
       // Fetch the customer data from your backend
@@ -41,7 +45,7 @@ function AddSaleOrderPage() {
           Authorization: "Bearer " + sessionStorage.getItem("token"),
         },
       })
-        .then((response) => response.json())
+        .then((response) => {console.log(response); return response.json();})
         .then((data) => {
           if (data.results.length > 0) {
             // Update the customer name input with the fetched customer name
@@ -77,6 +81,8 @@ function AddSaleOrderPage() {
   };
 
   const handleDeposit = async () => {
+    setLoading(true);
+
     //fetch for customer id
     const customerData = await fetch(
       API_CONST +
@@ -117,14 +123,21 @@ function AddSaleOrderPage() {
           quantity: product.amount,
         };
       }),
+      total: total,
     };
+
+    console.log(selectedProducts);
 
     await fetch(API_CONST + "/orders", {
       method: "POST",
       headers: {
+        "Content-Type": "application/json",
         Authorization: "Bearer " + sessionStorage.getItem("token"),
       },
       body: JSON.stringify(yourData),
+    }).finally(() => {
+      setLoading(false);
+      navigate("/orders");
     });
   };
 
@@ -184,6 +197,7 @@ function AddSaleOrderPage() {
 
   return (
     <div className="adding-page">
+      {loading ? <LoadingCircle /> : null}
       {open === "true" ? (
         <AmountInputModal open={open} setOpen={setOpen} />
       ) : null}

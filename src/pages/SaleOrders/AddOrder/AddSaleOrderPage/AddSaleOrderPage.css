@@ -5,6 +5,7 @@
   align-items: flex-end;
   width: 100%;
   gap: 60px;
+  margin-bottom: 8px;
 }
 
 .customer-info > * {
@@ -40,19 +41,20 @@
 .payment-button-container {
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
-  margin: 76px auto;
-  width: 70%;
-  gap: 30%;
+  justify-content: flex-end;
+  margin: 76px 0px 76px auto;
+  width: 60%;
+  gap: 10%;
 }
 
 .payment-button-container > * {
   flex: 1;
+  padding: 14px 0px;
 }
 
 .payment-button-container .deposit-button {
-  border: 1px solid grey;
-  background-color: #77dd77;
+  background-color: var(--completed-backgroundcolor);
+  color: var(--completed-color)
 }
 
 .payment-button-container .deposit-button:hover {
@@ -60,8 +62,8 @@
 }
 
 .payment-button-container .debt-button {
-  border: 1px solid grey;
-  background-color: #ff6961;
+  background-color: var(--cancelled-backgroundcolor);
+  color: var(--cancelled-color);
 }
 
 .payment-button-container .debt-button:hover {

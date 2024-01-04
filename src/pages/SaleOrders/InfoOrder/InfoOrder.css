@@ -5,13 +5,15 @@
 }
 
 .cancel-button {
-  border: 1px solid grey;
-  background-color: #ff6961;
+  background-color: var(--cancelled-backgroundcolor);
+  color: var(--cancelled-color);
   margin: 40px auto;
 }
 
 .cancel-button:hover {
-  background-color: #ff7f7f;
+  background-color: var(--cancelled-backgroundcolor);
+  color: var(--cancelled-color);
+  opacity: 0.7;
 }
 
 .order-state-line {

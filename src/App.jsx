@@ -5,7 +5,9 @@ import { useSelector } from "react-redux";
 //pages and components
 import Header from "./components/layouts/header/header.jsx";
 import MenuBar from "./components/layouts/menubar/menubar.jsx";
-import DashBoard from "./pages/dashBoardPage.jsx";
+
+//dashboard
+import DashBoard from "./pages/Dashboard/Dashboard.jsx";
 
 //customer
 import Customer from "./pages/Customer/ListCustomer/Customer.jsx";
@@ -19,6 +21,7 @@ import EmployeeInformationPage from "./pages/Employee/InfoEmployee/EmployeeInfor
 
 //inventory
 import Inventory from "./pages/inventoryPage.jsx";
+import InventoryItemList from "./pages/Inventory/InventoryItemsList/InventoryItemList.jsx";
 
 //sale order
 import SaleOrdersPage from "./pages/SaleOrders/ListOrders/SaleOrders.jsx";
@@ -35,7 +38,7 @@ import AddPurchaseOrderPage from "./pages/PurchaseOrders/AddPurchaseOrder/AddPur
 import Reports from "./pages/reportsPage.jsx";
 import WarehousesPage from "./pages/WarehousesPage/WarehousesPage.jsx";
 import SignInPage from "./pages/SignInPage/SignInPage.jsx";
-import Account from "./pages/Setting/account/account.jsx";
+import Account from "./pages/Setting/Account/Account.jsx";
 import SettingModal from "./pages/Setting/SettingModal/SettingModal.jsx";
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
@@ -68,6 +71,10 @@ const ROUTE_TITLES = {
 function App() {
   const isOpen = useSelector((state) => state.modal.isOpen);
 
+  const userType = useSelector((state) =>
+    state.user.userData?.userType ? state.user.userData.userType : "EMPLOYEE"
+  );
+
   return (
     <>
       {isOpen ? <SettingModal /> : null}
@@ -88,13 +95,19 @@ function App() {
                   path="/customers/:id"
                   element={<CustomerInformationPage />}
                 />
-                <Route path="/employees" element={<Employee />} />
-                <Route path="/employees/add" element={<AddEmployee />} />
-                <Route
-                  path="/employees/:id"
-                  element={<EmployeeInformationPage />}
-                />
-                <Route path="/inventory" element={<Inventory />} />
+
+                {userType === "MANAGER" && (
+                  <>
+                    <Route path="/employees" element={<Employee />} />
+                    <Route path="/employees/add" element={<AddEmployee />} />
+                    <Route
+                      path="/employees/:id"
+                      element={<EmployeeInformationPage />}
+                    />
+                  </>
+                )}
+
+                <Route path="/inventory" element={<InventoryItemList />} />
                 <Route path="/orders" element={<SaleOrdersPage />} />
                 <Route path="/orders/add" element={<AddSaleOrderPage />} />
                 <Route

@@ -1,4 +1,7 @@
 .newButton {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
   background-color: var(--button-color);
   width: max-content;
   font-weight: 500;

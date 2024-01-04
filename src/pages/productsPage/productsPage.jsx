@@ -97,6 +97,7 @@ function ProductsPage() {
       field: "index",
       headerName: "No.",
       width: 50,
+      valueGetter: (params) => products.indexOf(params.row) + 1,
     },
     {
       field: "name",

@@ -5,22 +5,26 @@
   margin: auto;
   color: var(--text);
   font-weight: 550;
-  width: 40%;
+  width: 60%;
   text-align: center;
 }
 
 .processing {
-  background-color: var(--yellow-pastel);
+  background-color: var(--processing-backgroundcolor);
+  color: var(--processing-color)
 }
 
 .delivering {
-  background-color: var(--orange-pastel);
+  background-color: var(--delivering-backgroundcolor);
+  color: var(--delivering-color);
 }
 
 .completed {
-  background-color: var(--green-pastel);
+  background-color: var(--completed-backgroundcolor);
+  color: var(--completed-color);
 }
 
 .cancelled {
-  background-color: var(--red-pastel);
+  background-color: var(--cancelled-backgroundcolor);
+  color: var(--cancelled-color);
 }
