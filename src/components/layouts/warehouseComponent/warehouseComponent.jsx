@@ -9,13 +9,13 @@ function WarehouseComponent({ warehouse }) {
   const navigate = useNavigate();
 
   function handleClick() {
-    navigate(`/warehouses/${warehouse.address}`, { state: { warehouse } });
+    navigate(`/warehouses/${warehouse.id}`);
   }
 
   return (
     <div className="warehouseComponent" onClick={handleClick}>
       <WarehouseIcon className="warehouseIcon" />
-      <div> {warehouse.name} </div>
+      <div> {warehouse.address} </div>
       <NextIcon className="nextIcon" />
     </div>
   );

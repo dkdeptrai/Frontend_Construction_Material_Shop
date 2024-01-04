@@ -16,6 +16,11 @@ const PurchaseOrders = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [purchaseOrders, setSaleOrders] = useState([]);
+  const [paginationModel, setPaginationModel] = useState({
+    pageSize: 10,
+    page: 0,
+    total: 0,
+  });
 
   useEffect(() => {
     dispatch(setSelectedProducts([]));
@@ -25,13 +30,7 @@ const PurchaseOrders = () => {
     navigate("/purchaseorders/add");
   };
 
-  const options = [
-    "Employee Code",
-    "Employee Name",
-    "Total",
-    "Date",
-    "Status",
-  ];
+  const options = ["Employee Code", "Employee Name", "Total", "Date", "Status"];
 
   const orderColumns = [
     {
@@ -89,6 +88,8 @@ const PurchaseOrders = () => {
         rows={purchaseOrders}
         cellName="employeeCode"
         identifyRoute="id"
+        paginationModel={paginationModel}
+        fetchPageData={fetchSaleOrders}
         noCheckboxSelection
       />
     </div>

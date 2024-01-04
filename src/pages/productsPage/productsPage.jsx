@@ -8,6 +8,7 @@ import NewButton from "../../components/layouts/newButton/newButton.jsx";
 import Product from "../../models/Product.jsx";
 import "./productsPage.css";
 import { API_CONST } from "../../constants/apiConstants.jsx";
+import { gridPaginationRowRangeSelector } from "@mui/x-data-grid";
 
 function ProductsPage() {
   const navigate = useNavigate();
@@ -21,12 +22,16 @@ function ProductsPage() {
   const [products, setProducts] = useState([]);
   const [filter, setFilter] = useState("");
   const [selectedRowIds, setSelectedRowIds] = useState([]);
+  const [paginationModel, setPaginationModel] = useState({
+    pageSize: 2,
+    page: 0,
+    total: 0,
+  });
 
-  const fetchProducts = async () => {
+  const fetchProducts = async (page, size) => {
     try {
-      console.log(sessionStorage.getItem("token"));
       const response = await fetch(
-        "http://localhost:8080/api/v1/products?page=0&size=10",
+        `${API_CONST}/products?page=${page}&size=${size}`,
         {
           method: "GET",
           headers: {
@@ -51,17 +56,18 @@ function ProductsPage() {
             item.deleted
           )
       );
-      console.log(products);
       setProducts(products);
       console.log("Products fetched:", products);
+      setPaginationModel((prevState) => ({ ...prevState, total: data.total }));
+      return data.total;
     } catch (error) {
       console.error("Error fetching products:", error);
     }
   };
 
   useEffect(() => {
-    fetchProducts();
-  }, []);
+    fetchProducts(paginationModel.page, paginationModel.pageSize);
+  }, [paginationModel.page, paginationModel.pageSize]);
 
   const handleDelete = async (selectedRowIds) => {
     try {
@@ -76,9 +82,7 @@ function ProductsPage() {
           })
         )
       );
-      setProducts(
-        products.filter((product) => !selectedRowIds.includes(product.id))
-      );
+      fetchProducts(paginationModel.page, paginationModel.pageSize);
     } catch (error) {
       console.log(error);
     }
@@ -141,6 +145,9 @@ function ProductsPage() {
         onRowSelection={(newSelection) => {
           setSelectedRowIds(newSelection);
         }}
+        paginationModel={paginationModel}
+        fetchPageData={fetchProducts}
+        onPaginationModelChange={setPaginationModel}
       />
     </div>
   );

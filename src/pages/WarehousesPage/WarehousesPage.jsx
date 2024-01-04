@@ -3,34 +3,37 @@ import { useNavigate } from "react-router-dom";
 import SearchBar from "../../components/layouts/searchBar/searchBar";
 import WarehouseComponent from "../../components/layouts/warehouseComponent/warehouseComponent";
 
-import "./warehousePage.css";
+import "./WarehousesPage.css";
 import NewButton from "../../components/layouts/newButton/newButton";
+import { API_CONST } from "../../constants/apiConstants";
+import Warehouse from "../../models/Warehouse";
 
-function Warehouse() {
+function WarehousesPage() {
   const navigate = useNavigate();
-  // TODO: handle api call
   const [warehouses, setWarehouses] = useState([]);
-  // useEffect(() => {
-  //   fetch("YOUR_API_URL")
-  //     .then((response) => response.json())
-  //     .then((data) => setWarehouses(data))
-  //     .catch((error) => console.error(error));
-  // }, []);
+
   const fetchWarehouses = async () => {
     try {
       console.log(sessionStorage.getItem("token"));
-      const response = await fetch("http://localhost:8080/api/v1/warehouses", {
+      const response = await fetch(`${API_CONST}/warehouses`, {
         method: "GET",
         headers: {
-          Authorization: `bearer ${sessionStorage.getItem("token")}`,
+          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
         },
       });
       const data = await response.json();
-      const warehouses = data.results.map;
+      const warehouses = data.map(
+        (item) => new Warehouse(item.id, item.address, item.capacity)
+      );
       setWarehouses(warehouses);
       console.log(warehouses);
-    } catch (e) {}
+    } catch (e) {
+      console.log(e);
+    }
   };
+  useEffect(() => {
+    fetchWarehouses();
+  }, []);
   const navigateToNewWarehouse = () => {
     navigate("/warehouses/add");
   };
@@ -60,4 +63,4 @@ function Warehouse() {
   );
 }
 
-export default Warehouse;
+export default WarehousesPage;

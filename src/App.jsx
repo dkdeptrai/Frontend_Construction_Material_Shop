@@ -33,13 +33,12 @@ import ProductInfoPage from "./pages/addProductPage/ProductInfoPage.jsx";
 import PurchaseOrders from "./pages/PurchaseOrders/ListPurchaseOrders/PurchaseOrders.jsx";
 import AddPurchaseOrderPage from "./pages/PurchaseOrders/AddPurchaseOrder/AddPurchaseOrderPage/AddPurchaseOrderPage.jsx";
 import Reports from "./pages/reportsPage.jsx";
-import Warehouse from "./pages/warehousePage/warehousePage.jsx";
+import WarehousesPage from "./pages/WarehousesPage/WarehousesPage.jsx";
 import SignInPage from "./pages/SignInPage/SignInPage.jsx";
 import Account from "./pages/Setting/account/account.jsx";
 import SettingModal from "./pages/Setting/SettingModal/SettingModal.jsx";
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import AddWarehousePage from "./pages/addWarehousePage.jsx";
 import WarehouseInfoPage from "./pages/warehouseInfoPage/warehouseInfoPage.jsx";
 
 const ROUTE_TITLES = {
@@ -119,12 +118,9 @@ function App() {
                   element={<NewProducts />}
                 />
                 <Route path="/reports" element={<Reports />} />
-                <Route path="/warehouses" element={<Warehouse />} />
-                <Route path="/warehouses/add" element={<AddWarehousePage />} />
-                <Route
-                  path="/warehouses/:address"
-                  element={<WarehouseInfoPage />}
-                />
+                <Route path="/warehouses" element={<WarehousesPage />} />
+                <Route path="/warehouses/add" element={<WarehouseInfoPage />} />
+                <Route path="/warehouses/:id" element={<WarehouseInfoPage />} />
                 <Route path="/account" element={<Account />} />
               </Routes>
             </div>
