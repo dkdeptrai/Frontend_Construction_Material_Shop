@@ -5,7 +5,9 @@ import { useSelector } from "react-redux";
 //pages and components
 import Header from "./components/layouts/header/header.jsx";
 import MenuBar from "./components/layouts/menubar/menubar.jsx";
-import DashBoard from "./pages/dashBoardPage.jsx";
+
+//dashboard
+import DashBoard from "./pages/Dashboard/Dashboard.jsx";
 
 //customer
 import Customer from "./pages/Customer/ListCustomer/Customer.jsx";

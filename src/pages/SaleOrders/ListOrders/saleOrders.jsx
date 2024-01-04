@@ -25,20 +25,34 @@ function SaleOrdersPage() {
       },
     })
       .then((response) => response.json())
-      .then((data) => {
-        const newSaleOrders = data.results.map((order) => ({
-          id: order.id,
-          customerPhone: order.customer.phone,
-          customerName: order.customer.name,
-          total: order.total,
-          date:
-            order.createdTime[0] +
-            "/" +
-            order.createdTime[1] +
-            "/" +
-            order.createdTime[2],
-          status: order.status,
-        }));
+      .then(async (data) => {
+        const newSaleOrders = [];
+        for (let i = 0; i < data.results.length; i++) {
+          const order = data.results[i];
+          const customerData = await fetch(API_CONST + "/customers/" + order.customerId, {
+            method: "GET",
+            headers: {
+              Authorization: "Bearer " + sessionStorage.getItem("token"),
+            },
+          })
+
+          const customer = await customerData.json();
+
+          const newOrder = {
+            id: order.id,
+            customerPhone: customer.phone,
+            customerName: customer.name,
+            total: order.total,
+            date:
+              order.createdTime[0] +
+              "/" +
+              order.createdTime[1] +
+              "/" +
+              order.createdTime[2],
+            status: order.status,
+          };
+          newSaleOrders.push(newOrder);
+        }
         setSaleOrders(newSaleOrders);
       })
       .catch((error) => console.error("Error:", error));
@@ -91,9 +105,7 @@ function SaleOrdersPage() {
       field: "status",
       headerName: "Status",
       flex: 0.4,
-      renderCell: (params) => (
-        <StatusContainer status={params.value} />
-      ),
+      renderCell: (params) => <StatusContainer status={params.value} />,
     },
   ];
   return (

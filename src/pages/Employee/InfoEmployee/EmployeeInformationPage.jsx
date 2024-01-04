@@ -16,7 +16,7 @@ function EmployeeInformationPage() {
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
-  const [employeeType, setEmployeeType] = useState("SALE"); //["SALE", "WAREHOUSE", "SHIPPING"]
+  const [employeeType, setEmployeeType] = useState(); //["SALE", "WAREHOUSE", "SHIPPING"]
   const [salary, setSalary] = useState("");
   const [startDate, setStartDate] = useState("");
 
@@ -90,11 +90,12 @@ function EmployeeInformationPage() {
       formData.append(key, employee[key]);
     }
 
-    fetch(API_CONST + "/users/employees" + id, {
+    console.log(formData);
+
+    fetch(API_CONST + "/users/employees/" + id, {
       method: "PUT",
       headers: {
         Authorization: "Bearer " + sessionStorage.getItem("token"),
-        "Content-Type": "application/json",
       },
       body: formData,
     })
@@ -118,14 +119,14 @@ function EmployeeInformationPage() {
           label="Email"
           type="text"
           value={email}
-          onChange={setEmail}
+          setValue={setEmail}
         />
 
         <InputComponent
           label="Name"
           type="text"
           value={employeeName}
-          onChange={setEmployeeName}
+          setValue={setEmployeeName}
         />
 
         <label>Image</label>
@@ -138,38 +139,43 @@ function EmployeeInformationPage() {
           label="Phone"
           type="text"
           value={phone}
-          onChange={setPhone}
+          setValue={setPhone}
         />
 
         <InputComponent
           label="Address"
           type="text"
           value={address}
-          onChange={setAddress}
+          setValue={setAddress}
         />
         <InputComponent
           label="Date of birth"
           type="date"
           value={dateOfBirth}
-          onChange={setDateOfBirth}
+          setValue={setDateOfBirth}
         />
         <InputComponent
-          label="Employee type"
-          type="text"
+          label={
+            <>
+              Employee type<span className="required-star">*</span>
+            </>
+          }
+          type="select"
           value={employeeType}
-          onChange={setEmployeeType}
+          setValue={setEmployeeType}
+          options={["SALE", "WAREHOUSE", "SHIPPING"]}
         />
         <InputComponent
           label="Salary"
           type="text"
           value={salary}
-          onChange={setSalary}
+          setValue={setSalary}
         />
         <InputComponent
           label="Start date"
           type="date"
           value={startDate}
-          onChange={setStartDate}
+          setValue={setStartDate}
         />
       </form>
       <div className="button-container">

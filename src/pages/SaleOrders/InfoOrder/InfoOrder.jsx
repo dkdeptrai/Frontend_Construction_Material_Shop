@@ -96,7 +96,6 @@ const InfoOrder = () => {
     },
   ];
 
-
   return (
     <div>
       <BackButton content="Order information" />
@@ -129,11 +128,12 @@ const InfoOrder = () => {
           }
           value={orderStatus}
           onChange={(event) => {
+            if (window.confirm("Are you sure?") === false) return;
             const newStatus = event.target.value;
             setOrderStatus(newStatus);
             handleChangeStatus(newStatus);
           }}
-          disabled={orderStatus === "CANCELLED"}
+          disabled={orderStatus === "CANCELLED" || orderStatus === "COMPLETED"}
         >
           <option value="PROCESSING" className="processing">
             Processing
@@ -144,20 +144,25 @@ const InfoOrder = () => {
           <option value="COMPLETED" className="completed">
             Completed
           </option>
-          <option value="CANCELLED" className="cancelled" disabled>
-            Cancelled
-          </option>
+          {orderStatus === "CANCELLED" ? (
+            <option value="CANCELLED" className="cancelled" disabled>
+              Cancelled
+            </option>
+          ) : null}
 
           {/* Add more options for other statuses if necessary */}
         </select>
       </div>
 
-      {status !== "COMPLETED" && status !== "CANCELLED" ? (
-        <button className="cancel-button" onClick={() => {
-          handleChangeStatus("CANCELLED");
-          setOrderStatus("CANCELLED");
-          window.history.back();
-        }}>
+      {orderStatus !== "COMPLETED" && orderStatus !== "CANCELLED" ? (
+        <button
+          className="cancel-button"
+          onClick={() => {
+            handleChangeStatus("CANCELLED");
+            setOrderStatus("CANCELLED");
+            window.history.back();
+          }}
+        >
           Cancel this order
         </button>
       ) : null}
