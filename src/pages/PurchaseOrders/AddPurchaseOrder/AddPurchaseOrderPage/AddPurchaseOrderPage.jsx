@@ -26,6 +26,9 @@ function AddSaleOrderPage() {
   const [total, setTotal] = useState(0);
   const [discount, setDiscount] = useState(0);
 
+  //Search for warehouse by name
+  const [searchedWarehouseName, setSearchedWarehouseName] = useState("");
+
   const selectedProducts = useSelector(
     (state) => state.selectedProducts.selectedProductsData
   );
@@ -119,7 +122,7 @@ function AddSaleOrderPage() {
         ></InputComponent>
       </div>
       <div style={{ marginRight: "57%" }}>
-        <InputComponent label="Vendor" type="text" value={""}></InputComponent>
+        <InputComponent label="Warehouse" type="text" value={""}></InputComponent>
       </div>
 
       <div className="tool-bar">

@@ -26,30 +26,9 @@ function Customer(props) {
     })
       .then((response) => response.json())
       .then((data) => {
-        const updatedCustomerRows = data.results.map((customer) => ({
-          ...customer,
-          orders: 0, // Replace 'newProperty' and 'newValue' with your actual property name and value
-        }));
-        setCustomerRows(updatedCustomerRows);
+        setCustomerRows(data.results);
       })
       .catch((error) => console.error("Error:", error));
-  }, []);
-
-  //get each customer amount of orders
-  useEffect(() => {
-    for (const customer of customerRows) {
-      fetch(API_CONST + "/customers/" + customer.id + "/orders", {
-        method: "GET",
-        headers: {
-          Authorization: "Bearer " + sessionStorage.getItem("token"),
-        },
-      })
-        .then((response) => response.json())
-        .then((data) => {
-          customer.orders = data.length;
-        })
-        .catch((error) => console.error("Error:", error));
-    }
   }, []);
 
   //Add customer
@@ -83,7 +62,7 @@ function Customer(props) {
 
   const customerColumns = [
     {
-      field: "id",
+      field: "index",
       headerName: "No.",
       width: 50,
       valueGetter: (params) => customerRows.indexOf(params.row) + 1,
@@ -109,7 +88,11 @@ function Customer(props) {
       headerName: "Address",
       flex: 0.5,
     },
-    { field: "orders", headerName: "Orders", flex: 0.2 },
+    {
+      headerName: "Orders",
+      flex: 0.2,
+      valueGetter: (params) => params.row.orderIds.length || 0,
+    },
   ];
 
   return (

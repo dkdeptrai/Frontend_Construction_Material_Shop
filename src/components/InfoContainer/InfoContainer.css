@@ -1,0 +1,6 @@
+.info-container {
+  height: 90px;
+  width: 100%;
+  border: 1.5px solid var(--frame-color);
+  border-radius: 12px;
+}
