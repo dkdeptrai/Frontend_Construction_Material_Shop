@@ -12,12 +12,12 @@ import WarehouseIcon from "../../../assets/icons/warehouse.svg?react";
 import ReportIcon from "../../../assets/icons/report.svg?react";
 import EmployeeIcon from "../../../assets/icons/employee.svg?react";
 import SignOutIcon from "../../../assets/icons/sign-out.svg?react";
-import SearchIcon from "../../../assets/icons/search.svg?react";
 import Logo from "./logo/logo.jsx";
 import "./menubar.css";
-import { resetUserData} from "../../../actions/userActions.jsx";
+import { resetUserData } from "../../../actions/userActions.jsx";
 import { setSelectedProducts } from "../../../actions/selectedProductsAction.jsx";
 import { persistor } from "../../../store/index.jsx";
+import session from "redux-persist/lib/storage/session";
 
 function MenuItemComponent({ icon, link }) {
   const location = useLocation();
@@ -41,13 +41,18 @@ function MenuBar() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const userType = useSelector((state) =>
+    state.user.userData?.userType ? state.user.userData.userType : "EMPLOYEE"
+  );
+
   const handleSignOut = async (e) => {
     dispatch(resetUserData());
     dispatch(setSelectedProducts([]));
     await persistor.purge();
-    sessionStorage.removeItem('token');
+    sessionStorage.removeItem("token");
     navigate("/");
   };
+
   return (
     <div className="container">
       <Logo />
@@ -91,7 +96,11 @@ function MenuBar() {
           <MenuItemComponent icon={<InventoryIcon />} link="/inventory" />
           <MenuItemComponent icon={<WarehouseIcon />} link="/warehouses" />
           <MenuItemComponent icon={<ReportIcon />} link="/reports" />
-          <MenuItemComponent icon={<EmployeeIcon />} link="/employees" />
+
+          {userType === "MANAGER" && (
+            <MenuItemComponent icon={<EmployeeIcon />} link="/employees" />
+          )}
+
           <div className="separator"></div>
           <MenuItem
             style={{ margin: "20px" }}

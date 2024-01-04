@@ -1,7 +1,7 @@
 .notifications {
   display: flex;
   background-color: white;
-  padding: 30px 60px 0 60px;
+  padding: 0px 60px 0 60px;
   border-top-right-radius: 14px;
   border-bottom-right-radius: 14px;
 }

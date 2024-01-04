@@ -1,21 +1,13 @@
 import React from "react";
 import "./Sidebar.css";
 import { Sidebar, Menu, MenuItem } from "react-pro-sidebar";
-import { useDispatch } from "react-redux";
-import { closeModal } from "../../../store/Modal.jsx";
+
 import BellIcon from "../../../assets/icons/bell.svg?react";
 import UserIcon from "../../../assets/icons/frame.svg?react";
 import TaxIcon from "../../../assets/icons/tax.svg?react";
 import PasswordIcon from "../../../assets/icons/pass.svg?react";
-import ExitIcon from "../../../assets/icons/exit.svg?react";
 
 const SidebarComponent = ({ selectedItem, onMenuItemClick }) => {
-  const dispatch = useDispatch();
-
-  const handleExit = () => {
-    dispatch(closeModal());
-  };
-
   return (
     <div className="sidebar">
       <h1 style={{ margin: "30px 20px 30px 20px" }}>Settings</h1>
@@ -73,13 +65,6 @@ const SidebarComponent = ({ selectedItem, onMenuItemClick }) => {
             style={{ margin: "20px" }}
           >
             <span style={{ marginLeft: "25px" }}>Tax</span>
-          </MenuItem>
-          <MenuItem
-            icon={<ExitIcon />}
-            onClick={handleExit}
-            style={{ margin: "20px" }}
-          >
-            <span style={{ marginLeft: "25px" }}>Exit</span>
           </MenuItem>
         </Menu>
       </Sidebar>

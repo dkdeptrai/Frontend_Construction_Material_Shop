@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
 
 //pages and components
-import SearchBar from "../../../components/layouts/SearchBar/SearchBar";
-import ExportButton from "../../../components/layouts/ExportButton/ExportButton";
-import DeleteButton from "../../../components/layouts/DeleteButton/DeleteButton";
-import NewButton from "../../../components/layouts/NewButton/NewButton";
-import Table from "../../../components/core/Table/Table";
+import SearchBar from "../../../components/layouts/searchBar/searchBar";
+import ExportButton from "../../../components/layouts/exportButton/exportButton";
+import Table from "../../../components/core/table/table"; // Change the import statement to use lowercase 'table' instead of uppercase 'Table'
 import { API_CONST } from "../../../constants/apiConstants";
 
 const InventoryItemList = () => {
@@ -73,12 +71,12 @@ const InventoryItemList = () => {
       flex: 1,
       valueGetter: (params) => params.row.product.calculationUnit,
     },
-    { 
+    {
       headerName: "Warehouse",
       field: "warehouse",
       flex: 1,
       valueGetter: (params) => params.row.warehouse.address,
-    }
+    },
   ];
 
   return (
@@ -89,12 +87,10 @@ const InventoryItemList = () => {
           options={options}
           placeholder="Search Products by name, ID or any related keywords"
         />
-        <div className="buttonContainer">
-          <ExportButton onClick={() => {}} />
-          <DeleteButton onClick={() => {}} />
-        </div>
+
+        <ExportButton onClick={() => {}} />
       </div>
-      <Table columns={inventoryColumns} rows={inventoryItems} />
+      <Table columns={inventoryColumns} rows={inventoryItems} noCheckboxSelection/>
     </div>
   );
 };

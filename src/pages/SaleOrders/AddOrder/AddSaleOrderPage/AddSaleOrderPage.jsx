@@ -41,7 +41,7 @@ function AddSaleOrderPage() {
           Authorization: "Bearer " + sessionStorage.getItem("token"),
         },
       })
-        .then((response) => response.json())
+        .then((response) => {console.log(response); return response.json();})
         .then((data) => {
           if (data.results.length > 0) {
             // Update the customer name input with the fetched customer name
@@ -118,6 +118,8 @@ function AddSaleOrderPage() {
         };
       }),
     };
+
+    console.log(yourData);
 
     await fetch(API_CONST + "/orders", {
       method: "POST",
