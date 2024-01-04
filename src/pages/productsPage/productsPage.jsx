@@ -9,6 +9,7 @@ import Product from "../../models/Product.jsx";
 import "./productsPage.css";
 import { API_CONST } from "../../constants/apiConstants.jsx";
 import { gridPaginationRowRangeSelector } from "@mui/x-data-grid";
+import InputComponent from "../../components/InputComponent/InputComponent.jsx";
 
 function ProductsPage() {
   const navigate = useNavigate();
@@ -23,7 +24,7 @@ function ProductsPage() {
   const [filter, setFilter] = useState("");
   const [selectedRowIds, setSelectedRowIds] = useState([]);
   const [paginationModel, setPaginationModel] = useState({
-    pageSize: 2,
+    pageSize: 10,
     page: 0,
     total: 0,
   });
@@ -119,20 +120,28 @@ function ProductsPage() {
   console.log(filter);
   return (
     <div className="productPageContainer">
-      <div className="toolBar">
-        <SearchBar
-          className="searchBar"
-          options={options}
-          placeholder="Search Products by name, ID or any related keywords"
-          setFilter={setFilter}
-        />
-        <div className="buttonContainer">
-          <ExportButton onClick={() => {}} />
-          <DeleteButton onClick={() => handleDelete(selectedRowIds)} />
-          <NewButton
-            text="New Product"
-            onClick={() => navigateToNewProduct()}
+      <div>
+        <div className="toolBar">
+          <SearchBar
+            className="searchBar"
+            options={options}
+            placeholder="Search Products by name, ID or any related keywords"
+            setFilter={setFilter}
           />
+          <div className="buttonContainer">
+            <ExportButton onClick={() => {}} />
+            <DeleteButton onClick={() => handleDelete(selectedRowIds)} />
+            <NewButton
+              text="New Product"
+              onClick={() => navigateToNewProduct()}
+            />
+          </div>
+        </div>
+        <div className="filters">
+          <InputComponent label="Price Start" type="number" />
+          <InputComponent label="Price End" type="number" />
+          <InputComponent label="Calculation Unit" type="text" />
+          <InputComponent label="Origin" type="text" />
         </div>
       </div>
       <Table

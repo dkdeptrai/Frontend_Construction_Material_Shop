@@ -89,7 +89,6 @@ function SearchBar(props) {
   return (
     <div>
       <div className="searchBarContainer">
-        <SearchIcon className="searchIcon" />
         <input
           className="searchBar"
           type="text"

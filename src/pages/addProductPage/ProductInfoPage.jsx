@@ -22,15 +22,12 @@ function ProductInfoPage() {
       if (productId) {
         console.log(productId);
         try {
-          const response = await fetch(
-            `http://localhost:8080/api/v1/products/${productId}`,
-            {
-              method: "GET",
-              headers: {
-                Authorization: `Bearer ${sessionStorage.getItem("token")}`,
-              },
-            }
-          );
+          const response = await fetch(`${API_CONST}/products/${productId}`, {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+            },
+          });
           const product = await response.json();
           setName(product.name);
           setOrigin(product.origin);

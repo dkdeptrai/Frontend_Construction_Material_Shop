@@ -22,6 +22,7 @@ input {
   flex-direction: row;
   width: 100%;
   font-size: 14;
+  margin: 0px 0px 20px 0px;
 }
 
 .productPageContainer {
@@ -41,6 +42,14 @@ input {
   display: flex;
   flex-direction: row;
   align-items: center;
+}
+
+.filters {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 20px;
+  justify-content: space-between;
 }
 
 .table {
