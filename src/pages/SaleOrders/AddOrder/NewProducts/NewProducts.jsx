@@ -10,12 +10,16 @@ import BackButton from "../../../../components/layouts/backButton/backButton";
 import SearchBar from "../../../../components/layouts/searchBar/searchBar.jsx";
 import Table from "../../../../components/core/table/table.jsx";
 import { API_CONST } from "../../../../constants/apiConstants";
+import LoadingCircle from "../../../../components/LoadingCircle/LoadingCircle.jsx";
 
 const NewProducts = () => {
   const [inventoryItems, setInventoryItems] = useState([]);
   const [selectedInventoryItems, setSelectedInventoryItems] = useState([]);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  //loading
+  const [loading, setLoading] = useState(true);
 
   const handleAddProducts = () => {
     const selectedProducts = selectedInventoryItems.map((item) => {
@@ -55,7 +59,7 @@ const NewProducts = () => {
   };
 
   useEffect(() => {
-    fetchInventoryItems();
+    fetchInventoryItems().then(() => setLoading(false));
   }, []);
 
   const inventoryItemsColumns = [
@@ -120,6 +124,7 @@ const NewProducts = () => {
 
   return (
     <>
+      {loading && <LoadingCircle />}
       <BackButton content="Add products to order" />
       <SearchBar
         options={options}

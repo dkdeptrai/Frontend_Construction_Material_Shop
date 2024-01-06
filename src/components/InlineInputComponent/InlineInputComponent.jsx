@@ -2,7 +2,7 @@ import React from "react";
 import "./InlineInputComponent.css";
 
 const InlineInputComponent = (props) => {
-  const { label, type, min, max, value, setValue } = props;
+  const { label, type, min, max, value, setValue, className } = props;
 
   const handleSetValue = (e) => {
     setValue(e.target.value);
@@ -17,6 +17,7 @@ const InlineInputComponent = (props) => {
         max={max}
         value={value}
         onChange={handleSetValue}
+        className={className}
       />
     </div>
   );

@@ -48,7 +48,7 @@
 }
 
 .payment-button-container > * {
-  flex: 1;
+  width: 45%;
   padding: 14px 0px;
 }
 
@@ -68,6 +68,14 @@
 
 .payment-button-container .debt-button:hover {
   background-color: #ff7f7f;
+}
+
+.red-text {
+  color: var(--cancelled-color);
+}
+
+.green-text {
+  color: var(--completed-color);
 }
 
 

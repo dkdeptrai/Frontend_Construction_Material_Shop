@@ -9,12 +9,16 @@ import ExportButton from "../../../components/layouts/exportButton/exportButton"
 import DeleteButton from "../../../components/layouts/deleteButton/deleteButton";
 import NewButton from "../../../components/layouts/newButton/newButton";
 import CustomerIcon from "../../../assets/icons/customer_default.png";
+import LoadingCircle from "../../../components/LoadingCircle/LoadingCircle";
 import { API_CONST } from "../../../constants/apiConstants";
 
 function Customer(props) {
   const navigate = useNavigate();
   const [customerRows, setCustomerRows] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
+
+  //loading circle
+  const [loading, setLoading] = useState(true);
 
   //get customer list
   useEffect(() => {
@@ -28,7 +32,10 @@ function Customer(props) {
       .then((data) => {
         setCustomerRows(data.results);
       })
-      .catch((error) => console.error("Error:", error));
+      .catch((error) => console.error("Error:", error))
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
 
   //Add customer
@@ -97,6 +104,7 @@ function Customer(props) {
 
   return (
     <div className="pageContainer">
+      {loading && <LoadingCircle />}
       <div className="toolBar">
         <SearchBar
           className="searchBar"

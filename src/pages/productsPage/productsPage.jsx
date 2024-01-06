@@ -5,6 +5,7 @@ import Table from "../../components/core/table/table.jsx";
 import ExportButton from "../../components/layouts/exportButton/exportButton.jsx";
 import DeleteButton from "../../components/layouts/deleteButton/deleteButton.jsx";
 import NewButton from "../../components/layouts/newButton/newButton.jsx";
+import LoadingCircle from "../../components/LoadingCircle/LoadingCircle.jsx";
 import "./productsPage.css";
 
 function ProductsPage() {
@@ -18,6 +19,8 @@ function ProductsPage() {
   ];
   const [products, setProducts] = useState([]);
   const [filter, setFilter] = useState("");
+
+  const [loading, setLoading] = useState(true);
 
   const fetchProducts = async () => {
     try {
@@ -37,6 +40,8 @@ function ProductsPage() {
       console.log("Products fetched:", data);
     } catch (error) {
       console.error("Error fetching products:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -76,6 +81,7 @@ function ProductsPage() {
   console.log(filter);
   return (
     <div className="productPageContainer">
+      {loading && <LoadingCircle />}
       <div className="toolBar">
         <SearchBar
           className="searchBar"
