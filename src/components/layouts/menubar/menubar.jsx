@@ -95,7 +95,6 @@ function MenuBar() {
           <MenuItemComponent icon={<CustomerIcon />} link="/customers" />
           <MenuItemComponent icon={<InventoryIcon />} link="/inventory" />
           <MenuItemComponent icon={<WarehouseIcon />} link="/warehouses" />
-          <MenuItemComponent icon={<ReportIcon />} link="/reports" />
 
           {userType === "MANAGER" && (
             <MenuItemComponent icon={<EmployeeIcon />} link="/employees" />

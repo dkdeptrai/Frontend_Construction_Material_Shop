@@ -7,6 +7,7 @@ import Table from "../../../components/core/table/table.jsx";
 import ExportButton from "../../../components/layouts/exportButton/exportButton.jsx";
 import DeleteButton from "../../../components/layouts/deleteButton/deleteButton.jsx";
 import NewButton from "../../../components/layouts/newButton/newButton.jsx";
+import LoadingCircle from "../../../components/LoadingCircle/LoadingCircle.jsx";
 import { API_CONST } from "../../../constants/apiConstants.jsx";
 
 import "./Employee.css";
@@ -16,10 +17,14 @@ function Employee() {
   const [employeeRows, setEmployeeRows] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
 
+  //loading circle
+  const [loading, setLoading] = useState(true);
+
   const handleClick = () => {
     navigate("/employees/add");
   };
 
+  //get employee list
   useEffect(() => {
     fetch(API_CONST + "/users/employees?page=0&size=5", {
       method: "GET",
@@ -31,7 +36,10 @@ function Employee() {
       .then((data) => {
         setEmployeeRows(data.results);
       })
-      .catch((error) => console.error("Error:", error));
+      .catch((error) => console.error("Error:", error))
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
 
   const handleExport = async () => {
@@ -40,23 +48,28 @@ function Employee() {
         Authorization: "Bearer " + sessionStorage.getItem("token"),
       },
     });
-  
+
     if (!response.ok) {
       throw new Error("Network response was not ok");
     }
-  
+
     const blob = await response.blob();
     const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
-    a.download = 'employees.xls'; // or any other filename
+    a.download = "employees.xls"; // or any other filename
     document.body.appendChild(a);
     a.click();
     a.remove();
   };
 
   const handleDelete = async () => {
-    if (window.confirm("Are you sure you want to delete the selected employees?") !== true) r;
+    if (
+      window.confirm(
+        "Are you sure you want to delete the selected employees?"
+      ) !== true
+    )
+      r;
     for (const id of selectedRows) {
       await fetch(API_CONST + "/users/employees/" + id, {
         method: "DELETE",
@@ -102,6 +115,7 @@ function Employee() {
   ];
   return (
     <div className="pageContainer">
+      {loading && <LoadingCircle />}
       <div className="toolBar">
         <SearchBar
           className="searchBar"
