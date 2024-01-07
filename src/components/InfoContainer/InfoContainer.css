@@ -1,10 +1,32 @@
-.info-container {
+.icon-container {
+  border-radius: 50%;
+  height: 45px;
+  width: 45px;
+  background-color: #6A103933;
+}
+
+.info-container .info {
   display: flex;
-  flex-direction: row;
-  height: 90px;
-  width: 100%;
-  border: 1.5px solid var(--frame-color);
-  border-radius: 12px;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
+  margin-left: 25px;
+  align-items: flex-start;
+}
+
+.info-container .info > * {
+  margin: 0;
+}
+
+.info-container .info p {
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.info-container .info span {
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--text-color);
+}
+
+.export-icon {
+  margin-left: auto;
 }
