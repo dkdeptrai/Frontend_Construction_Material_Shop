@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { setSubroute } from "../ProductsSlice.jsx";
 
 import BackButton from "../../../components/layouts/backButton/backButton.jsx";
 import InputComponent from "../../../components/InputComponent/InputComponent.jsx";
@@ -51,7 +50,7 @@ function ProductInfoPage() {
   }, [productId]);
 
   const navigateBackToProducts = () => {
-    dispatch(setSubroute(""));
+    dispatch({ type: "SET_SUBROUTE", payload: null });
     navigate("/products");
   };
 

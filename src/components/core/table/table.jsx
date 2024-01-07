@@ -8,11 +8,6 @@ import "./table.css";
 function Table(props) {
   const navigate = useNavigate();
   const location = useLocation();
-  const dispatch = useDispatch();
-
-  // default values
-  const defaultPagignationModel = { page: 0, pageSize: 10, total: 0 };
-  const paginationModel = props.paginationModel || defaultPagignationModel;
 
   //Add cellName's field's name so that we can navigate to more information page
 
@@ -24,17 +19,13 @@ function Table(props) {
   const identifyRoute = props.identifyRoute;
 
   const handlePaginationChange = (params) => {
-    props.onPaginationModelChange((prevModel) => {
-      if (prevModel.page !== params.page) {
-        return { ...prevModel, page: params.page };
-      } else {
-        return prevModel;
-      }
-    });
-
-    // props.fetchPageData(params.page, params.pageSize);
+    if (props.paginationModel.page !== params.page) {
+      props.onPaginationModelChange({
+        ...props.paginationModel,
+        page: params.page,
+      });
+    }
   };
-
   const handleCellClick = (params, event) => {
     if (
       params.field === cellName &&
@@ -52,14 +43,14 @@ function Table(props) {
       <DataGrid
         className="table"
         paginationMode="server"
-        rowCount={paginationModel.total}
+        rowCount={props.paginationModel?.total ?? 0}
         rows={props.rows}
         columns={props.columns}
         checkboxSelection={!noCheckboxSelection}
         onRowSelectionModelChange={props.onRowSelection}
         rowSelectionModel={props.selectedRowIds}
         pagination={true}
-        paginationModel={paginationModel}
+        paginationModel={props.paginationModel}
         onPaginationModelChange={handlePaginationChange}
         pageSizeOptions={[10]}
         onCellClick={handleCellClick}

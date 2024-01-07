@@ -1,13 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  setSubroute,
-  setProducts,
-  setSelectedRowIds,
-  setPaginationModel,
-  setSearchPaginationModel,
-} from "../productsSlice.jsx";
 import SearchBar from "../../../components/layouts/searchBar/searchBar.jsx";
 import Table from "../../../components/core/table/table.jsx";
 import ExportButton from "../../../components/layouts/exportButton/exportButton.jsx";
@@ -17,10 +10,12 @@ import "./ProductsPage.css";
 import { API_CONST } from "../../../constants/apiConstants.jsx";
 import InputComponent from "../../../components/InputComponent/InputComponent.jsx";
 import LoadingCircle from "../../../components/LoadingCircle/LoadingCircle.jsx";
+import productsReducer from "../../../reducers/productPageReducer.jsx";
 
 function ProductsPage() {
   const dispatch = useDispatch();
   const subroute = useSelector((state) => state.products.subroute);
+  console.log("initial subroute:", subroute);
   const navigate = useNavigate();
   const options = [
     "Vietnam",
@@ -34,13 +29,12 @@ function ProductsPage() {
   const [isLoading, setIsLoading] = useState(false);
 
   const products = useSelector((state) => state.products.products);
-  console.log("products", products);
   const selectedRowIds = useSelector((state) => state.products.selectedRowIds);
-  // tables states
+  //tables states
   const paginationModel = useSelector(
     (state) => state.products.paginationModel
   );
-  console.log("paginationModel", paginationModel);
+
   const searchPaginationModel = useSelector(
     (state) => state.products.searchPaginationModel
   );
@@ -48,7 +42,7 @@ function ProductsPage() {
   //   pageSize: 2,
   //   page: 0,
   //   total: 0,
-  // })
+  // });
   // const [searchPaginationModel, setSearchPaginationModel] = useState({
   //   pageSize: 10,
   //   page: 0,
@@ -56,8 +50,10 @@ function ProductsPage() {
   // });
 
   // search states
-  const [searchResults, setSearchResults] = useState([]);
-  const [showSearchResults, setShowSearchResults] = useState(false);
+  const searchResults = useSelector((state) => state.products.searchResults);
+  const showSearchResults = useSelector(
+    (state) => state.products.showSearchResults
+  );
 
   // filter options
   const [name, setName] = useState("");
@@ -81,20 +77,23 @@ function ProductsPage() {
       );
       const data = await response.json();
       const products = data.results;
-      dispatch(setProducts(products));
-      console.log(
-        "Products fetched:",
-        useSelector((state) => state.products.products)
-      );
-      console.log("Products fetched:", products);
-      setPaginationModel((prevState) => ({ ...prevState, total: data.total }));
+      dispatch({ type: "SET_PRODUCTS", payload: products });
+      const total = data.total;
+      dispatch({
+        type: "SET_PAGINATION_MODEL",
+        payload: {
+          ...paginationModel,
+          total: total,
+        },
+      });
+      console.log("product fetched:", products);
+      console.log("paginationModel:", paginationModel);
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
       console.error("Error fetching products:", error);
     }
   };
-
   const handleSearch = async () => {
     try {
       let query = `q=${name}&page=0&size=10`;
@@ -120,29 +119,29 @@ function ProductsPage() {
       });
       const data = await response.json();
       const products = data.results;
-      setSearchResults(products);
-      setSearchPaginationModel((prevState) => ({
-        ...prevState,
-        total: data.total,
-      }));
-      setShowSearchResults(true);
-      console.log("Search results fetched:", searchResults);
+      dispatch({ type: "SET_SEARCH_RESULTS", payload: products });
+      dispatch({ type: "SET_SHOW_SEARCH_RESULTS", payload: true });
+      dispatch({
+        type: "SET_SEARCH_PAGINATION_MODEL",
+        payload: {
+          ...searchPaginationModel,
+          total: data.total,
+        },
+      });
     } catch (e) {
       console.error("Error fetching search results:", e);
     }
   };
 
   useEffect(() => {
-    if (subroute) {
-      navigate(`/products/${subroute}`);
-    } else {
-      navigate("/products");
+    if (subroute === "add") {
+      navigate("/products/add");
     }
-  }, [subroute]);
+  });
 
-  // useEffect(() => {
-  //   fetchProducts(paginationModel.page, paginationModel.pageSize);
-  // }, [paginationModel.page, paginationModel.pageSize]);
+  useEffect(() => {
+    fetchProducts(paginationModel.page, paginationModel.pageSize);
+  }, [paginationModel.page, paginationModel.pageSize]);
   const handleDelete = async (selectedRowIds) => {
     try {
       if (
@@ -163,25 +162,33 @@ function ProductsPage() {
         )
       );
       if (searchResults.length > 0) {
-        setSearchResults(
-          searchResults.filter(
+        dispatch({
+          type: "SET_SEARCH_RESULTS",
+          payload: searchResults.filter(
             (product) => !selectedRowIds.includes(product.id)
-          )
-        );
-        setSearchPaginationModel((prevState) => ({
-          ...prevState,
-          total: prevState.total - selectedRowIds.length,
-        }));
+          ),
+        });
+        dispatch({
+          type: "SET_SEARCH_PAGINATION_MODEL",
+          payload: {
+            ...searchPaginationModel,
+            total: searchPaginationModel.total - selectedRowIds.length,
+          },
+        });
       } else {
-        dispatch(
-          setProducts(
-            products.filter((product) => !selectedRowIds.includes(product.id))
-          )
-        );
-        setPaginationModel((prevState) => ({
-          ...prevState,
-          total: prevState.total - selectedRowIds.length,
-        }));
+        dispatch({
+          type: "SET_PRODUCTS",
+          payload: products.filter(
+            (product) => !selectedRowIds.includes(product.id)
+          ),
+        });
+        dispatch({
+          type: "SET_PAGINATION_MODEL",
+          payload: {
+            ...paginationModel,
+            total: paginationModel.total - selectedRowIds.length,
+          },
+        });
       }
     } catch (error) {
       console.log(error);
@@ -191,25 +198,21 @@ function ProductsPage() {
   const handleSearchQueryChange = (event) => {
     setName(event.target.value);
     if (event.target.value === "" || event.target.value === null) {
-      setShowSearchResults(false);
-      setSearchResults([]);
+      dispatch({ type: "SET_SHOW_SEARCH_RESULTS", payload: false });
+      dispatch({ type: "SET_SEARCH_RESULTS", payload: [] });
       fetchProducts(paginationModel.page, paginationModel.pageSize);
     }
   };
 
   const navigateToNewProduct = () => {
-    dispatch(setSubroute("add"));
+    dispatch({ type: "SET_SUBROUTE", payload: "add" });
     navigate("/products/add");
   };
   const productColumns = [
     {
-      field: "index",
+      field: "id",
       headerName: "No.",
       width: 50,
-      valueGetter: (params) =>
-        searchResults.length > 0
-          ? searchResults.indexOf(params.row) + 1
-          : products.indexOf(params.row) + 1,
     },
     {
       field: "name",
@@ -287,15 +290,23 @@ function ProductsPage() {
           cellName="name"
           identifyRoute="id"
           onRowSelection={(newSelection) => {
-            dispatch(setSelectedRowIds(newSelection));
+            dispatch({ type: "SET_SELECTED_ROW_IDS", payload: newSelection });
           }}
           paginationModel={
             showSearchResults ? searchPaginationModel : paginationModel
           }
           onPaginationModelChange={
             showSearchResults
-              ? dispatch(setSearchPaginationModel)
-              : dispatch(setPaginationModel)
+              ? (newPaginationModel) =>
+                  dispatch({
+                    type: "SET_SEARCH_PAGINATION_MODEL",
+                    payload: newPaginationModel,
+                  })
+              : (newPaginationModel) =>
+                  dispatch({
+                    type: "SET_PAGINATION_MODEL",
+                    payload: newPaginationModel,
+                  })
           }
         />
       )}

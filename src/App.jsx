@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./App.css";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 //pages and components
 import Header from "./components/layouts/header/header.jsx";
@@ -33,7 +33,6 @@ import ProductInfoPage from "./pages/products/productInfoPage/ProductInfoPage.js
 //purchase order
 import PurchaseOrders from "./pages/PurchaseOrders/ListPurchaseOrders/PurchaseOrders.jsx";
 import AddPurchaseOrderPage from "./pages/PurchaseOrders/AddPurchaseOrder/AddPurchaseOrderPage/AddPurchaseOrderPage.jsx";
-import Reports from "./pages/reportsPage.jsx";
 
 //warehouse
 import WarehousesPage from "./pages/Warehouse/WarehousesPage/WarehousesPage.jsx";
@@ -75,6 +74,18 @@ function App() {
   const userType = useSelector((state) =>
     state.user.userData?.userType ? state.user.userData.userType : "EMPLOYEE"
   );
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    window.addEventListener("beforeunload", () => {
+      dispatch({ type: "CLEAR_REDUX_STORE" });
+    });
+
+    // Cleanup function
+    return () => {
+      window.removeEventListener("beforeunload");
+    };
+  }, [dispatch]);
 
   return (
     <>
@@ -134,7 +145,6 @@ function App() {
                   path="/purchaseorders/add/add-products"
                   element={<NewProducts />}
                 />
-                <Route path="/reports" element={<Reports />} />
                 <Route path="/warehouses" element={<WarehousesPage />} />
                 <Route path="/warehouses/add" element={<WarehouseInfoPage />} />
                 <Route path="/warehouses/:id" element={<WarehouseInfoPage />} />

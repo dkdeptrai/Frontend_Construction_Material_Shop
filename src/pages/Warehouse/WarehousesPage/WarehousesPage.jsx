@@ -8,18 +8,20 @@ import "./WarehousesPage.css";
 import NewButton from "../../../components/layouts/newButton/newButton";
 import { API_CONST } from "../../../constants/apiConstants";
 import Warehouse from "../../../models/Warehouse";
+import LoadingCircle from "../../../components/LoadingCircle/LoadingCircle";
 
 function WarehousesPage() {
   const dispatch = useDispatch();
   const subRoute = useSelector((state) => state.warehouses.subRoute);
   const navigate = useNavigate();
 
+  const [isLoading, setIsLoading] = useState(false);
   const [warehouses, setWarehouses] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
 
   const fetchWarehouses = async () => {
     try {
-      console.log(sessionStorage.getItem("token"));
+      setIsLoading(true);
       const response = await fetch(`${API_CONST}/warehouses`, {
         method: "GET",
         headers: {
@@ -31,15 +33,20 @@ function WarehousesPage() {
         (item) => new Warehouse(item.id, item.address, item.capacity)
       );
       setWarehouses(warehouses);
+      setIsLoading(false);
       console.log(warehouses);
     } catch (e) {
       console.log(e);
+      setIsLoading(false);
     }
   };
 
   const handleSearchQueryChange = (event) => {
     const searchQuery = event.target.value;
     setSearchQuery(searchQuery);
+    if (searchQuery === "") {
+      fetchWarehouses();
+    }
   };
 
   const handleSearch = () => {
@@ -67,6 +74,7 @@ function WarehousesPage() {
   };
   return (
     <div className="warehousePageContainer">
+      {isLoading && <LoadingCircle />}
       <div className="toolbar">
         <SearchBar
           handleSearch={handleSearch}

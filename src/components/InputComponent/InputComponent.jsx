@@ -1,6 +1,5 @@
 import React from "react";
 import "./InputComponent.css";
-import { render } from "react-dom";
 
 const InputComponent = ({
   label,
