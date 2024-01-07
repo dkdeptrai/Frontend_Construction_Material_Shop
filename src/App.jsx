@@ -20,7 +20,6 @@ import AddEmployee from "./pages/Employee/AddEmployee/AddEmployeePage.jsx";
 import EmployeeInformationPage from "./pages/Employee/InfoEmployee/EmployeeInformationPage.jsx";
 
 //inventory
-import Inventory from "./pages/inventoryPage.jsx";
 import InventoryItemList from "./pages/Inventory/InventoryItemsList/InventoryItemList.jsx";
 
 //sale order

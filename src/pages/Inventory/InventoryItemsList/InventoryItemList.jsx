@@ -5,8 +5,11 @@ import SearchBar from "../../../components/layouts/searchBar/searchBar";
 import ExportButton from "../../../components/layouts/exportButton/exportButton";
 import Table from "../../../components/core/table/table"; // Change the import statement to use lowercase 'table' instead of uppercase 'Table'
 import { API_CONST } from "../../../constants/apiConstants";
+import LoadingCircle from "../../../components/LoadingCircle/LoadingCircle";
 
 const InventoryItemList = () => {
+  const [loading, setLoading] = useState(true);
+
   const options = ["Name", "Quantity", "Unit", "Unit Price", "Total"];
 
   const [inventoryItems, setInventoryItems] = useState([]);
@@ -22,6 +25,7 @@ const InventoryItemList = () => {
       .then((data) => {
         setInventoryItems(data.results);
       })
+      .then(() => setLoading(false))
       .catch((error) => console.error("Error:", error));
   }, []);
 
@@ -81,6 +85,7 @@ const InventoryItemList = () => {
 
   return (
     <div className="pageContainer">
+      {loading && <LoadingCircle />}
       <div className="toolBar">
         <SearchBar
           className="searchBar"
@@ -90,7 +95,11 @@ const InventoryItemList = () => {
 
         <ExportButton onClick={() => {}} />
       </div>
-      <Table columns={inventoryColumns} rows={inventoryItems} noCheckboxSelection/>
+      <Table
+        columns={inventoryColumns}
+        rows={inventoryItems}
+        noCheckboxSelection
+      />
     </div>
   );
 };
