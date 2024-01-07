@@ -5,9 +5,9 @@ import "./InfoOrder.css";
 //pages and components
 import BackButton from "../../../components/layouts/backButton/backButton";
 import InformationLine from "../../../components/InformationLine/InformationLine";
-import InlineInputComponent from "../../../components/inlineInputComponent/inlineInputComponent";
 import Table from "../../../components/core/table/table";
 import { API_CONST } from "../../../constants/apiConstants";
+import LoadingCircle from "../../../components/LoadingCircle/LoadingCircle.jsx";
 
 const InfoOrder = () => {
   const { id } = useParams();
@@ -16,11 +16,11 @@ const InfoOrder = () => {
   const [customerName, setCustomerName] = useState("");
   const [date, setDate] = useState("");
   const [discount, setDiscount] = useState(0);
-  const [status, setStatus] = useState("COMPLETED");
   const [products, setProducts] = useState([]);
   const [total, setTotal] = useState(0);
-
   const [orderStatus, setOrderStatus] = useState();
+
+  const [loading, setLoading] = useState(true);
 
   const handleChangeStatus = async (newStatus) => {
     await fetch(API_CONST + "/orders/" + id + "?status=" + newStatus, {
@@ -31,6 +31,7 @@ const InfoOrder = () => {
     });
   };
 
+  //get order information
   useEffect(() => {
     fetch(API_CONST + "/orders/" + id, {
       method: "GET",
@@ -39,50 +40,48 @@ const InfoOrder = () => {
       },
     })
       .then((response) => response.json())
-      .then((data) => {
-        const newOrder = {
-          id: data.id,
-          customerPhone: data.customer.phone,
-          customerName: data.customer.name,
-          date:
-            data.createdTime[2] +
-            "/" +
-            data.createdTime[1] +
-            "/" +
-            data.createdTime[0],
-          orderItems: data.orderItems,
-          discount: data.discount,
-          status: data.status,
-        };
-        setOrderId(newOrder.id);
-        setCustomerPhone(newOrder.customerPhone);
-        setCustomerName(newOrder.customerName);
-        setDate(newOrder.date);
-        newOrder.orderItems.map((item) => {
+      .then(async (order) => {
+        const customerData = await fetch(
+          API_CONST + "/customers/" + order.customerId,
+          {
+            method: "GET",
+            headers: {
+              Authorization: "Bearer " + sessionStorage.getItem("token"),
+            },
+          }
+        );
+        const customer = await customerData.json();
+        setOrderId(order.id);
+        setCustomerPhone(customer.phone);
+        setCustomerName(customer.name);
+        setDate(new Date(order.createdTime).toLocaleDateString());
+        await order.orderItems.map(async (item) => {
+          const orderedInventoryItemData = await fetch(
+            API_CONST + "/inventories/" + item.inventoryItemId,
+            {
+              method: "GET",
+              headers: {
+                Authorization: "Bearer " + sessionStorage.getItem("token"),
+              },
+            }
+          );
+          const orderedInventoryItem = await orderedInventoryItemData.json();
           const product = {
-            id: item.product.id,
-            name: item.product.name,
-            unitPrice: item.product.unitPrice,
+            id: item.productId,
+            name: orderedInventoryItem.product.name,
+            unitPrice: orderedInventoryItem.product.unitPrice,
             amount: item.quantity,
+            total: item.quantity * orderedInventoryItem.product.unitPrice,
           };
           setProducts((products) => [...products, product]);
         });
-        setDiscount(newOrder.discount);
-        setStatus(newOrder.status);
-        setOrderStatus(newOrder.status);
+        setDiscount(order.discount);
+        setOrderStatus(order.status);
+        setTotal(order.total);
+        setLoading(false);
       })
       .catch((error) => console.error("Error:", error));
   }, []);
-
-  useEffect(() => {
-    if (products) {
-      const newTotal = products.reduce(
-        (sum, product) => sum + product.unitPrice * product.amount,
-        0
-      );
-      setTotal(newTotal);
-    }
-  }, [products]);
 
   const productColumns = [
     { headerName: "Product name", field: "name", flex: 0.7 },
@@ -92,12 +91,12 @@ const InfoOrder = () => {
       headerName: "Total",
       field: "total",
       flex: 0.4,
-      valueGetter: (params) => params.row.unitPrice * params.row.amount,
     },
   ];
 
   return (
     <div>
+      {loading && <LoadingCircle />}
       <BackButton content="Order information" />
       <InformationLine label="Order ID:" content={orderId} />
       <InformationLine
@@ -128,10 +127,16 @@ const InfoOrder = () => {
           }
           value={orderStatus}
           onChange={(event) => {
-            if (window.confirm("Are you sure?") === false) return;
             const newStatus = event.target.value;
+            if (
+              window.confirm(
+                "Are you sure to change the status to " + newStatus + "?"
+              ) === false
+            )
+              return;
             setOrderStatus(newStatus);
             handleChangeStatus(newStatus);
+            window.history.back();
           }}
           disabled={orderStatus === "CANCELLED" || orderStatus === "COMPLETED"}
         >
@@ -154,13 +159,17 @@ const InfoOrder = () => {
         </select>
       </div>
 
-      {orderStatus !== "COMPLETED" && orderStatus !== "CANCELLED" ? (
+      {orderStatus === "PROCESSING" || orderStatus === "DELIVERING" ? (
         <button
           className="cancel-button"
-          onClick={() => {
-            handleChangeStatus("CANCELLED");
+          onClick={async () => {
+            if (window.confirm("Are you sure to cancel this order?") === false)
+              return;
+            setLoading(true);
+            await handleChangeStatus("CANCELLED");
             setOrderStatus("CANCELLED");
             window.history.back();
+            setLoading(false);
           }}
         >
           Cancel this order

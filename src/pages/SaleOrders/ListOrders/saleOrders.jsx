@@ -6,8 +6,8 @@ import SearchBar from "../../../components/layouts/searchBar/searchBar.jsx";
 import Table from "../../../components/core/table/table.jsx";
 import ExportButton from "../../../components/layouts/exportButton/exportButton.jsx";
 import NewButton from "../../../components/layouts/newButton/newButton.jsx";
-import DeleteButton from "../../../components/layouts/deleteButton/deleteButton.jsx";
 import StatusContainer from "../../../components/StatusContainer/StatusContainer.jsx";
+import LoadingCircle from "../../../components/LoadingCircle/LoadingCircle.jsx";
 import { API_CONST } from "../../../constants/apiConstants.jsx";
 
 import "./SaleOrders.css";
@@ -16,19 +16,8 @@ function SaleOrdersPage() {
   const navigate = useNavigate();
   const [saleOrders, setSaleOrders] = useState([]);
 
-  const fetchSaleOrders = async (page, size) => {
-    try {
-      const response = await fetch(
-        `${API_CONST}/orders?page=${page}&size=${size}`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${sessionStorage.getItem("token")}`,
-          },
-        }
-      );
-    } catch (e) {}
-  };
+  //loadiing circle
+  const [loading, setLoading] = useState(true);
 
   //get all sale orders
   useEffect(() => {
@@ -55,24 +44,24 @@ function SaleOrdersPage() {
 
           const customer = await customerData.json();
 
+          const dateString = new Date(order.createdTime).toLocaleDateString();
+
           const newOrder = {
             id: order.id,
             customerPhone: customer.phone,
             customerName: customer.name,
             total: order.total,
-            date:
-              order.createdTime[0] +
-              "/" +
-              order.createdTime[1] +
-              "/" +
-              order.createdTime[2],
+            date: dateString,
             status: order.status,
           };
           newSaleOrders.push(newOrder);
         }
         setSaleOrders(newSaleOrders);
       })
-      .catch((error) => console.error("Error:", error));
+      .catch((error) => console.error("Error:", error))
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
 
   //Navigate to add new sale order page
@@ -116,6 +105,7 @@ function SaleOrdersPage() {
       field: "total",
       headerName: "Total",
       flex: 0.4,
+      valueGetter: (params) => params.value + " $",
     },
     { field: "date", headerName: "Date", flex: 0.4 },
     {
@@ -127,6 +117,7 @@ function SaleOrdersPage() {
   ];
   return (
     <div className="pageContainer">
+      {loading && <LoadingCircle />}
       <div className="toolBar">
         <SearchBar
           className="searchBar"

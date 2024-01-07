@@ -1,14 +1,18 @@
 import React from "react";
 import "./InfoContainer.css";
 
-const InfoContainer = ({ title, info, imageUrl }) => {
+//pages and components
+import ExportIcon from "../../assets/icons/export.svg?react";
+
+const InfoContainer = ({ title, info, icon }) => {
   return (
     <div className="info-container">
-      <img src={imageUrl} />
+      <div className="icon-container">{icon}</div>
       <div className="info">
         <p>{info}</p>
-        <h3>{title}</h3>
+        <span>{title}</span>
       </div>
+      <ExportIcon className="export-icon"/>
     </div>
   );
 };

@@ -8,6 +8,7 @@ import Table from "../../../components/core/table/table.jsx";
 import ExportButton from "../../../components/layouts/exportButton/exportButton.jsx";
 import DeleteButton from "../../../components/layouts/deleteButton/deleteButton.jsx";
 import NewButton from "../../../components/layouts/newButton/newButton.jsx";
+import LoadingCircle from "../../../components/LoadingCircle/LoadingCircle.jsx";
 import { API_CONST } from "../../../constants/apiConstants.jsx";
 
 import "./Employee.css";
@@ -95,6 +96,7 @@ function Employee() {
     navigate("/employees/add");
   };
 
+  //get employee list
   useEffect(() => {
     fetchEmployees(paginationModel.page, paginationModel.pageSize);
   }, [paginationModel.page, paginationModel.pageSize]);
@@ -113,7 +115,9 @@ function Employee() {
     const blob = await response.blob();
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement("a");
+    const a = document.createElement("a");
     a.href = url;
+    a.download = "employees.xls"; // or any other filename
     a.download = "employees.xls"; // or any other filename
     document.body.appendChild(a);
     a.click();
@@ -184,6 +188,7 @@ function Employee() {
   ];
   return (
     <div className="pageContainer">
+      {loading && <LoadingCircle />}
       <div className="toolBar">
         <SearchBar
           className="searchBar"

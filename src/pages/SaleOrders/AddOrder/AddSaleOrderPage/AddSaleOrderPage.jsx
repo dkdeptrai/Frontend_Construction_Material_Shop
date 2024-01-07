@@ -6,6 +6,7 @@ import "./AddSaleOrderPage.css";
 import { useDispatch, useSelector } from "react-redux";
 import {
   deleteSelectedProducts,
+  setSelectedProducts,
   updateSelectedProductsAmount,
 } from "../../../../actions/selectedProductsAction";
 
@@ -19,15 +20,17 @@ import InlineInputComponent from "../../../../components/inlineInputComponent/in
 import AmountInputModal from "../../../../components/AmountInputModal/AmountInputModal";
 import { API_CONST } from "../../../../constants/apiConstants";
 import LoadingCircle from "../../../../components/LoadingCircle/LoadingCircle";
+import { setSelectedCustomer } from "../../../../actions/selectedCustomerAction";
 
 function AddSaleOrderPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [deletedItems, setDeletedItems] = useState([]);
   const [open, setOpen] = useState(false);
-  const [total, setTotal] = useState(0);
+  const [total, setTotal] = useState(0.0);
   const [discount, setDiscount] = useState(0);
-  const [deposit, setDeposit] = useState(0);
+  const [oldDebt, setOldDebt] = useState(0.0);
+  const [deposit, setDeposit] = useState(0.0);
 
   //search for customer by phone number
   const [searchedCustomerPhone, setSearchedCustomerPhone] = useState("");
@@ -36,20 +39,42 @@ function AddSaleOrderPage() {
   //loading
   const [loading, setLoading] = useState(false);
 
+  //get selected customer if not null
+  const selectedCustomer = useSelector(
+    (state) => state.selectedOrder.customerData
+  );
+
+  //fetch customer name and debt from phone number
   useEffect(() => {
+    if (selectedCustomer) {
+      setSearchedCustomerPhone(selectedCustomer.customerPhone);
+      setSearchedCustomerName(selectedCustomer.customerName);
+    }
     if (searchedCustomerPhone) {
-      // Fetch the customer data from your backend
+      //fetch for customers with correct phone number
       fetch(API_CONST + "/customers?phone=" + searchedCustomerPhone, {
         method: "GET",
         headers: {
           Authorization: "Bearer " + sessionStorage.getItem("token"),
         },
       })
-        .then((response) => {console.log(response); return response.json();})
-        .then((data) => {
-          if (data.results.length > 0) {
+        .then((response) => response.json())
+        .then(async (customers) => {
+          if (customers.results.length > 0) {
             // Update the customer name input with the fetched customer name
-            setSearchedCustomerName(data.results[0].name);
+            const customer = customers.results[0];
+            setSearchedCustomerName(customer.name);
+            dispatch(setSelectedCustomer(customer.phone, customer.name));
+            // Update the old debt input with the fetched customer debt
+            const customerTotalDebt = await customer.debts.reduce(
+              (totalDebt, debt) => {
+                if (!debt.alreadyPaid) {
+                  return totalDebt + debt.amount;
+                }
+              },
+              0
+            );
+            setOldDebt(customerTotalDebt);
           }
         })
         .catch((error) => console.error("Error:", error));
@@ -57,15 +82,17 @@ function AddSaleOrderPage() {
   }, [searchedCustomerPhone]);
 
   const selectedProducts = useSelector(
-    (state) => state.selectedProducts.selectedProductsData
+    (state) => state.selectedOrder.selectedProductsData
   );
 
   const userData = useSelector((state) => state.user.userData);
 
+  //calculate total
   useEffect(() => {
     if (selectedProducts) {
       const newTotal = selectedProducts.reduce(
-        (sum, product) => (sum + product.amount * product.unitPrice) * (1 - discount / 100),
+        (sum, product) =>
+          (sum + product.amount * product.unitPrice) * (1 - discount / 100),
         0
       );
       setTotal(newTotal.toFixed(2));
@@ -76,11 +103,31 @@ function AddSaleOrderPage() {
     navigate("/customers/add");
   };
 
+  //navigate to add new products page
   const handleAddProducts = () => {
     navigate("/orders/add/add-products");
   };
 
-  const handleDeposit = async () => {
+  //handle deposit
+  const handleDepositAndDebt = async (paymentType) => {
+
+    if (searchedCustomerPhone === "") {
+      alert("Please enter customer's phone number!");
+      return;
+    } else if (searchedCustomerName === "") {
+      alert("Please enter customer's name!");
+      return;
+    } else if (selectedProducts.length === 0) {
+      alert("Please add products!");
+      return;
+    } else if (paymentType === "deposit" && deposit === 0) {
+      alert("Please enter a deposit!");
+      return;
+    } else if (paymentType === "debt" && deposit !== 0) {
+      alert("Deposit must be 0 when choosing to debt!")
+      return;
+    }
+
     setLoading(true);
 
     //fetch for customer id
@@ -88,7 +135,7 @@ function AddSaleOrderPage() {
       API_CONST +
         "/customers?phone=" +
         searchedCustomerPhone +
-        "&customerName=" +
+        "&name=" +
         searchedCustomerName,
       {
         method: "GET",
@@ -96,10 +143,21 @@ function AddSaleOrderPage() {
           Authorization: "Bearer " + sessionStorage.getItem("token"),
         },
       }
-    ).then((response) => response.json());
+    );
 
-    if (customerData.results.length === 0) {
+    const customer = await customerData.json();
+
+    if (customer.results.length === 0) {
       alert("Customer does not exist!");
+      return;
+    } else if (customer.results.length > 1) {
+      alert("Multiple customers with the same phone number!");
+      return;
+    } else if (searchedCustomerName !== customer.results[0].name) {
+      alert("Customer name does not match!");
+      return;
+    } else if (searchedCustomerPhone !== customer.results[0].phone) {
+      alert("Customer phone number does not match!");
       return;
     }
 
@@ -109,33 +167,39 @@ function AddSaleOrderPage() {
         id: userData.id,
       },
       customer: {
-        id: customerData.results[0].id,
+        id: customer.results[0].id,
       },
-      createdTime: new Date().toISOString().slice(0, -1),
+      createdTime: new Date().toISOString(),
       depositedMoney: deposit,
       discount: discount,
       status: "PROCESSING",
+      //selectedProducts is list of chosen inventory items, refactor later :))
       orderItems: selectedProducts.map((product) => {
         return {
-          product: {
+          inventoryItem: {
             id: product.id,
           },
           quantity: product.amount,
         };
       }),
-      total: total,
+      debt: {
+        amount: (total - deposit).toString(),
+        customer: {
+          id: customer.results[0].id,
+        },
+      },
     };
-
-    console.log(selectedProducts);
 
     await fetch(API_CONST + "/orders", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "content-type": "application/json",
         Authorization: "Bearer " + sessionStorage.getItem("token"),
       },
       body: JSON.stringify(yourData),
     }).finally(() => {
+      dispatch(setSelectedCustomer("", ""));
+      dispatch(setSelectedProducts([]));
       setLoading(false);
       navigate("/orders");
     });
@@ -243,40 +307,53 @@ function AddSaleOrderPage() {
       />
       <div className="price-calculation-input-container">
         <div className="left-inputs">
-          
-            <InlineInputComponent
-              label="Discount(%):"
-              type="number"
-              min={0}
-              max={100}
-              value={discount}
-              setValue={setDiscount}
-            />
-            
+          <InlineInputComponent
+            label="Discount(%):"
+            type="number"
+            min={0}
+            max={100}
+            value={discount}
+            setValue={setDiscount}
+          />
 
-          <InlineInputComponent label="Old debt:" type="number" />
+          <InlineInputComponent
+            label="Old debt:"
+            type="text"
+            value={oldDebt.toFixed(2) + " $"}
+          />
           <InlineInputComponent
             label="Deposit:"
             type="number"
             value={deposit}
-            setValue={setDeposit}
+            setValue={(value) => {
+              if (value <= total) {
+                setDeposit(value);
+              }
+            }}
+            className="green-text"
           />
         </div>
-        
+
         <div className="right-inputs">
           <InlineInputComponent
             label="Total:"
             type="text"
             value={total + " $"}
           />
-          <InlineInputComponent label="Total debt:" type="number" />
+          <InlineInputComponent
+            label="Total debt:"
+            type="text"
+            value={(total - deposit + oldDebt).toFixed(2) + " $"}
+            className="red-text"
+          />
         </div>
       </div>
       <div className="payment-button-container">
-        <button className="deposit-button" onClick={handleDeposit}>
+        <button className="deposit-button" onClick={() => handleDepositAndDebt("deposit")}>
           Deposit
         </button>
-        <button className="debt-button">Debt</button>
+
+        <button className="debt-button" onClick={() => handleDepositAndDebt("debt")}>Debt</button>
       </div>
     </div>
   );

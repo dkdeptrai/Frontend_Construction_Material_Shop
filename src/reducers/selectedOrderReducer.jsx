@@ -1,8 +1,9 @@
 const initialState = {
+  customerData: null,
   selectedProductsData: [],
 };
 
-const selectedProductsReducer = (state = initialState, action) => {
+const selectedOrderReducer = (state = initialState, action) => {
   switch (action.type) {
     case "SET_SELECTED_PRODUCTS":
       return {
@@ -52,9 +53,17 @@ const selectedProductsReducer = (state = initialState, action) => {
         ...state,
         selectedProductsData: updatedProductsAmount,
       };
+    case "SET_SELECTED_CUSTOMER":
+      return {
+        ...state,
+        customerData: {
+          customerPhone: action.payload.customerPhone,
+          customerName: action.payload.customerName,
+        },
+      };
     default:
       return state;
   }
 };
 
-export default selectedProductsReducer;
+export default selectedOrderReducer;
