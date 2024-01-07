@@ -16,6 +16,20 @@ function SaleOrdersPage() {
   const navigate = useNavigate();
   const [saleOrders, setSaleOrders] = useState([]);
 
+  const fetchSaleOrders = async (page, size) => {
+    try {
+      const response = await fetch(
+        `${API_CONST}/orders?page=${page}&size=${size}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+          },
+        }
+      );
+    } catch (e) {}
+  };
+
   //get all sale orders
   useEffect(() => {
     fetch(API_CONST + "/orders", {
@@ -29,12 +43,15 @@ function SaleOrdersPage() {
         const newSaleOrders = [];
         for (let i = 0; i < data.results.length; i++) {
           const order = data.results[i];
-          const customerData = await fetch(API_CONST + "/customers/" + order.customerId, {
-            method: "GET",
-            headers: {
-              Authorization: "Bearer " + sessionStorage.getItem("token"),
-            },
-          })
+          const customerData = await fetch(
+            API_CONST + "/customers/" + order.customerId,
+            {
+              method: "GET",
+              headers: {
+                Authorization: "Bearer " + sessionStorage.getItem("token"),
+              },
+            }
+          );
 
           const customer = await customerData.json();
 

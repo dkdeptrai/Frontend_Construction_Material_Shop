@@ -1,12 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
-import BackButton from "../../components/layouts/backButton/backButton";
-import InputComponent from "../../components/InputComponent/InputComponent";
-import ImageInputComponent from "../../components/ImageInputComponent/ImageInputComponent.jsx";
+import { useParams, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { setSubroute } from "../ProductsSlice.jsx";
 
+import BackButton from "../../../components/layouts/backButton/backButton.jsx";
+import InputComponent from "../../../components/InputComponent/InputComponent.jsx";
+import ImageInputComponent from "../../../components/ImageInputComponent/ImageInputComponent.jsx";
 import "./ProductInfoPage.css";
-import { API_CONST } from "../../constants/apiConstants.jsx";
+import { API_CONST } from "../../../constants/apiConstants.jsx";
+import LoadingCircle from "../../../components/LoadingCircle/LoadingCircle.jsx";
+
 function ProductInfoPage() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const params = useParams();
   const productId = params.id;
   const [name, setName] = useState("");
@@ -43,6 +49,11 @@ function ProductInfoPage() {
 
     fetchProductDetails();
   }, [productId]);
+
+  const navigateBackToProducts = () => {
+    dispatch(setSubroute(""));
+    navigate("/products");
+  };
 
   const clearInput = () => {
     setName("");
@@ -119,7 +130,9 @@ function ProductInfoPage() {
 
   return (
     <div className="addProductPage">
-      <BackButton content="Add Product" />
+      {isLoading && <LoadingCircle />}
+
+      <BackButton content="Add Product" handleClick={navigateBackToProducts} />
       <form>
         <InputComponent
           label="Name"

@@ -9,10 +9,15 @@ const BackButton = (props) => {
   };
 
   return (
-    <button className="back-button" onClick={handleClick}>
+    <button
+      className="back-button"
+      onClick={props.handleClick ? props.handleClick : handleClick}
+    >
       <div className="button-content">
         <BackIcon />
-        <span style={{marginLeft: '1.25rem', fontSize: '1.125rem'}}>{props.content}</span>
+        <span style={{ marginLeft: "1.25rem", fontSize: "1.125rem" }}>
+          {props.content}
+        </span>
       </div>
     </button>
   );

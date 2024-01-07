@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { useLocation, useParams } from "react-router-dom";
-import BackButton from "../../components/layouts/backButton/backButton.jsx";
-import InputComponent from "../../components/InputComponent/InputComponent.jsx";
+import { useLocation, useParams, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import BackButton from "../../../components/layouts/backButton/backButton.jsx";
+import InputComponent from "../../../components/InputComponent/InputComponent.jsx";
 import { idID } from "@mui/material/locale";
-import { API_CONST } from "../../constants/apiConstants.jsx";
+import { API_CONST } from "../../../constants/apiConstants.jsx";
 import { selectedIdsLookupSelector } from "@mui/x-data-grid";
+import { setSubroute } from "../WarehousesSlice.jsx";
 
 function WarehouseInfoPage() {
+  const navigate = useNavigate();
+  const subroute = useSelector((state) => state.warehouses.subroute);
+  const dispatch = useDispatch();
   const params = useParams();
   const warehouseId = params.id;
   const location = useLocation();
@@ -98,7 +103,15 @@ function WarehouseInfoPage() {
       setIsLoading(false);
     }
     setIsLoading(false);
+    if (warehouseId) {
+      location.reload();
+    }
     clearInput();
+  };
+
+  const navigateBackToWarehouses = () => {
+    dispatch(setSubroute(""));
+    navigate("/warehouses");
   };
 
   return (
@@ -121,7 +134,7 @@ function WarehouseInfoPage() {
         <button
           className="submitButton"
           onClick={handleClick}
-          // disabled={!isChange}
+          disabled={!isChange}
         >
           {isLoading
             ? "Submitting..."

@@ -10,6 +10,10 @@ function Table(props) {
   const location = useLocation();
   const dispatch = useDispatch();
 
+  // default values
+  const defaultPagignationModel = { page: 0, pageSize: 10, total: 0 };
+  const paginationModel = props.paginationModel || defaultPagignationModel;
+
   //Add cellName's field's name so that we can navigate to more information page
 
   const cellName = props.cellName;
@@ -28,7 +32,7 @@ function Table(props) {
       }
     });
 
-    props.fetchPageData(params.page, params.pageSize);
+    // props.fetchPageData(params.page, params.pageSize);
   };
 
   const handleCellClick = (params, event) => {
@@ -43,27 +47,19 @@ function Table(props) {
     }
   };
 
-  const totalPages = Math.ceil(
-    props.paginationModel.total / props.paginationModel.pageSize
-  );
-
-  const goToPage = (pageNumber) => {
-    setPaginationModel((prevModel) => ({ ...prevModel, page: pageNumber - 1 }));
-  };
-
   return (
     <div>
       <DataGrid
         className="table"
         paginationMode="server"
-        rowCount={props.paginationModel.total}
+        rowCount={paginationModel.total}
         rows={props.rows}
         columns={props.columns}
         checkboxSelection={!noCheckboxSelection}
         onRowSelectionModelChange={props.onRowSelection}
         rowSelectionModel={props.selectedRowIds}
         pagination={true}
-        paginationModel={props.paginationModel}
+        paginationModel={paginationModel}
         onPaginationModelChange={handlePaginationChange}
         pageSizeOptions={[10]}
         onCellClick={handleCellClick}

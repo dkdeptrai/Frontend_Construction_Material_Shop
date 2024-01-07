@@ -29,20 +29,23 @@ import AddSaleOrderPage from "./pages/SaleOrders/AddOrder/AddSaleOrderPage/AddSa
 import NewProducts from "./pages/SaleOrders/AddOrder/NewProducts/NewProducts.jsx";
 import InfoOrder from "./pages/SaleOrders/InfoOrder/InfoOrder.jsx";
 
-import Products from "./pages/productsPage/productsPage.jsx";
-import ProductInfoPage from "./pages/addProductPage/ProductInfoPage.jsx";
+import ProductInfoPage from "./pages/products/productInfoPage/ProductInfoPage.jsx";
 
 //purchase order
 import PurchaseOrders from "./pages/PurchaseOrders/ListPurchaseOrders/PurchaseOrders.jsx";
 import AddPurchaseOrderPage from "./pages/PurchaseOrders/AddPurchaseOrder/AddPurchaseOrderPage/AddPurchaseOrderPage.jsx";
 import Reports from "./pages/reportsPage.jsx";
-import WarehousesPage from "./pages/WarehousesPage/WarehousesPage.jsx";
+
+//warehouse
+import WarehousesPage from "./pages/Warehouse/WarehousesPage/WarehousesPage.jsx";
+import WarehouseInfoPage from "./pages/Warehouse/warehouseInfoPage/warehouseInfoPage.jsx";
+
 import SignInPage from "./pages/SignInPage/SignInPage.jsx";
 import Account from "./pages/Setting/Account/Account.jsx";
 import SettingModal from "./pages/Setting/SettingModal/SettingModal.jsx";
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import WarehouseInfoPage from "./pages/warehouseInfoPage/warehouseInfoPage.jsx";
+import ProductsPage from "./pages/products/productsPage/productsPage.jsx";
 
 const ROUTE_TITLES = {
   "/": "Authentication",
@@ -115,7 +118,9 @@ function App() {
                   element={<NewProducts />}
                 />
                 <Route path="/orders/:id" element={<InfoOrder />} />
-                <Route path="/products" element={<Products />} />
+
+                {/* // products */}
+                <Route path="/products" element={<ProductsPage />} />
                 <Route path="/products/add" element={<ProductInfoPage />} />
                 <Route path="/products/:id" element={<ProductInfoPage />} />
                 <Route

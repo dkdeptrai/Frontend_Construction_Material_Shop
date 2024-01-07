@@ -89,7 +89,6 @@ const PurchaseOrders = () => {
         cellName="employeeCode"
         identifyRoute="id"
         paginationModel={paginationModel}
-        fetchPageData={fetchSaleOrders}
         noCheckboxSelection
       />
     </div>

@@ -1,17 +1,26 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import SearchBar from "../../components/layouts/searchBar/searchBar.jsx";
-import Table from "../../components/core/table/table.jsx";
-import ExportButton from "../../components/layouts/exportButton/exportButton.jsx";
-import DeleteButton from "../../components/layouts/deleteButton/deleteButton.jsx";
-import NewButton from "../../components/layouts/newButton/newButton.jsx";
-import Product from "../../models/Product.jsx";
-import "./productsPage.css";
-import { API_CONST } from "../../constants/apiConstants.jsx";
-import { gridPaginationRowRangeSelector } from "@mui/x-data-grid";
-import InputComponent from "../../components/InputComponent/InputComponent.jsx";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setSubroute,
+  setProducts,
+  setSelectedRowIds,
+  setPaginationModel,
+  setSearchPaginationModel,
+} from "../productsSlice.jsx";
+import SearchBar from "../../../components/layouts/searchBar/searchBar.jsx";
+import Table from "../../../components/core/table/table.jsx";
+import ExportButton from "../../../components/layouts/exportButton/exportButton.jsx";
+import DeleteButton from "../../../components/layouts/deleteButton/deleteButton.jsx";
+import NewButton from "../../../components/layouts/newButton/newButton.jsx";
+import "./ProductsPage.css";
+import { API_CONST } from "../../../constants/apiConstants.jsx";
+import InputComponent from "../../../components/InputComponent/InputComponent.jsx";
+import LoadingCircle from "../../../components/LoadingCircle/LoadingCircle.jsx";
 
 function ProductsPage() {
+  const dispatch = useDispatch();
+  const subroute = useSelector((state) => state.products.subroute);
   const navigate = useNavigate();
   const options = [
     "Vietnam",
@@ -22,28 +31,44 @@ function ProductsPage() {
     "Germany",
     "Russia",
   ];
-  const [products, setProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const products = useSelector((state) => state.products.products);
+  console.log("products", products);
+  const selectedRowIds = useSelector((state) => state.products.selectedRowIds);
+  // tables states
+  const paginationModel = useSelector(
+    (state) => state.products.paginationModel
+  );
+  console.log("paginationModel", paginationModel);
+  const searchPaginationModel = useSelector(
+    (state) => state.products.searchPaginationModel
+  );
+  // const [paginationModel, setPaginationModel] = useState({
+  //   pageSize: 2,
+  //   page: 0,
+  //   total: 0,
+  // })
+  // const [searchPaginationModel, setSearchPaginationModel] = useState({
+  //   pageSize: 10,
+  //   page: 0,
+  //   total: 0,
+  // });
+
+  // search states
+  const [searchResults, setSearchResults] = useState([]);
+  const [showSearchResults, setShowSearchResults] = useState(false);
+
+  // filter options
   const [name, setName] = useState("");
   const [origin, setOrigin] = useState("");
   const [calculationUnit, setCalculationUnit] = useState("");
   const [priceStart, setPriceStart] = useState("");
   const [priceEnd, setPriceEnd] = useState("");
-  const [selectedRowIds, setSelectedRowIds] = useState([]);
-  const [paginationModel, setPaginationModel] = useState({
-    pageSize: 10,
-    page: 0,
-    total: 0,
-  });
-  const [searchPaginationModel, setSearchPaginationModel] = useState({
-    pageSize: 10,
-    page: 0,
-    total: 0,
-  });
-  const [searchResults, setSearchResults] = useState([]);
-  const [showSearchResults, setShowSearchResults] = useState(false);
 
   const fetchProducts = async (page, size) => {
     try {
+      setIsLoading(true);
       const response = await fetch(
         `${API_CONST}/products?page=${page}&size=${size}`,
         {
@@ -55,25 +80,17 @@ function ProductsPage() {
         }
       );
       const data = await response.json();
-      const products = data.results.map(
-        (item) =>
-          new Product(
-            item.id,
-            item.name,
-            item.origin,
-            item.imageUrl,
-            item.description,
-            item.unitPrice,
-            item.calculationUnit,
-            item.quantitySold,
-            item.quantityRemaining,
-            item.deleted
-          )
+      const products = data.results;
+      dispatch(setProducts(products));
+      console.log(
+        "Products fetched:",
+        useSelector((state) => state.products.products)
       );
-      setProducts(products);
       console.log("Products fetched:", products);
       setPaginationModel((prevState) => ({ ...prevState, total: data.total }));
+      setIsLoading(false);
     } catch (error) {
+      setIsLoading(false);
       console.error("Error fetching products:", error);
     }
   };
@@ -88,10 +105,10 @@ function ProductsPage() {
         query += `&calculationUnit=${calculationUnit}`;
       }
       if (priceStart) {
-        query += `&priceStart=${priceStart}`;
+        query += `&minPrice=${priceStart}`;
       }
       if (priceEnd) {
-        query += `&priceEnd=${priceEnd}`;
+        query += `&maxPrice=${priceEnd}`;
       }
       console.log(`QUERY: ${API_CONST}/products/search?${query}`);
       const response = await fetch(`${API_CONST}/products/search?${query}`, {
@@ -102,21 +119,7 @@ function ProductsPage() {
         },
       });
       const data = await response.json();
-      const products = data.results.map(
-        (item) =>
-          new Product(
-            item.id,
-            item.name,
-            item.origin,
-            item.imageUrl,
-            item.description,
-            item.unitPrice,
-            item.calculationUnit,
-            item.quantitySold,
-            item.quantityRemaining,
-            item.deleted
-          )
-      );
+      const products = data.results;
       setSearchResults(products);
       setSearchPaginationModel((prevState) => ({
         ...prevState,
@@ -130,11 +133,24 @@ function ProductsPage() {
   };
 
   useEffect(() => {
-    fetchProducts(paginationModel.page, paginationModel.pageSize);
-  }, [paginationModel.page, paginationModel.pageSize]);
+    if (subroute) {
+      navigate(`/products/${subroute}`);
+    } else {
+      navigate("/products");
+    }
+  }, [subroute]);
 
+  // useEffect(() => {
+  //   fetchProducts(paginationModel.page, paginationModel.pageSize);
+  // }, [paginationModel.page, paginationModel.pageSize]);
   const handleDelete = async (selectedRowIds) => {
     try {
+      if (
+        window.confirm(
+          "Are you sure you want to delete the selected products?"
+        ) !== true
+      )
+        return;
       await Promise.all(
         selectedRowIds.map((id) =>
           fetch(`${API_CONST}/products/${id}`, {
@@ -146,9 +162,27 @@ function ProductsPage() {
           })
         )
       );
-      searchResults.length > 0
-        ? handleSearch()
-        : fetchProducts(paginationModel.page, paginationModel.pageSize);
+      if (searchResults.length > 0) {
+        setSearchResults(
+          searchResults.filter(
+            (product) => !selectedRowIds.includes(product.id)
+          )
+        );
+        setSearchPaginationModel((prevState) => ({
+          ...prevState,
+          total: prevState.total - selectedRowIds.length,
+        }));
+      } else {
+        dispatch(
+          setProducts(
+            products.filter((product) => !selectedRowIds.includes(product.id))
+          )
+        );
+        setPaginationModel((prevState) => ({
+          ...prevState,
+          total: prevState.total - selectedRowIds.length,
+        }));
+      }
     } catch (error) {
       console.log(error);
     }
@@ -164,6 +198,7 @@ function ProductsPage() {
   };
 
   const navigateToNewProduct = () => {
+    dispatch(setSubroute("add"));
     navigate("/products/add");
   };
   const productColumns = [
@@ -197,6 +232,7 @@ function ProductsPage() {
   ];
   return (
     <div className="productPageContainer">
+      {isLoading && <LoadingCircle />}
       <div>
         <div className="toolBar">
           <SearchBar
@@ -243,25 +279,26 @@ function ProductsPage() {
           />
         </div>
       </div>
-      <Table
-        className="table"
-        columns={productColumns}
-        rows={showSearchResults ? searchResults : products}
-        cellName="name"
-        identifyRoute="id"
-        onDeleteSelectedRows={handleDelete}
-        onRowSelection={(newSelection) => {
-          setSelectedRowIds(newSelection);
-          console.log(newSelection);
-        }}
-        paginationModel={
-          showSearchResults ? searchPaginationModel : paginationModel
-        }
-        fetchPageData={fetchProducts}
-        onPaginationModelChange={
-          showSearchResults ? setSearchPaginationModel : setPaginationModel
-        }
-      />
+      {products && (
+        <Table
+          className="table"
+          columns={productColumns}
+          rows={showSearchResults ? searchResults : products}
+          cellName="name"
+          identifyRoute="id"
+          onRowSelection={(newSelection) => {
+            dispatch(setSelectedRowIds(newSelection));
+          }}
+          paginationModel={
+            showSearchResults ? searchPaginationModel : paginationModel
+          }
+          onPaginationModelChange={
+            showSearchResults
+              ? dispatch(setSearchPaginationModel)
+              : dispatch(setPaginationModel)
+          }
+        />
+      )}
     </div>
   );
 }
