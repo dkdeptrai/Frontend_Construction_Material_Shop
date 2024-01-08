@@ -11,6 +11,12 @@ import { API_CONST } from "../../constants/apiConstants.jsx";
 import LoadingCircle from "../../components/LoadingCircle/LoadingCircle.jsx";
 import CircularProgess from "../../components/CircularProgess/CircularProgress.jsx";
 
+//icons
+import CustomerIcon from "../../assets/icons/customer.svg?react";
+import OrderIcon from "../../assets/icons/order.svg?react";
+import ProductIcon from "../../assets/icons/product.svg?react";
+import EarningIcon from "../../assets/icons/earning.svg?react";
+
 function InStockCapacity() {
   return (
     <div className="instock-capacity-info">
@@ -189,11 +195,13 @@ function Dashboard() {
               className="info-container"
               title="Customer"
               info={customerNumber}
+              icon={<CustomerIcon />}
             />
             <InfoContainer
               className="info-container"
               title="Orders"
               info={orderNumber}
+              icon={<OrderIcon />}
             />
           </div>
           <div className="lower-info">
@@ -201,11 +209,13 @@ function Dashboard() {
               className="info-container"
               title="Earning"
               info="2500"
+              icon={<EarningIcon />}
             />
             <InfoContainer
               className="info-container"
               title="Products"
               info={productNumber}
+              icon={<ProductIcon />}
             />
           </div>
         </div>
