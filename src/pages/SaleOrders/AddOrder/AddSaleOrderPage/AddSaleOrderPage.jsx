@@ -9,6 +9,7 @@ import {
   setSelectedProducts,
   updateSelectedProductsAmount,
 } from "../../../../actions/selectedProductsAction";
+import { addSaleOrder } from "../../../../actions/saleOrdersAction";
 
 //pages and components
 import InputComponent from "../../../../components/InputComponent/InputComponent";

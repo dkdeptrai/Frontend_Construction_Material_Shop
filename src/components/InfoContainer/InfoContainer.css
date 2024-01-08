@@ -3,6 +3,10 @@
   height: 45px;
   width: 45px;
   background-color: #6A103933;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--button-color);
 }
 
 .info-container .info {

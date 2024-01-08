@@ -90,7 +90,7 @@ function MenuBar() {
           <MenuItemComponent icon={<OrderIcon />} link="/orders" />
           <MenuItemComponent
             icon={<PurchaseOrderIcon />}
-            link="/purchaseorders"
+            link="/purchase-orders"
           />
           <MenuItemComponent icon={<CustomerIcon />} link="/customers" />
           <MenuItemComponent icon={<InventoryIcon />} link="/inventory" />
