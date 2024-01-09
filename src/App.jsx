@@ -122,7 +122,7 @@ function App() {
                 />
                 <Route path="/purchase-orders" element={<PurchaseOrders />} />
                 <Route
-                  path="/purchaseorders/add"
+                  path="/purchase-orders/add"
                   element={<AddPurchaseOrderPage />}
                 />
                 <Route

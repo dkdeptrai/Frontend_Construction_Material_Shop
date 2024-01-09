@@ -29,7 +29,8 @@ const NewProducts = () => {
         imageUrl: item.product.imageUrl,
         unitPrice: item.product.unitPrice,
         amount: 1,
-        total: 0,
+        mfg: item.manufacturingDate,
+        exp: item.expiryDate,
       };
 
       return product;

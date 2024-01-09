@@ -22,7 +22,7 @@ const PurchaseOrders = () => {
   }, []);
 
   const handleClick = () => {
-    navigate("/purchaseorders/add");
+    navigate("/purchase-orders/add");
   };
 
   const options = [
