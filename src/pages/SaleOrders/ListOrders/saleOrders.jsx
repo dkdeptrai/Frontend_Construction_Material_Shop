@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+
+import { setSaleOrdersList } from "../../../actions/saleOrdersAction.jsx";
 
 //pages and components
 import SearchBar from "../../../components/layouts/searchBar/searchBar.jsx";
@@ -14,6 +17,14 @@ import "./SaleOrders.css";
 
 function SaleOrdersPage() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const saleOrdersFromStore = useSelector(
+    (state) => state.saleOrders.saleOrdersData
+  );
+  console.log(saleOrdersFromStore);
+
+
   const [saleOrders, setSaleOrders] = useState([]);
 
   //loadiing circle
@@ -21,6 +32,12 @@ function SaleOrdersPage() {
 
   //get all sale orders
   useEffect(() => {
+    if (saleOrdersFromStore.length > 0) {
+      console.log("get sale orders from store");
+      setSaleOrders(saleOrdersFromStore);
+      setLoading(false);
+      return;
+    }
     fetch(API_CONST + "/orders", {
       method: "GET",
       headers: {
@@ -56,6 +73,8 @@ function SaleOrdersPage() {
           };
           newSaleOrders.push(newOrder);
         }
+        dispatch(setSaleOrdersList(newSaleOrders));
+        console.log("get sale orders from api");
         setSaleOrders(newSaleOrders);
       })
       .catch((error) => console.error("Error:", error))
