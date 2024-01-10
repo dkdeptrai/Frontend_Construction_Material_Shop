@@ -1,6 +1,6 @@
 import React from "react";
 import "./InputComponent.css";
-
+import { useDispatch } from "react-redux";
 const InputComponent = ({
   label,
   type,
@@ -15,9 +15,13 @@ const InputComponent = ({
   if (!type) {
     throw new Error("InputComponent: type is required!");
   }
-
+  const dispatch = useDispatch();
   const handleChange = (e) => {
-    setValue(e.target.value);
+    if (e.target.value === "") {
+      setValue("");
+    } else {
+      setValue(e.target.value);
+    }
   };
 
   let renderedLabel = null;
@@ -31,9 +35,7 @@ const InputComponent = ({
       <div>
         {renderedLabel}
         <select value={value} onChange={handleChange} className={className}>
-          <option value="" disabled>
-            {placeholder}
-          </option>
+          <option value="">{placeholder}</option>
           {options.map((option) => (
             <option key={option}>{option}</option>
           ))}

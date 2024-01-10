@@ -9,6 +9,9 @@ import MenuBar from "./components/layouts/menubar/menubar.jsx";
 //dashboard
 import DashBoard from "./pages/Dashboard/Dashboard.jsx";
 
+//overview
+import Overview from "./pages/Overview/Overview.jsx";
+
 //customer
 import Customer from "./pages/Customer/ListCustomer/Customer.jsx";
 import AddCustomerPage from "./pages/Customer/AddCustomer/AddCustomerPage.jsx";
@@ -100,6 +103,7 @@ function App() {
             <Header />
             <div className="contentContainer">
               <Routes>
+                <Route path="/overview" element={<Overview />} />
                 <Route path="/dashboard" element={<DashBoard />} />
                 <Route path="/customers" element={<Customer />} />
                 <Route path="/customers/add" element={<AddCustomerPage />} />

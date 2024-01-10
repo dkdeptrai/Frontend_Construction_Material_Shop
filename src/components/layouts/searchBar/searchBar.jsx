@@ -12,6 +12,7 @@ function SearchBar(props) {
     <div>
       <div className="searchBarContainer">
         <input
+          value={props.value}
           className="searchBar"
           type="text"
           placeholder={props.placeholder}

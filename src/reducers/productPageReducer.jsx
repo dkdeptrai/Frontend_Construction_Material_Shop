@@ -14,6 +14,12 @@ const initialState = {
     page: 0,
     total: 0,
   },
+  // search Filters
+  name: "",
+  origin: "",
+  calculationUnit: "",
+  priceStart: "",
+  priceEnd: "",
 };
 
 const productsReducer = (state = initialState, action) => {
@@ -52,6 +58,41 @@ const productsReducer = (state = initialState, action) => {
       return {
         ...state,
         searchPaginationModel: action.payload,
+      };
+    case "SET_NAME":
+      console.log("set name", action.payload);
+      return {
+        ...state,
+        name: action.payload,
+      };
+    case "SET_ORIGIN":
+      return {
+        ...state,
+        origin: action.payload,
+      };
+    case "SET_CALCULATION_UNIT":
+      return {
+        ...state,
+        calculationUnit: action.payload,
+      };
+    case "SET_PRICE_START":
+      return {
+        ...state,
+        priceStart: action.payload,
+      };
+    case "SET_PRICE_END":
+      return {
+        ...state,
+        priceEnd: action.payload,
+      };
+    case "CLEAR_INPUT":
+      return {
+        ...state,
+        name: "",
+        origin: "",
+        calculationUnit: "",
+        priceStart: "",
+        priceEnd: "",
       };
   }
 

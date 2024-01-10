@@ -19,13 +19,12 @@ function ProductInfoPage() {
   const [description, setDescription] = useState("");
   const [unitPrice, setUnitPrice] = useState("");
   const [unit, setUnit] = useState("");
-  const [image, setImage] = useState(null);
+  const [image, setImage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchProductDetails = async () => {
       if (productId) {
-        console.log(productId);
         try {
           const response = await fetch(`${API_CONST}/products/${productId}`, {
             method: "GET",
@@ -39,7 +38,8 @@ function ProductInfoPage() {
           setDescription(product.description);
           setUnitPrice(product.unitPrice);
           setUnit(product.calculationUnit);
-          setImage(product.image);
+          setImage(product.imageUrl);
+          console.log(image);
         } catch (error) {
           console.error("Error:", error);
         }
@@ -99,8 +99,6 @@ function ProductInfoPage() {
       formData.append(key, registerRequest[key]);
     }
     try {
-      console.log(formData.get("name"));
-      console.log(sessionStorage.getItem("token"));
       const response = await fetch(
         productId
           ? `${API_CONST}/products/${productId}`
@@ -116,8 +114,11 @@ function ProductInfoPage() {
       if (!response.ok) {
         throw new Error("Something went wrong");
       }
-
-      alert("Product added successfully");
+      if (productId) {
+        alert("Product updated successfully!");
+      } else {
+        alert("Product added successfully!");
+      }
     } catch (error) {
       console.log(error);
       setIsLoading(false);
@@ -166,7 +167,7 @@ function ProductInfoPage() {
           setValue={setDescription}
         />
 
-        <ImageInputComponent setImage={setImage} />
+        <ImageInputComponent imageUrl={image} setImage={setImage} />
         <button
           className="submitButton"
           onClick={handleClick}

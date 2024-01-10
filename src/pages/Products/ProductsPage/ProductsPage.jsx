@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import SearchBar from "../../../components/layouts/searchBar/searchBar.jsx";
 import Table from "../../../components/core/table/table.jsx";
@@ -15,7 +15,6 @@ import productsReducer from "../../../reducers/productPageReducer.jsx";
 function ProductsPage() {
   const dispatch = useDispatch();
   const subroute = useSelector((state) => state.products.subroute);
-  console.log("initial subroute:", subroute);
   const navigate = useNavigate();
   const options = [
     "Vietnam",
@@ -38,16 +37,6 @@ function ProductsPage() {
   const searchPaginationModel = useSelector(
     (state) => state.products.searchPaginationModel
   );
-  // const [paginationModel, setPaginationModel] = useState({
-  //   pageSize: 2,
-  //   page: 0,
-  //   total: 0,
-  // });
-  // const [searchPaginationModel, setSearchPaginationModel] = useState({
-  //   pageSize: 10,
-  //   page: 0,
-  //   total: 0,
-  // });
 
   // search states
   const searchResults = useSelector((state) => state.products.searchResults);
@@ -56,11 +45,13 @@ function ProductsPage() {
   );
 
   // filter options
-  const [name, setName] = useState("");
-  const [origin, setOrigin] = useState("");
-  const [calculationUnit, setCalculationUnit] = useState("");
-  const [priceStart, setPriceStart] = useState("");
-  const [priceEnd, setPriceEnd] = useState("");
+  const name = useSelector((state) => state.products.name);
+  const origin = useSelector((state) => state.products.origin);
+  const calculationUnit = useSelector(
+    (state) => state.products.calculationUnit
+  );
+  const priceStart = useSelector((state) => state.products.priceStart);
+  const priceEnd = useSelector((state) => state.products.priceEnd);
 
   const fetchProducts = async (page, size) => {
     try {
@@ -86,8 +77,6 @@ function ProductsPage() {
           total: total,
         },
       });
-      console.log("product fetched:", products);
-      console.log("paginationModel:", paginationModel);
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
@@ -109,7 +98,6 @@ function ProductsPage() {
       if (priceEnd) {
         query += `&maxPrice=${priceEnd}`;
       }
-      console.log(`QUERY: ${API_CONST}/products/search?${query}`);
       const response = await fetch(`${API_CONST}/products/search?${query}`, {
         method: "GET",
         headers: {
@@ -133,11 +121,36 @@ function ProductsPage() {
     }
   };
 
-  useEffect(() => {
-    if (subroute === "add") {
-      navigate("/products/add");
+  const handleExport = async () => {
+    const response = await fetch(`${API_CONST}/products/export/excel`, {
+      headers: {
+        Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+      },
+    });
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
     }
-  });
+
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "products.xlsx";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  };
+
+  useEffect(() => {
+    if (subroute) {
+      let id = subroute.split("/")[1];
+      if (id) {
+        navigate(`/products/${id}`);
+      } else if (subroute === "add") {
+        navigate("/products/add");
+      }
+    }
+  }, [subroute]);
 
   useEffect(() => {
     fetchProducts(paginationModel.page, paginationModel.pageSize);
@@ -196,7 +209,7 @@ function ProductsPage() {
   };
 
   const handleSearchQueryChange = (event) => {
-    setName(event.target.value);
+    dispatch({ type: "SET_NAME", payload: event.target.value });
     if (event.target.value === "" || event.target.value === null) {
       dispatch({ type: "SET_SHOW_SEARCH_RESULTS", payload: false });
       dispatch({ type: "SET_SEARCH_RESULTS", payload: [] });
@@ -208,11 +221,21 @@ function ProductsPage() {
     dispatch({ type: "SET_SUBROUTE", payload: "add" });
     navigate("/products/add");
   };
+
+  const handleCellClick = (params, event) => {
+    if (params.field === "name") {
+      dispatch({ type: "SET_SUBROUTE", payload: `add/${params.row.id}` });
+      navigate(`/products/${params.row.id}`);
+      event.stopPropagation();
+    }
+  };
+
   const productColumns = [
     {
-      field: "id",
       headerName: "No.",
       width: 50,
+      renderCell: (params) =>
+        paginationModel.page * 10 + products.indexOf(params.row) + 1,
     },
     {
       field: "name",
@@ -243,9 +266,10 @@ function ProductsPage() {
             className="searchBar"
             placeholder="Search for Products by Name"
             handleSearchQueryChange={handleSearchQueryChange}
+            value={name}
           />
           <div className="buttonContainer">
-            <ExportButton onClick={() => {}} />
+            <ExportButton onClick={handleExport} />
             <DeleteButton onClick={() => handleDelete(selectedRowIds)} />
             <NewButton
               text="New Product"
@@ -258,27 +282,38 @@ function ProductsPage() {
             type="number"
             placeholder="Price Start"
             value={priceStart}
-            setValue={setPriceStart}
+            setValue={(value) =>
+              dispatch({ type: "SET_PRICE_START", payload: value })
+            }
           />
 
           <InputComponent
             type="number"
             placeholder="Price End"
             value={priceEnd}
-            setValue={setPriceEnd}
+            setValue={(value) =>
+              dispatch({ type: "SET_PRICE_END", payload: value })
+            }
           />
           <InputComponent
             type="text"
             placeholder="Calculation Unit"
             value={calculationUnit}
-            setValue={setCalculationUnit}
+            setValue={(value) =>
+              dispatch({
+                type: "SET_CALCULATION_UNIT",
+                payload: value,
+              })
+            }
           />
           <InputComponent
             type="select"
             options={options}
             placeholder="Origin"
             value={origin}
-            setValue={setOrigin}
+            setValue={(value) =>
+              dispatch({ type: "SET_ORIGIN", payload: value })
+            }
           />
         </div>
       </div>
@@ -287,8 +322,10 @@ function ProductsPage() {
           className="table"
           columns={productColumns}
           rows={showSearchResults ? searchResults : products}
+          handleCellClick={handleCellClick}
           cellName="name"
           identifyRoute="id"
+          selectedRowIds={selectedRowIds}
           onRowSelection={(newSelection) => {
             dispatch({ type: "SET_SELECTED_ROW_IDS", payload: newSelection });
           }}
