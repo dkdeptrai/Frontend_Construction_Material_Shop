@@ -42,7 +42,7 @@ function Dashboard() {
   const [saleOrders, setSaleOrders] = useState([]);
   const [productNumber, setProductNumber] = useState(0);
   const [revenue, setRevenue] = useState(0);
-  const [capacity, setCapacity] = useState(0);
+  const [capacity, setCapacity] = useState(100);
   const [usedCapacity, setUsedCapacity] = useState(0);
 
   const [loading, setLoading] = useState(true);
@@ -62,8 +62,11 @@ function Dashboard() {
         setProductNumber(data.productCount);
         setRevenue(data.revenue);
         const newSaleOrders = [];
-        for (let i = 0; i <= data.newestOrders.length - 1 ; i++) {
+        for (let i = 0; i <= data.newestOrders.length - 1; i++) {
           const order = data.newestOrders[i];
+          if (order.orderType === "PURCHASE") {
+            continue;
+          }
           const customerData = await fetch(
             API_CONST + "/customers/" + order.customerId,
             {
@@ -89,8 +92,8 @@ function Dashboard() {
           newSaleOrders.push(newOrder);
         }
         setSaleOrders(newSaleOrders);
-        setCapacity(data.totalQuantity);
         setUsedCapacity(data.remainingQuantity);
+        setCapacity(data.totalQuantity);
       })
       .catch((error) => console.error("Error:", error))
       .finally(() => {

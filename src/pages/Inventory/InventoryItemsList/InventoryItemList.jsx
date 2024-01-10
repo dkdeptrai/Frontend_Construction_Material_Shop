@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 //pages and components
 import SearchBar from "../../../components/layouts/searchBar/searchBar";
@@ -8,14 +9,26 @@ import { API_CONST } from "../../../constants/apiConstants";
 import LoadingCircle from "../../../components/LoadingCircle/LoadingCircle";
 
 const InventoryItemList = () => {
+  const dispatch = useDispatch();
+  const inventoryItemsFromStore = useSelector(
+    (state) => state.inventoryItems.inventoryItemsData
+  );
+
   const [loading, setLoading] = useState(true);
 
   const options = ["Name", "Quantity", "Unit", "Unit Price", "Total"];
 
   const [inventoryItems, setInventoryItems] = useState([]);
 
+  //get all inventory items
   useEffect(() => {
-    fetch(API_CONST + "/inventories?page=0&size=2", {
+    if (inventoryItemsFromStore.length > 0) {
+      console.log("get sale orders from store");
+      setInventoryItems(inventoryItemsFromStore);
+      setLoading(false);
+      return;
+    }
+    fetch(API_CONST + "/inventories?page=0&size=10", {
       method: "GET",
       headers: {
         Authorization: "Bearer " + sessionStorage.getItem("token"),
@@ -23,6 +36,8 @@ const InventoryItemList = () => {
     })
       .then((resp) => resp.json())
       .then((data) => {
+        dispatch({ type: "SET_INVENTORY_ITEMS", payload: data.results });
+        console.log("get inventory items from api")
         setInventoryItems(data.results);
       })
       .then(() => setLoading(false))

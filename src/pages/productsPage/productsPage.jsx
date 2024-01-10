@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import SearchBar from "../../components/layouts/searchBar/searchBar.jsx";
 import Table from "../../components/core/table/table.jsx";
 import ExportButton from "../../components/layouts/exportButton/exportButton.jsx";
@@ -10,6 +11,10 @@ import "./productsPage.css";
 
 function ProductsPage() {
   const navigate = useNavigate();
+  const userType = useSelector((state) =>
+    state.user.userData?.userType ? state.user.userData.userType : "EMPLOYEE"
+  );
+
   const options = [
     "name",
     "origin",
@@ -91,14 +96,19 @@ function ProductsPage() {
         />
         <div className="buttonContainer">
           <ExportButton onClick={() => {}} />
-          <DeleteButton onClick={() => {}} />
+          {userType === "EMPLOYEE" ? null : <DeleteButton onClick={() => {}} />}
           <NewButton
             text="New Product"
             onClick={() => navigateToNewProduct()}
           />
         </div>
       </div>
-      <Table className="table" columns={productColumns} rows={products} />
+      <Table
+        className="table"
+        columns={productColumns}
+        rows={products}
+        noCheckboxSelection={userType === "EMPLOYEE" ? true : false}
+      />
     </div>
   );
 }

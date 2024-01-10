@@ -44,7 +44,7 @@ const NewProducts = () => {
   const fetchInventoryItems = async () => {
     try {
       console.log(sessionStorage.getItem("token"));
-      const response = await fetch(API_CONST + "/inventories?page=0&size=2", {
+      const response = await fetch(API_CONST + "/inventories?page=0&size=10", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

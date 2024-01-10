@@ -52,7 +52,7 @@ function AddSaleOrderPage() {
   }, [selectedProducts, discount]);
 
   const handleAddProducts = () => {
-    navigate("/purchaseorders/add/add-products");
+    navigate("/purchase-orders/add/add-products");
   };
 
   const productColumns = [
@@ -143,7 +143,7 @@ function AddSaleOrderPage() {
       navigate("/purchase-orders");
     });
 
-    // //Update inventory
+    // // //Update inventory
     // for (let i = 0; i < selectedProducts.length; i++) {
     //   const product = selectedProducts[i];
     //   const date = new Date();
