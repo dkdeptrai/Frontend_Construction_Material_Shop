@@ -8,6 +8,7 @@ import ExportButton from "../../../components/layouts/exportButton/exportButton.
 import DeleteButton from "../../../components/layouts/deleteButton/deleteButton.jsx";
 import NewButton from "../../../components/layouts/newButton/newButton.jsx";
 import LoadingCircle from "../../../components/LoadingCircle/LoadingCircle.jsx";
+import CustomerIcon from "../../../assets/icons/customer_default.png";
 import { API_CONST } from "../../../constants/apiConstants.jsx";
 
 import "./Employee.css";
@@ -100,7 +101,7 @@ function Employee() {
       flex: 0.5,
       renderCell: (params) => (
         <div className="productNameCell">
-          <img className="productImage" src={params.row.imageUrl} />
+          <img className="productImage" src={params.row.imageUrl || CustomerIcon} />
           <span>{params.value}</span>
         </div>
       ),

@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { DataGrid } from "@mui/x-data-grid";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { updateSelectedProductsAmount } from "../../../actions/selectedProductsAction";
 
 import "./table.css";
 
@@ -46,7 +45,7 @@ function Table(props) {
   const handleCellClick = (params, event) => {
     if (
       params.field === cellName &&
-      (params.field === "name" || params.field === "customerPhone")
+      (params.field === "name" || params.field === "customerPhone" || params.field === "employeeCode")
     ) {
       navigate(location.pathname + "/" + params.row[identifyRoute]);
     }

@@ -12,6 +12,7 @@ function CircularProgress({ value, max }) {
   const dotRadius = 3.5;
   const dotX = 100 + radius * Math.cos(2 * Math.PI * progress);
   const dotY = 100 + radius * Math.sin(2 * Math.PI * progress);
+  const rotation = (strokeDashoffset / circumference) * 360;
 
   return (
     <svg width="224" height="224">
@@ -53,6 +54,7 @@ function CircularProgress({ value, max }) {
       />
 
       <circle
+        
         cx={dotX}
         cy={dotY}
         r={dotRadius}

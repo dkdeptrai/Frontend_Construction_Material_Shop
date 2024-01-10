@@ -34,6 +34,9 @@ import AddProductPage from "./pages/addProductPage/addProductPage.jsx";
 //purchase order
 import PurchaseOrders from "./pages/PurchaseOrders/ListPurchaseOrders/PurchaseOrders.jsx";
 import AddPurchaseOrderPage from "./pages/PurchaseOrders/AddPurchaseOrder/AddPurchaseOrderPage/AddPurchaseOrderPage.jsx";
+import InfoPurchaseOrder from "./pages/PurchaseOrders/InfoPurchaseOrder/InfoPurchaseOrder.jsx";
+
+//warehouse
 import Warehouse from "./pages/warehousePage/warehousePage.jsx";
 import SignInPage from "./pages/SignInPage/SignInPage.jsx";
 import Account from "./pages/Setting/Account/Account.jsx";
@@ -62,6 +65,7 @@ const ROUTE_TITLES = {
   "/purchaseorders": "Purchase Orders",
   "/purchaseorders/add": "Add Purchase Order",
   "/purchaseorders/add/add-products": "Add Products",
+  "/purchaseorders/:id": "Purchase Order Details",
   "/warehouse": "Warehouse",
   "/account": "Account",
   "/password": "Password",
@@ -122,12 +126,16 @@ function App() {
                 />
                 <Route path="/purchase-orders" element={<PurchaseOrders />} />
                 <Route
-                  path="/purchaseorders/add"
+                  path="/purchase-orders/add"
                   element={<AddPurchaseOrderPage />}
                 />
                 <Route
-                  path="/purchaseorders/add/add-products"
+                  path="/purchase-orders/add/add-products"
                   element={<NewProducts />}
+                />
+                <Route
+                  path="/purchase-orders/:id"
+                  element={<InfoPurchaseOrder />}
                 />
                 <Route path="/warehouses" element={<Warehouse />} />
                 <Route path="/warehouses/add" element={<AddWarehousePage />} />

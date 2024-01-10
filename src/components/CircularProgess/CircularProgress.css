@@ -1,12 +1,9 @@
 @keyframes progress {
-    0% {
-      stroke-dashoffset: circumference;
-    }
-    100% {
-      stroke-dashoffset: offset;
-    }
+  0% {
+    stroke-dashoffset: 471.238898038;
   }
-  
-  .progress-circle {
-    animation: progress 2s ease-out forwards;
-  }
+}
+
+.progress-circle {
+  animation: progress 2s linear forwards;
+}
