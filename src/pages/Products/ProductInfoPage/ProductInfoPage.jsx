@@ -14,13 +14,13 @@ function ProductInfoPage() {
   const navigate = useNavigate();
   const params = useParams();
   const productId = params.id;
-  const [name, setName] = useState("");
-  const [origin, setOrigin] = useState("");
-  const [description, setDescription] = useState("");
-  const [unitPrice, setUnitPrice] = useState("");
-  const [unit, setUnit] = useState("");
-  const [image, setImage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const name = useSelector((state) => state.productInfo.name);
+  const origin = useSelector((state) => state.productInfo.origin);
+  const description = useSelector((state) => state.productInfo.description);
+  const unitPrice = useSelector((state) => state.productInfo.unitPrice);
+  const unit = useSelector((state) => state.productInfo.unit);
+  const image = useSelector((state) => state.productInfo.image);
 
   useEffect(() => {
     const fetchProductDetails = async () => {
@@ -33,13 +33,30 @@ function ProductInfoPage() {
             },
           });
           const product = await response.json();
-          setName(product.name);
-          setOrigin(product.origin);
-          setDescription(product.description);
-          setUnitPrice(product.unitPrice);
-          setUnit(product.calculationUnit);
-          setImage(product.imageUrl);
-          console.log(image);
+          dispatch({
+            type: "SET_PRODUCT_INFO_PAGE_NAME",
+            payload: product.name,
+          });
+          dispatch({
+            type: "SET_PRODUCT_INFO_PAGE_ORIGIN",
+            payload: product.origin,
+          });
+          dispatch({
+            type: "SET_PRODUCT_INFO_PAGE_DESCRIPTION",
+            payload: product.description,
+          });
+          dispatch({
+            type: "SET_PRODUCT_INFO_PAGE_UNIT_PRICE",
+            payload: product.unitPrice,
+          });
+          dispatch({
+            type: "SET_PRODUCT_INFO_PAGE_UNIT",
+            payload: product.calculationUnit,
+          });
+          dispatch({
+            type: "SET_PRODUCT_INFO_PAGE_IMAGE",
+            payload: product.imageUrl,
+          });
         } catch (error) {
           console.error("Error:", error);
         }
@@ -50,17 +67,18 @@ function ProductInfoPage() {
   }, [productId]);
 
   const navigateBackToProducts = () => {
-    dispatch({ type: "SET_SUBROUTE", payload: null });
+    dispatch({ type: "SET_PRODUCTS_PAGE_SUBROUTE", payload: null });
     navigate("/products");
   };
 
   const clearInput = () => {
-    setName("");
-    setOrigin("");
-    setDescription("");
-    setUnitPrice("");
-    setUnit("");
     setImage(null);
+    dispatch({ type: "SET_PRODUCT_INFO_PAGE_NAME", payload: "" });
+    dispatch({ type: "SET_PRODUCT_INFO_PAGE_ORIGIN", payload: "" });
+    dispatch({ type: "SET_PRODUCT_INFO_PAGE_DESCRIPTION", payload: "" });
+    dispatch({ type: "SET_PRODUCT_INFO_PAGE_UNIT_PRICE", payload: "" });
+    dispatch({ type: "SET_PRODUCT_INFO_PAGE_UNIT", payload: "" });
+    dispatch({ type: "SET_PRODUCT_INFO_PAGE_IMAGE", payload: null });
   };
   const handleClick = async (e) => {
     e.preventDefault();
@@ -138,36 +156,69 @@ function ProductInfoPage() {
           label="Name"
           type="text"
           value={name}
-          setValue={setName}
+          setValue={(value) =>
+            dispatch({
+              type: "SET_PRODUCT_INFO_PAGE_NAME",
+              payload: value,
+            })
+          }
         />
         <InputComponent
           label="Origin"
           type="text"
           value={origin}
-          setValue={setOrigin}
+          setValue={(value) =>
+            dispatch({
+              type: "SET_PRODUCT_INFO_PAGE_ORIGIN",
+              payload: value,
+            })
+          }
         />
         <div className="units">
           <InputComponent
             label="Unit Price"
             type="number"
             value={unitPrice}
-            setValue={setUnitPrice}
+            setValue={(value) =>
+              dispatch({
+                type: "SET_PRODUCT_INFO_PAGE_UNIT_PRICE",
+                payload: value,
+              })
+            }
           />
           <InputComponent
             label="Unit"
             type="text"
             value={unit}
-            setValue={setUnit}
+            setValue={(value) =>
+              dispatch({
+                type: "SET_PRODUCT_INFO_PAGE_UNIT",
+                payload: value,
+              })
+            }
           />
         </div>
         <InputComponent
           label="Description"
           type="text"
           value={description}
-          setValue={setDescription}
+          setValue={(value) =>
+            dispatch({
+              type: "SET_PRODUCT_INFO_PAGE_DESCRIPTION",
+              payload: value,
+            })
+          }
         />
 
-        <ImageInputComponent imageUrl={image} setImage={setImage} />
+        <ImageInputComponent
+          imageUrl={image}
+          setImage={(value) =>
+            dispatch({
+              type: "SET_PRODUCT_INFO_PAGE_IMAGE",
+              payload: value,
+            })
+          }
+        />
         <button
           className="submitButton"
           onClick={handleClick}

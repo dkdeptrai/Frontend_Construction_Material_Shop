@@ -29,6 +29,7 @@ function ProductsPage() {
 
   const products = useSelector((state) => state.products.products);
   const selectedRowIds = useSelector((state) => state.products.selectedRowIds);
+
   //tables states
   const paginationModel = useSelector(
     (state) => state.products.paginationModel
@@ -43,6 +44,7 @@ function ProductsPage() {
   const showSearchResults = useSelector(
     (state) => state.products.showSearchResults
   );
+  console.log("showSearchResults: ", showSearchResults);
 
   // filter options
   const name = useSelector((state) => state.products.name);
@@ -68,10 +70,10 @@ function ProductsPage() {
       );
       const data = await response.json();
       const products = data.results;
-      dispatch({ type: "SET_PRODUCTS", payload: products });
+      dispatch({ type: "SET_PRODUCTS_PAGE_PRODUCTS", payload: products });
       const total = data.total;
       dispatch({
-        type: "SET_PAGINATION_MODEL",
+        type: "SET_PRODUCTS_PAGE_PAGINATION_MODEL",
         payload: {
           ...paginationModel,
           total: total,
@@ -83,9 +85,9 @@ function ProductsPage() {
       console.error("Error fetching products:", error);
     }
   };
-  const handleSearch = async () => {
+  const handleSearch = async (page, size) => {
     try {
-      let query = `q=${name}&page=0&size=10`;
+      let query = `q=${name}&page=${page}&size=${size}`;
       if (origin) {
         query += `&origin=${origin}`;
       }
@@ -107,10 +109,10 @@ function ProductsPage() {
       });
       const data = await response.json();
       const products = data.results;
-      dispatch({ type: "SET_SEARCH_RESULTS", payload: products });
-      dispatch({ type: "SET_SHOW_SEARCH_RESULTS", payload: true });
+      dispatch({ type: "SET_PRODUCTS_PAGE_SEARCH_RESULTS", payload: products });
+      dispatch({ type: "SET_PRODUCTS_PAGE_SHOW_RESULTS", payload: true });
       dispatch({
-        type: "SET_SEARCH_PAGINATION_MODEL",
+        type: "SET_PRODUCTS_PAGE_SEARCH_PAGINATION_MODEL",
         payload: {
           ...searchPaginationModel,
           total: data.total,
@@ -155,6 +157,7 @@ function ProductsPage() {
   useEffect(() => {
     fetchProducts(paginationModel.page, paginationModel.pageSize);
   }, [paginationModel.page, paginationModel.pageSize]);
+
   const handleDelete = async (selectedRowIds) => {
     try {
       if (
@@ -176,13 +179,13 @@ function ProductsPage() {
       );
       if (searchResults.length > 0) {
         dispatch({
-          type: "SET_SEARCH_RESULTS",
+          type: "SET_PRODUCTS_PAGE_SEARCH_RESULTS",
           payload: searchResults.filter(
             (product) => !selectedRowIds.includes(product.id)
           ),
         });
         dispatch({
-          type: "SET_SEARCH_PAGINATION_MODEL",
+          type: "SET_PRODUCTS_PAGE_SEARCH_PAGINATION_MODEL",
           payload: {
             ...searchPaginationModel,
             total: searchPaginationModel.total - selectedRowIds.length,
@@ -190,13 +193,13 @@ function ProductsPage() {
         });
       } else {
         dispatch({
-          type: "SET_PRODUCTS",
+          type: "SET_PRODUCTS_PAGE_PRODUCTS",
           payload: products.filter(
             (product) => !selectedRowIds.includes(product.id)
           ),
         });
         dispatch({
-          type: "SET_PAGINATION_MODEL",
+          type: "SET_PRODUCTS_PAGE_PAGINATION_MODEL",
           payload: {
             ...paginationModel,
             total: paginationModel.total - selectedRowIds.length,
@@ -209,22 +212,25 @@ function ProductsPage() {
   };
 
   const handleSearchQueryChange = (event) => {
-    dispatch({ type: "SET_NAME", payload: event.target.value });
+    dispatch({ type: "SET_PRODUCTS_PAGE_NAME", payload: event.target.value });
     if (event.target.value === "" || event.target.value === null) {
-      dispatch({ type: "SET_SHOW_SEARCH_RESULTS", payload: false });
-      dispatch({ type: "SET_SEARCH_RESULTS", payload: [] });
+      dispatch({ type: "SET_PRODUCTS_PAGE_SHOW_RESULTS", payload: false });
+      dispatch({ type: "SET_PRODUCTS_PAGE_SEARCH_RESULTS", payload: [] });
       fetchProducts(paginationModel.page, paginationModel.pageSize);
     }
   };
 
   const navigateToNewProduct = () => {
-    dispatch({ type: "SET_SUBROUTE", payload: "add" });
+    dispatch({ type: "SET_PRODUCTS_PAGE_SUBROUTE", payload: "add" });
     navigate("/products/add");
   };
 
   const handleCellClick = (params, event) => {
     if (params.field === "name") {
-      dispatch({ type: "SET_SUBROUTE", payload: `add/${params.row.id}` });
+      dispatch({
+        type: "SET_PRODUCTS_PAGE_SUBROUTE",
+        payload: `add/${params.row.id}`,
+      });
       navigate(`/products/${params.row.id}`);
       event.stopPropagation();
     }
@@ -235,7 +241,11 @@ function ProductsPage() {
       headerName: "No.",
       width: 50,
       renderCell: (params) =>
-        paginationModel.page * 10 + products.indexOf(params.row) + 1,
+        showSearchResults
+          ? searchPaginationModel.page * 10 +
+            searchResults.indexOf(params.row) +
+            1
+          : paginationModel.page * 10 + products.indexOf(params.row) + 1,
     },
     {
       field: "name",
@@ -283,7 +293,10 @@ function ProductsPage() {
             placeholder="Price Start"
             value={priceStart}
             setValue={(value) =>
-              dispatch({ type: "SET_PRICE_START", payload: value })
+              dispatch({
+                type: "SET_PRODUCTS_PAGE_PRICE_START",
+                payload: value,
+              })
             }
           />
 
@@ -292,7 +305,7 @@ function ProductsPage() {
             placeholder="Price End"
             value={priceEnd}
             setValue={(value) =>
-              dispatch({ type: "SET_PRICE_END", payload: value })
+              dispatch({ type: "SET_PRODUCTS_PAGE_PRICE_END", payload: value })
             }
           />
           <InputComponent
@@ -301,7 +314,7 @@ function ProductsPage() {
             value={calculationUnit}
             setValue={(value) =>
               dispatch({
-                type: "SET_CALCULATION_UNIT",
+                type: "SET_PRODUCTS_PAGE_CALCULATION_UNIT",
                 payload: value,
               })
             }
@@ -312,7 +325,7 @@ function ProductsPage() {
             placeholder="Origin"
             value={origin}
             setValue={(value) =>
-              dispatch({ type: "SET_ORIGIN", payload: value })
+              dispatch({ type: "SET_PRODUCTS_PAGE_ORIGIN", payload: value })
             }
           />
         </div>
@@ -327,7 +340,10 @@ function ProductsPage() {
           identifyRoute="id"
           selectedRowIds={selectedRowIds}
           onRowSelection={(newSelection) => {
-            dispatch({ type: "SET_SELECTED_ROW_IDS", payload: newSelection });
+            dispatch({
+              type: "SET_PRODUCTS_PAGE_SELECTED_ROW_IDS",
+              payload: newSelection,
+            });
           }}
           paginationModel={
             showSearchResults ? searchPaginationModel : paginationModel
@@ -336,12 +352,12 @@ function ProductsPage() {
             showSearchResults
               ? (newPaginationModel) =>
                   dispatch({
-                    type: "SET_SEARCH_PAGINATION_MODEL",
+                    type: "SET_PRODUCTS_PAGE_SEARCH_PAGINATION_MODEL",
                     payload: newPaginationModel,
                   })
               : (newPaginationModel) =>
                   dispatch({
-                    type: "SET_PAGINATION_MODEL",
+                    type: "SET_PRODUCTS_PAGE_PAGINATION_MODEL",
                     payload: newPaginationModel,
                   })
           }

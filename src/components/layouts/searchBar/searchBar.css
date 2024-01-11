@@ -3,6 +3,7 @@
   align-items: center;
   justify-content: space-around;
   width: auto;
+  height: 100%;
   padding: 0px 12px;
   border: 1px solid #eaecf0;
   color: #344054;
@@ -39,10 +40,6 @@
   align-items: center;
 }
 
-.filterItem * {
-  margin: 0px 8px;
-}
-
 .searchBar {
   margin: 10px;
   border: none;
@@ -56,18 +53,4 @@
   aspect-ratio: 1;
   color: var(--text-color);
   padding: 12px;
-}
-
-.searchOptions {
-  width: 200px;
-  border-radius: 8px;
-  border: 1px solid var(--frame-color);
-}
-
-.filterPanel {
-  margin: 20px 0px;
-}
-
-li {
-  text-decoration: none;
 }

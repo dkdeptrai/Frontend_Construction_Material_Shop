@@ -14,13 +14,23 @@
   width: 100%;
 }
 
+.overviewContainer .label {
+  width: 100%;
+  font-size: 20px;
+  font-weight: 500;
+}
+
 .pieChartContainer {
-  width: 50%;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
 }
 
 .ordersStatus {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
 }
 
 .orderLabels {

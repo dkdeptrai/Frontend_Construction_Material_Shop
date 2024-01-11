@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import "./AddCustomerPage.css";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 //pages and components
 import BackButton from "../../../components/layouts/backButton/backButton";
@@ -9,29 +11,61 @@ import { API_CONST } from "../../../constants/apiConstants";
 import LoadingCircle from "../../../components/LoadingCircle/LoadingCircle";
 
 function AddCustomerPage(props) {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  //invalid states
+
+  const isNameValid = useSelector((state) => state.addCustomerPage.isNameValid);
+  const isPhoneNumberValid = useSelector(
+    (state) => state.addCustomerPage.isPhoneNumberValid
+  );
+  const isDateOfBirthValid = useSelector(
+    (state) => state.addCustomerPage.isDateOfBirthValid
+  );
+  const isAddressValid = useSelector(
+    (state) => state.addCustomerPage.isAddressValid
+  );
+  const isTaxValid = useSelector((state) => state.addCustomerPage.isTaxValid);
 
   //valid states
-  const [name, setName] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [dateOfBirth, setDateOfBirth] = useState("");
-  const [address, setAddress] = useState("");
-  const [tax, setTax] = useState("");
+  const name = useSelector((state) => state.addCustomerPage.name);
+  const phoneNumber = useSelector((state) => state.addCustomerPage.phoneNumber);
+  const dateOfBirth = useSelector((state) => state.addCustomerPage.dateOfBirth);
+  const address = useSelector((state) => state.addCustomerPage.address);
+  const tax = useSelector((state) => state.addCustomerPage.tax);
 
-  //invalid states
-  const [isNameValid, setIsNameValid] = useState(true);
-  const [isPhoneNumberValid, setIsPhoneNumberValid] = useState(true);
-  const [isDateOfBirthValid, setIsDateOfBirthValid] = useState(true);
-  const [isAddressValid, setIsAddressValid] = useState(true);
-  const [isTaxValid, setIsTaxValid] = useState(true);
-
+  const clearInput = () => {
+    dispatch({ type: "SET_ADD_CUSTOMER_PAGE_NAME", payload: "" });
+    dispatch({ type: "SET_ADD_CUSTOMER_PAGE_PHONE_NUMBER", payload: "" });
+    dispatch({ type: "SET_ADD_CUSTOMER_PAGE_DATE_OF_BIRTH", payload: "" });
+    dispatch({ type: "SET_ADD_CUSTOMER_PAGE_ADDRESS", payload: "" });
+    dispatch({ type: "SET_ADD_CUSTOMER_PAGE_TAX", payload: "" });
+  };
+  // TODO: some bug here
   const handleAddCustomer = () => {
     setLoading(true);
-    setIsNameValid(name !== "");
-    setIsPhoneNumberValid(phoneNumber !== "");
-    setIsDateOfBirthValid(dateOfBirth !== "");
-    setIsAddressValid(address !== "");
-    setIsTaxValid(tax !== "");
+
+    dispatch({
+      type: "SET_ADD_CUSTOMER_PAGE_IS_NAME_VALID",
+      payload: name !== "",
+    });
+    dispatch({
+      type: "SET_ADD_CUSTOMER_PAGE_IS_PHONE_NUMBER_VALID",
+      payload: phoneNumber !== "",
+    });
+    dispatch({
+      type: "SET_ADD_CUSTOMER_PAGE_IS_DATE_OF_BIRTH_VALID",
+      payload: dateOfBirth !== "",
+    });
+    dispatch({
+      type: "SET_ADD_CUSTOMER_PAGE_IS_ADDRESS_VALID",
+      payload: address !== "",
+    });
+    dispatch({
+      type: "SET_ADD_CUSTOMER_PAGE_IS_TAX_VALID",
+      payload: tax !== "",
+    });
 
     if (
       name === "" ||
@@ -43,6 +77,7 @@ function AddCustomerPage(props) {
       setLoading(false);
       return;
     }
+    console.log(dateOfBirth);
 
     const customer = {
       name: name,
@@ -62,18 +97,28 @@ function AddCustomerPage(props) {
       .then((response) => response.json())
       .then((data) => {
         setLoading(false);
-        window.history.back();
+        clearInput;
       })
       .catch((error) => {
         console.error("Error:", error);
         alert("Add customer failed!");
       });
+    setLoading(false);
+    clearInput();
+  };
+
+  const navigateBackToCustomers = () => {
+    dispatch({ type: "SET_CUSTOMERS_PAGE_SUBROUTE", payload: null });
+    navigate("/customers");
   };
 
   return (
     <div>
       {loading && <LoadingCircle />}
-      <BackButton content="Add Customer" />
+      <BackButton
+        content="Add Customer"
+        handleClick={navigateBackToCustomers}
+      />
       <form>
         <InputComponent
           label={
@@ -84,7 +129,9 @@ function AddCustomerPage(props) {
           }
           type="text"
           value={name}
-          setValue={setName}
+          setValue={(value) =>
+            dispatch({ type: "SET_ADD_CUSTOMER_PAGE_NAME", payload: value })
+          }
           className={isNameValid ? "" : "invalid-input"}
         />
         <InputComponent
@@ -96,7 +143,12 @@ function AddCustomerPage(props) {
           }
           type="text"
           value={phoneNumber}
-          setValue={setPhoneNumber}
+          setValue={(value) =>
+            dispatch({
+              type: "SET_ADD_CUSTOMER_PAGE_PHONE_NUMBER",
+              payload: value,
+            })
+          }
           className={isPhoneNumberValid ? "" : "invalid-input"}
         />
         <InputComponent
@@ -108,7 +160,9 @@ function AddCustomerPage(props) {
           }
           type="text"
           value={address}
-          setValue={setAddress}
+          setValue={(value) =>
+            dispatch({ type: "SET_ADD_CUSTOMER_PAGE_ADDRESS", payload: value })
+          }
           className={isAddressValid ? "" : "invalid-input"}
         />
         <InputComponent
@@ -120,7 +174,12 @@ function AddCustomerPage(props) {
           }
           type="date"
           value={dateOfBirth}
-          setValue={setDateOfBirth}
+          setValue={(value) =>
+            dispatch({
+              type: "SET_ADD_CUSTOMER_PAGE_DATE_OF_BIRTH",
+              payload: value,
+            })
+          }
           className={isDateOfBirthValid ? "" : "invalid-input"}
         />
         <InputComponent
@@ -132,7 +191,9 @@ function AddCustomerPage(props) {
           }
           type="text"
           value={tax}
-          setValue={setTax}
+          setValue={(value) => {
+            dispatch({ type: "SET_ADD_CUSTOMER_PAGE_TAX", payload: value });
+          }}
           className={isTaxValid ? "" : "invalid-input"}
         />
       </form>

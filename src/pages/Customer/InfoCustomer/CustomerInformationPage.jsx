@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
 //pages and components
 import BackButton from "../../../components/layouts/backButton/backButton";
@@ -9,6 +10,8 @@ import { API_CONST } from "../../../constants/apiConstants";
 import LoadingCircle from "../../../components/LoadingCircle/LoadingCircle";
 
 function CustomerInformationPage() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { id } = useParams();
   const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -29,7 +32,7 @@ function CustomerInformationPage() {
         Authorization: "Bearer " + sessionStorage.getItem("token"),
       },
     })
-      .then((respone) => respone.json())
+      .then((response) => response.json())
       .then((data) => {
         const newCustomer = {
           name: data.name,
@@ -61,7 +64,7 @@ function CustomerInformationPage() {
         Authorization: "Bearer " + sessionStorage.getItem("token"),
       },
     })
-      .then((respone) => respone.json())
+      .then((response) => response.json())
       .then((data) => {
         setCustomerOrders(data);
       });
@@ -123,11 +126,18 @@ function CustomerInformationPage() {
     },
     { headerName: "Total", field: "total", flex: 0.4 },
   ];
+  const navigateBackToCustomers = () => {
+    dispatch({ type: "SET_CUSTOMERS_PAGE_SUBROUTE", payload: null });
+    navigate("/customers");
+  };
 
   return (
     <div>
       {loading && <LoadingCircle />}
-      <BackButton content="Customer Information" />
+      <BackButton
+        content="Customer Information"
+        handleClick={navigateBackToCustomers}
+      />
       <form>
         <InputComponent
           label="Name"

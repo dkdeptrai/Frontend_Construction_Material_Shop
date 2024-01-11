@@ -17,3 +17,11 @@
   border-radius: 50%;
   margin-right: 10px;
 }
+
+.customerPageContainer .filters {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 20px;
+  justify-content: start;
+}
