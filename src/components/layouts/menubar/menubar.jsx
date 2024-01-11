@@ -49,6 +49,9 @@ function MenuBar() {
   const handleSignOut = async (e) => {
     dispatch(resetUserData());
     dispatch(setSelectedProducts([]));
+    dispatch({ type: "SET_SALE_ORDERS", payload: [] });
+    dispatch({ type: "SET_INVENTORY_ITEMS", payload: [] });
+    dispatch({ type: "SET_PURCHASE_ORDERS", payload: [] });
     await persistor.purge();
     sessionStorage.removeItem("token");
     navigate("/");

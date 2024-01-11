@@ -24,7 +24,6 @@ function SaleOrdersPage() {
   );
   console.log(saleOrdersFromStore);
 
-
   const [saleOrders, setSaleOrders] = useState([]);
 
   //loadiing circle
@@ -49,6 +48,9 @@ function SaleOrdersPage() {
         const newSaleOrders = [];
         for (let i = 0; i < data.results.length; i++) {
           const order = data.results[i];
+          if (order.orderType === "PURCHASE") {
+            continue;
+          }
           const customerData = await fetch(
             API_CONST + "/customers/" + order.customerId,
             {

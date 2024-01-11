@@ -40,46 +40,35 @@ function AddSaleOrderPage() {
   //loading
   const [loading, setLoading] = useState(false);
 
-  //get selected customer if not null
-  const selectedCustomer = useSelector(
-    (state) => state.selectedOrder.customerData
-  );
-
   //fetch customer name and debt from phone number
   useEffect(() => {
-    if (selectedCustomer) {
-      setSearchedCustomerPhone(selectedCustomer.customerPhone);
-      setSearchedCustomerName(selectedCustomer.customerName);
-    }
-    if (searchedCustomerPhone) {
-      //fetch for customers with correct phone number
-      fetch(API_CONST + "/customers?phone=" + searchedCustomerPhone, {
-        method: "GET",
-        headers: {
-          Authorization: "Bearer " + sessionStorage.getItem("token"),
-        },
+    //fetch for customers with correct phone number
+    fetch(API_CONST + "/customers?phone=" + searchedCustomerPhone, {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + sessionStorage.getItem("token"),
+      },
+    })
+      .then((response) => response.json())
+      .then(async (customers) => {
+        if (customers.results.length > 0) {
+          // Update the customer name input with the fetched customer name
+          const customer = customers.results[0];
+          setSearchedCustomerName(customer.name);
+          dispatch(setSelectedCustomer(customer.phone, customer.name));
+          // Update the old debt input with the fetched customer debt
+          const customerTotalDebt = await customer.debts.reduce(
+            (totalDebt, debt) => {
+              if (!debt.alreadyPaid) {
+                return totalDebt + debt.amount;
+              }
+            },
+            0
+          );
+          setOldDebt(customerTotalDebt);
+        }
       })
-        .then((response) => response.json())
-        .then(async (customers) => {
-          if (customers.results.length > 0) {
-            // Update the customer name input with the fetched customer name
-            const customer = customers.results[0];
-            setSearchedCustomerName(customer.name);
-            dispatch(setSelectedCustomer(customer.phone, customer.name));
-            // Update the old debt input with the fetched customer debt
-            const customerTotalDebt = await customer.debts.reduce(
-              (totalDebt, debt) => {
-                if (!debt.alreadyPaid) {
-                  return totalDebt + debt.amount;
-                }
-              },
-              0
-            );
-            setOldDebt(customerTotalDebt);
-          }
-        })
-        .catch((error) => console.error("Error:", error));
-    }
+      .catch((error) => console.error("Error:", error));
   }, [searchedCustomerPhone]);
 
   const selectedProducts = useSelector(
@@ -111,7 +100,6 @@ function AddSaleOrderPage() {
 
   //handle deposit
   const handleDepositAndDebt = async (paymentType) => {
-
     if (searchedCustomerPhone === "") {
       alert("Please enter customer's phone number!");
       return;
@@ -125,11 +113,9 @@ function AddSaleOrderPage() {
       alert("Please enter a deposit!");
       return;
     } else if (paymentType === "debt" && deposit !== 0) {
-      alert("Deposit must be 0 when choosing to debt!")
+      alert("Deposit must be 0 when choosing to debt!");
       return;
     }
-
-    setLoading(true);
 
     //fetch for customer id
     const customerData = await fetch(
@@ -161,6 +147,8 @@ function AddSaleOrderPage() {
       alert("Customer phone number does not match!");
       return;
     }
+
+    setLoading(true);
 
     //Add order to database
     const yourData = {
@@ -199,7 +187,7 @@ function AddSaleOrderPage() {
       },
       body: JSON.stringify(yourData),
     }).finally(() => {
-      dispatch(setSelectedCustomer("", ""));
+      dispatch(setSelectedCustomer(null, null));
       dispatch(setSelectedProducts([]));
       setLoading(false);
       navigate("/orders");
@@ -350,11 +338,19 @@ function AddSaleOrderPage() {
         </div>
       </div>
       <div className="payment-button-container">
-        <button className="deposit-button" onClick={() => handleDepositAndDebt("deposit")}>
+        <button
+          className="deposit-button"
+          onClick={() => handleDepositAndDebt("deposit")}
+        >
           Deposit
         </button>
 
-        <button className="debt-button" onClick={() => handleDepositAndDebt("debt")}>Debt</button>
+        <button
+          className="debt-button"
+          onClick={() => handleDepositAndDebt("debt")}
+        >
+          Debt
+        </button>
       </div>
     </div>
   );

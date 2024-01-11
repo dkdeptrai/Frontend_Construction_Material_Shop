@@ -27,10 +27,12 @@ function InStockCapacity() {
 }
 
 function AvailableCapacity() {
-  return <div className="available-capacity-info">
-    <div className="available-capacity"></div>
-    <span>Available capacity</span>
-  </div>;
+  return (
+    <div className="available-capacity-info">
+      <div className="available-capacity"></div>
+      <span>Available capacity</span>
+    </div>
+  );
 }
 
 function Dashboard() {
@@ -39,58 +41,15 @@ function Dashboard() {
   const [orderNumber, setOrderNumber] = useState(0);
   const [saleOrders, setSaleOrders] = useState([]);
   const [productNumber, setProductNumber] = useState(0);
+  const [revenue, setRevenue] = useState(0);
+  const [capacity, setCapacity] = useState(100);
+  const [usedCapacity, setUsedCapacity] = useState(0);
 
   const [loading, setLoading] = useState(true);
 
-  //count customer
-  useEffect(() => {
-    fetch(API_CONST + "/customers", {
-      method: "GET",
-      headers: {
-        Authorization: "Bearer " + sessionStorage.getItem("token"),
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setCustomerNumber(data.results.length);
-      })
-      .catch((error) => console.error("Error:", error));
-  }, []);
-
-  //get order number
-  useEffect(() => {
-    fetch(API_CONST + "/orders", {
-      method: "GET",
-      headers: {
-        Authorization: "Bearer " + sessionStorage.getItem("token"),
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setOrderNumber(data.results.length);
-      })
-      .catch((error) => console.error("Error:", error));
-  }, []);
-
-  //count products
-  useEffect(() => {
-    fetch(API_CONST + "/products", {
-      method: "GET",
-      headers: {
-        Authorization: "Bearer " + sessionStorage.getItem("token"),
-      },
-    })
-
-      .then((response) => response.json())
-      .then((data) => {
-        setProductNumber(data.results.length);
-      })
-      .catch((error) => console.error("Error:", error));
-  }, []);
-
   //get all sale orders
   useEffect(() => {
-    fetch(API_CONST + "/orders?size=5", {
+    fetch(API_CONST + "/dashboard", {
       method: "GET",
       headers: {
         Authorization: "Bearer " + sessionStorage.getItem("token"),
@@ -98,9 +57,16 @@ function Dashboard() {
     })
       .then((response) => response.json())
       .then(async (data) => {
+        setCustomerNumber(data.customerCount);
+        setOrderNumber(data.orderCount);
+        setProductNumber(data.productCount);
+        setRevenue(data.revenue);
         const newSaleOrders = [];
-        for (let i = data.results.length - 1; i >= 0; i--) {
-          const order = data.results[i];
+        for (let i = 0; i <= data.newestOrders.length - 1; i++) {
+          const order = data.newestOrders[i];
+          if (order.orderType === "PURCHASE") {
+            continue;
+          }
           const customerData = await fetch(
             API_CONST + "/customers/" + order.customerId,
             {
@@ -126,6 +92,8 @@ function Dashboard() {
           newSaleOrders.push(newOrder);
         }
         setSaleOrders(newSaleOrders);
+        setUsedCapacity(data.remainingQuantity);
+        setCapacity(data.totalQuantity);
       })
       .catch((error) => console.error("Error:", error))
       .finally(() => {
@@ -208,7 +176,7 @@ function Dashboard() {
             <InfoContainer
               className="info-container"
               title="Earning"
-              info="2500"
+              info={revenue + " $"}
               icon={<EarningIcon />}
             />
             <InfoContainer
@@ -220,7 +188,7 @@ function Dashboard() {
           </div>
         </div>
         <div className="capacity-indicator">
-          <CircularProgess value={90} max={100} />
+          <CircularProgess value={usedCapacity} max={capacity} />
           <div className="capacity-info">
             <InStockCapacity />
             <AvailableCapacity />
