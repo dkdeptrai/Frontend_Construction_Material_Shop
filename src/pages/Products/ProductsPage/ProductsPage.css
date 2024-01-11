@@ -1,7 +1,3 @@
-input {
-  all: unset;
-}
-
 .searchBar {
   margin-right: auto;
 }
@@ -17,11 +13,13 @@ input {
 }
 
 .toolBar {
-  align-items: flex-start;
   display: flex;
+  align-items: center;
+  justify-content: space-between;
   flex-direction: row;
   width: 100%;
-  font-size: 14;
+  font-size: 14px;
+  margin: 0px 0px 20px 0px;
 }
 
 .productPageContainer {
@@ -41,6 +39,14 @@ input {
   display: flex;
   flex-direction: row;
   align-items: center;
+}
+
+.filters {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 20px;
+  justify-content: space-between;
 }
 
 .table {

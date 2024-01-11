@@ -1,0 +1,69 @@
+.overviewContainer {
+  height: 100%;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  grid-gap: 1rem;
+  align-items: center;
+  justify-content: center;
+}
+
+.overviewContainer > * {
+  height: 100%;
+  width: 100%;
+}
+
+.overviewContainer .label {
+  width: 100%;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.pieChartContainer {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.ordersStatus {
+  display: flex;
+  flex-direction: column;
+}
+
+.orderLabels {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.orderLabels > * {
+  width: 70%;
+  text-align: center;
+  margin: 0.5rem;
+  padding: 0.3rem 1rem;
+  border-radius: 20px;
+}
+
+.processingLabel {
+  background-color: #deefff;
+  color: #455de1;
+}
+
+.deliveringLabel {
+  background-color: #fff4d8;
+  color: #f29239;
+}
+
+.cancelledLabel {
+  background-color: #ffdfdf;
+  color: #e93737;
+}
+
+.deliveredLabel {
+  background-color: #e1ffe7;
+  color: #3b774f;
+}

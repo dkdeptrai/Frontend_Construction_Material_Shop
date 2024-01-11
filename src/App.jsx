@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./App.css";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 //pages and components
 import Header from "./components/layouts/header/header.jsx";
@@ -8,6 +8,9 @@ import MenuBar from "./components/layouts/menubar/menubar.jsx";
 
 //dashboard
 import DashBoard from "./pages/Dashboard/Dashboard.jsx";
+
+//overview
+import Overview from "./pages/Overview/Overview.jsx";
 
 //customer
 import Customer from "./pages/Customer/ListCustomer/Customer.jsx";
@@ -28,8 +31,7 @@ import AddSaleOrderPage from "./pages/SaleOrders/AddOrder/AddSaleOrderPage/AddSa
 import NewProducts from "./pages/SaleOrders/AddOrder/NewProducts/NewProducts.jsx";
 import InfoOrder from "./pages/SaleOrders/InfoOrder/InfoOrder.jsx";
 
-import Products from "./pages/productsPage/productsPage.jsx";
-import AddProductPage from "./pages/addProductPage/addProductPage.jsx";
+import ProductInfoPage from "./pages/products/productInfoPage/ProductInfoPage.jsx";
 
 //purchase order
 import PurchaseOrders from "./pages/PurchaseOrders/ListPurchaseOrders/PurchaseOrders.jsx";
@@ -37,15 +39,15 @@ import AddPurchaseOrderPage from "./pages/PurchaseOrders/AddPurchaseOrder/AddPur
 import InfoPurchaseOrder from "./pages/PurchaseOrders/InfoPurchaseOrder/InfoPurchaseOrder.jsx";
 
 //warehouse
-import Warehouse from "./pages/warehousePage/warehousePage.jsx";
+import WarehousesPage from "./pages/Warehouse/WarehousesPage/WarehousesPage.jsx";
+import WarehouseInfoPage from "./pages/Warehouse/warehouseInfoPage/warehouseInfoPage.jsx";
+
 import SignInPage from "./pages/SignInPage/SignInPage.jsx";
 import Account from "./pages/Setting/Account/Account.jsx";
 import SettingModal from "./pages/Setting/SettingModal/SettingModal.jsx";
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import ProductInfoPage from "./pages/productInfoPage/productInfoPage.jsx";
-import AddWarehousePage from "./pages/addWarehousePage.jsx";
-import WarehouseInfoPage from "./pages/warehouseInfoPage/warehouseInfoPage.jsx";
+import ProductsPage from "./pages/products/productsPage/productsPage.jsx";
 
 const ROUTE_TITLES = {
   "/": "Authentication",
@@ -62,10 +64,10 @@ const ROUTE_TITLES = {
   "/orders/add/add-products": "Add Products",
   "/orders/:id": "Order Details",
   "/products": "Products",
-  "/purchaseorders": "Purchase Orders",
-  "/purchaseorders/add": "Add Purchase Order",
-  "/purchaseorders/add/add-products": "Add Products",
-  "/purchaseorders/:id": "Purchase Order Details",
+  "/purchase-orders": "Purchase Orders",
+  "/purchase-orders/add": "Add Purchase Order",
+  "/purchase-orders/add/add-products": "Add Products",
+  "/purchase-orders/:id": "Purchase Order Details",
   "/warehouse": "Warehouse",
   "/account": "Account",
   "/password": "Password",
@@ -77,6 +79,18 @@ function App() {
   const userType = useSelector((state) =>
     state.user.userData?.userType ? state.user.userData.userType : "EMPLOYEE"
   );
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    window.addEventListener("beforeunload", () => {
+      dispatch({ type: "CLEAR_REDUX_STORE" });
+    });
+
+    // Cleanup function
+    return () => {
+      window.removeEventListener("beforeunload");
+    };
+  }, [dispatch]);
 
   return (
     <>
@@ -91,6 +105,7 @@ function App() {
             <Header />
             <div className="contentContainer">
               <Routes>
+                <Route path="/overview" element={<Overview />} />
                 <Route path="/dashboard" element={<DashBoard />} />
                 <Route path="/customers" element={<Customer />} />
                 <Route path="/customers/add" element={<AddCustomerPage />} />
@@ -118,8 +133,11 @@ function App() {
                   element={<NewProducts />}
                 />
                 <Route path="/orders/:id" element={<InfoOrder />} />
-                <Route path="/products" element={<Products />} />
-                <Route path="/products/add" element={<AddProductPage />} />
+
+                {/* // products */}
+                <Route path="/products" element={<ProductsPage />} />
+                <Route path="/products/add" element={<ProductInfoPage />} />
+                <Route path="/products/:id" element={<ProductInfoPage />} />
                 <Route
                   path="/products/update/:id"
                   element={<ProductInfoPage />}
@@ -137,12 +155,9 @@ function App() {
                   path="/purchase-orders/:id"
                   element={<InfoPurchaseOrder />}
                 />
-                <Route path="/warehouses" element={<Warehouse />} />
-                <Route path="/warehouses/add" element={<AddWarehousePage />} />
-                <Route
-                  path="/warehouses/:address"
-                  element={<WarehouseInfoPage />}
-                />
+                <Route path="/warehouses" element={<WarehousesPage />} />
+                <Route path="/warehouses/add" element={<WarehouseInfoPage />} />
+                <Route path="/warehouses/:id" element={<WarehouseInfoPage />} />
                 <Route path="/account" element={<Account />} />
               </Routes>
             </div>

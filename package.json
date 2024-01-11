@@ -28,6 +28,8 @@
 
     "@mui/material": "^5.14.20",
 
+    "@mui/x-charts": "^6.18.7",
+
     "@mui/x-data-grid": "^6.18.3",
 
     "@react-navigation/native": "^6.1.9",
@@ -65,6 +67,8 @@
     "react-svg": "^16.1.31",
 
     "react-widgets": "^5.8.4",
+
+    "recharts": "^2.10.3",
 
     "redux": "^5.0.0",
 

@@ -3,6 +3,7 @@ import { Sidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import DashboardIcon from "../../../assets/icons/dashboard.svg?react";
+import OverviewIcon from "../../../assets/icons/overview.svg?react";
 import ProductIcon from "../../../assets/icons/product.svg?react";
 import OrderIcon from "../../../assets/icons/order.svg?react";
 import PurchaseOrderIcon from "../../../assets/icons/purchase-order.svg?react";
@@ -89,6 +90,7 @@ function MenuBar() {
           }}
         >
           <MenuItemComponent icon={<DashboardIcon />} link="/dashboard" />
+          <MenuItemComponent icon={<OverviewIcon />} link="/overview" />
           <MenuItemComponent icon={<ProductIcon />} link="/products" />
           <MenuItemComponent icon={<OrderIcon />} link="/orders" />
           <MenuItemComponent

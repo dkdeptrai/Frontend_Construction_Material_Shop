@@ -37,12 +37,15 @@ function SaleOrdersPage() {
       setLoading(false);
       return;
     }
-    fetch(API_CONST + "/orders", {
-      method: "GET",
-      headers: {
-        Authorization: "Bearer " + sessionStorage.getItem("token"),
-      },
-    })
+    fetch(
+      `${API_CONST}/orders?page=0&size=10&status=PROCESSING&orderType=PURCHASE`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + sessionStorage.getItem("token"),
+        },
+      }
+    )
       .then((response) => response.json())
       .then(async (data) => {
         const newSaleOrders = [];

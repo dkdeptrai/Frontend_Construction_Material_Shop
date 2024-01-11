@@ -1,7 +1,8 @@
 import "./AddEmployeePage.css";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
-//compoents
+// components
 import InputComponent from "../../../components/InputComponent/InputComponent";
 import BackButton from "../../../components/layouts/backButton/backButton.jsx";
 import { API_CONST } from "../../../constants/apiConstants.jsx";
@@ -9,6 +10,8 @@ import ImageInputComponent from "../../../components/imageInputComponent/imageIn
 import LoadingCircle from "../../../components/LoadingCircle/LoadingCircle.jsx";
 
 const AddEmployee = () => {
+  const dispatch = useDispatch();
+  // const subroute
   const [employeeName, setEmployeeName] = useState("");
   const [employeeImage, setEmployeeImage] = useState("");
   const [email, setEmail] = useState("");
@@ -62,9 +65,9 @@ const AddEmployee = () => {
       }
 
       setLoading(false);
-      
     } catch (error) {
       console.log(error);
+      setLoading(false);
     } finally {
       if (loading) {
         setLoading(false);
