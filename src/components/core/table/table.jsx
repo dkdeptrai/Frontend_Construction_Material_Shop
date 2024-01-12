@@ -8,65 +8,55 @@ import "./table.css";
 function Table(props) {
   const navigate = useNavigate();
   const location = useLocation();
-  const dispatch = useDispatch();
 
-  const columns = props.columns;
-  const rows = props.rows;
   //Add cellName's field's name so that we can navigate to more information page
 
   const cellName = props.cellName;
   //IdentifyRoute is the field's name that we can identify each row
 
-  const selectedRowIds = props.selectedRowIds;
-
   const noCheckboxSelection = props.noCheckboxSelection;
   const disableRowSelectionOnClick = props.disableRowSelectionOnClick || false;
 
   const identifyRoute = props.identifyRoute;
-  const handleRowSelection = props.onRowSelection;
-  const [paginationModel, setPaginationModel] = useState({
-    pageSize: 10,
-    page: 0,
-  });
 
   const handlePaginationChange = (params) => {
-    const newPaginationModel = {
-      pageSize: params.pageSize,
-      page: params.page,
-    };
-
-    props.fetchPageData(newPaginationModel.page, newPaginationModel.pageSize);
-  };
-
-  const handlePageChange = (params) => {
-    console.log("Page changed", params);
-    setPage(params.page);
-  };
-
-  const handleCellClick = (params, event) => {
-    if (
-      params.field === cellName &&
-      (params.field === "name" || params.field === "customerPhone" || params.field === "employeeCode")
-    ) {
-      navigate(location.pathname + "/" + params.row[identifyRoute]);
-    }
-    if (params.field === cellName && (params.field === "amount" || params.field === "unitPrice")) {
-      event.stopPropagation();
+    if (props.paginationModel.page !== params.page) {
+      props.onPaginationModelChange({
+        ...props.paginationModel,
+        page: params.page,
+      });
     }
   };
+  const handleCellClick = props.handleCellClick
+    ? props.handleCellClick
+    : (params, event) => {
+        if (
+          params.field === cellName &&
+          (params.field === "name" ||
+            params.field === "customerPhone" ||
+            params.field === "employeeCode")
+        ) {
+          navigate(location.pathname + "/" + params.row[identifyRoute]);
+        }
+        if (params.field === cellName && params.field === "amount") {
+          event.stopPropagation();
+        }
+      };
 
   return (
     <div>
       <DataGrid
         className="table"
-        rows={rows}
-        columns={columns}
+        paginationMode="server"
+        rowCount={props.paginationModel?.total ?? 0}
+        rows={props.rows}
+        columns={props.columns}
         checkboxSelection={!noCheckboxSelection}
-        onRowSelectionModelChange={handleRowSelection}
-        rowSelectionModel={selectedRowIds}
-        pagination
-        paginationModel={paginationModel}
-        onPaginationModelChange={setPaginationModel}
+        onRowSelectionModelChange={props.onRowSelection}
+        rowSelectionModel={props.selectedRowIds}
+        pagination={true}
+        paginationModel={props.paginationModel}
+        onPaginationModelChange={handlePaginationChange}
         pageSizeOptions={[10]}
         onCellClick={handleCellClick}
         disableRowSelectionOnClick={disableRowSelectionOnClick}

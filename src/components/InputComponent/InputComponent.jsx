@@ -1,30 +1,42 @@
 import React from "react";
 import "./InputComponent.css";
-
+import { useDispatch } from "react-redux";
 const InputComponent = ({
   label,
   type,
   accept,
   defaultValue,
-  value,
+  value = "",
   setValue,
   options,
   className,
+  placeholder,
+  dataListOptions,
 }) => {
-  if (!label || !type) {
-    throw new Error("InputComponent: label and type are required");
+  if (!type) {
+    throw new Error("InputComponent: type is required!");
   }
-
+  const dispatch = useDispatch();
   const handleChange = (e) => {
-    value = e.target.value;
-    setValue(e.target.value);
+    if (e.target.value === "") {
+      setValue("");
+    } else {
+      setValue(e.target.value);
+    }
   };
 
+  let renderedLabel = null;
+  if (label) {
+    renderedLabel = <label>{label}</label>;
+  }
+
   if (type === "select") {
+    options.sort((a, b) => a.localeCompare(b));
     return (
       <div>
-        <label>{label}</label>
+        {renderedLabel}
         <select value={value} onChange={handleChange} className={className}>
+          <option value="">{placeholder}</option>
           {options.map((option) => (
             <option key={option}>{option}</option>
           ))}
@@ -35,15 +47,26 @@ const InputComponent = ({
 
   return (
     <div>
-      <label>{label}</label>
+      {renderedLabel}
       <input
         type={type}
+        placeholder={placeholder}
         accept={accept}
         defaultValue={defaultValue}
         value={value}
         onChange={handleChange}
-        className={className}
+        className={className + " inputBarcodeField"}
+        list={dataListOptions ? "dataListOptions" : null}
       />
+      {dataListOptions && (
+        <datalist id="dataListOptions">
+          {dataListOptions.map((option) => (
+            <option key={option}>
+              <span style={{color: "red"}}>{option}</span>
+            </option>
+          ))}
+        </datalist>
+      )}
     </div>
   );
 };

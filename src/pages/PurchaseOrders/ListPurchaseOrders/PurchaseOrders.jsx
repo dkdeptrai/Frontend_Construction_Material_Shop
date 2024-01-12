@@ -17,6 +17,11 @@ const PurchaseOrders = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [purchaseOrders, setPurchaseOrders] = useState([]);
+  const [paginationModel, setPaginationModel] = useState({
+    pageSize: 10,
+    page: 0,
+    total: 0,
+  });
 
   //loadiing circle
   const [loading, setLoading] = useState(true);
@@ -68,7 +73,7 @@ const PurchaseOrders = () => {
           };
           newPurchaseOrders.push(newOrder);
         }
-        dispatch({type: "SET_PURCHASE_ORDERS", payload: newPurchaseOrders});
+        dispatch({ type: "SET_PURCHASE_ORDERS", payload: newPurchaseOrders });
         console.log("get PUrCHASE orders from api");
         setPurchaseOrders(newPurchaseOrders);
       })
@@ -142,6 +147,7 @@ const PurchaseOrders = () => {
         rows={purchaseOrders}
         cellName="employeeCode"
         identifyRoute="id"
+        paginationModel={paginationModel}
         noCheckboxSelection
       />
     </div>

@@ -37,11 +37,19 @@ function AddSaleOrderPage() {
   const [searchedCustomerPhone, setSearchedCustomerPhone] = useState("");
   const [searchedCustomerName, setSearchedCustomerName] = useState("");
 
+  //live search
+  const [customerOptions, setCustomerOptions] = useState([]);
+
   //loading
   const [loading, setLoading] = useState(false);
 
   //fetch customer name and debt from phone number
   useEffect(() => {
+    if (searchedCustomerPhone === "") {
+      setSearchedCustomerName("");
+      setOldDebt(0);
+      return;
+    }
     //fetch for customers with correct phone number
     fetch(API_CONST + "/customers?phone=" + searchedCustomerPhone, {
       method: "GET",
@@ -51,6 +59,13 @@ function AddSaleOrderPage() {
     })
       .then((response) => response.json())
       .then(async (customers) => {
+        setCustomerOptions(customers.results);
+        // If there is only one customer with the phone number, fetch for the customer name
+        if (customers.results.length === 0) {
+          setSearchedCustomerName("Customer not found");
+          setOldDebt(0);
+          return;
+        } 
         if (customers.results.length > 0) {
           // Update the customer name input with the fetched customer name
           const customer = customers.results[0];
@@ -259,9 +274,10 @@ function AddSaleOrderPage() {
       <div className="customer-info">
         <InputComponent
           label="Customer's phone number"
-          type="text"
+          type="search"
           value={searchedCustomerPhone}
           setValue={setSearchedCustomerPhone}
+          dataListOptions={customerOptions.map((customer) => customer.phone)}
         ></InputComponent>
         <InputComponent
           label="Customer's name"

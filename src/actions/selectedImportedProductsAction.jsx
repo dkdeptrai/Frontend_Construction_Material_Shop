@@ -31,7 +31,7 @@ const updateSelectedImportedProduct = (id, selectedImportedProduct) => {
       selectedImportedProduct,
     },
   };
-}; 
+};
 
 const updateSelectedImportedProductsMFG = (id, mfg) => {
   return {
@@ -71,6 +71,15 @@ const updateSelectedImportedProductsAmount = (id, amount) => {
     },
   };
 };
+const updateSelectedImportedProductsWarehouse = (id, warehouseId) => {
+  return {
+    type: "UPDATE_SELECTED_IMPORTED_PRODUCTS_WAREHOUSE",
+    payload: {
+      id,
+      warehouseId,
+    },
+  };
+};
 export {
   setSelectedImportedProducts,
   addSelectedImportedProduct,
@@ -81,4 +90,5 @@ export {
   updateSelectedImportedProductsEXP,
   updateSelectedImportedProductsUnitPrice,
   updateSelectedImportedProductsAmount,
+  updateSelectedImportedProductsWarehouse,
 };

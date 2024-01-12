@@ -21,10 +21,19 @@ select {
   box-sizing: border-box;
   margin-bottom: 0.875rem;
   padding: 0.5rem;
-  width: 15%;
+  width: 100%;
   border-radius: 7px;
   border: 2px solid var(--frame-color);
   font-size: 1.125rem;
   background-color: transparent;
   color: var(--text-color);
 }
+
+.inputBarcodeField::-webkit-calendar-picker-indicator {
+  display:none !important;
+}
+
+.data-option {
+  color: var(--text-color);
+}
+

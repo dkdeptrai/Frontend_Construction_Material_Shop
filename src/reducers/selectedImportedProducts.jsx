@@ -107,6 +107,18 @@ const selectedImportedProductsReducer = (state = initialState, action) => {
         ...state,
         importedProductsData: updatedProductsAmount,
       };
+    case "UPDATE_SELECTED_IMPORTED_PRODUCTS_WAREHOUSE":
+      const updatedProductsWarehouse = [...state.importedProductsData];
+      const productIndexWarehouse = updatedProductsWarehouse.findIndex(
+        (product) => product.id === action.payload.id
+      );
+      updatedProductsWarehouse[productIndexWarehouse].warehouse =
+        action.payload.warehouseId;
+      return {
+        ...state,
+        importedProductsData: updatedProductsWarehouse,
+      };
+
     default:
       return state;
   }

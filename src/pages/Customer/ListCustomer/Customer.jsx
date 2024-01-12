@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./Customer.css";
 import { useNavigate } from "react-router-dom";
-
+import { useDispatch, useSelector } from "react-redux";
 //pages and components
 import Table from "../../../components/core/table/table";
 import SearchBar from "../../../components/layouts/searchBar/searchBar";
@@ -10,69 +10,223 @@ import DeleteButton from "../../../components/layouts/deleteButton/deleteButton"
 import NewButton from "../../../components/layouts/newButton/newButton";
 import CustomerIcon from "../../../assets/icons/customer_default.png";
 import LoadingCircle from "../../../components/LoadingCircle/LoadingCircle";
+import InputComponent from "../../../components/InputComponent/InputComponent";
 import { API_CONST } from "../../../constants/apiConstants";
 
-function Customer(props) {
+function Customer() {
+  const dispatch = useDispatch();
+  const subroute = useSelector((state) => state.customers.subroute);
+  console.log("subroute: ", subroute);
   const navigate = useNavigate();
-  const [customerRows, setCustomerRows] = useState([]);
-  const [selectedRows, setSelectedRows] = useState([]);
+  const dummy = useSelector((state) => state.customers.dummy);
+  const [isLoading, setIsLoading] = useState(true);
 
-  //loading circle
-  const [loading, setLoading] = useState(true);
+  const customers = useSelector((state) => state.customers.customers);
+  const selectedRowIds = useSelector((state) => state.customers.selectedRowIds);
+
+  //table states
+  const paginationModel = useSelector(
+    (state) => state.customers.paginationModel
+  );
+  const searchPaginationModel = useSelector(
+    (state) => state.customers.searchPaginationModel
+  );
+
+  //search states
+  const searchResults = useSelector((state) => state.customers.searchResults);
+  const showSearchResults = useSelector(
+    (state) => state.customers.showSearchResults
+  );
+  // filter options
+  const name = useSelector((state) => state.customers.name);
+  const phone = useSelector((state) => state.customers.phone);
+  const address = useSelector((state) => state.customers.address);
+
+  const fetchCustomers = async (page, size) => {
+    try {
+      setIsLoading(true);
+      const response = await fetch(
+        `${API_CONST}/customers?page=${page}&size=${size}`,
+        {
+          method: "GET",
+          headers: {
+            contentType: "application/json",
+            Authorization: "Bearer " + sessionStorage.getItem("token"),
+          },
+        }
+      );
+      const data = await response.json();
+      const customers = data.results;
+      dispatch({
+        type: "SET_CUSTOMERS_PAGE_CUSTOMERS",
+        payload: customers,
+      });
+      const total = data.total;
+      dispatch({
+        type: "SET_CUSTOMERS_PAGE_PAGINATION_MODEL",
+        payload: {
+          ...paginationModel,
+          total: total,
+        },
+      });
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+      console.log("Error fetching customers: ", error);
+    }
+  };
+
+  //TODO: fix api call (no document)
+  const handleSearch = async (page, size) => {
+    try {
+      let query = `customerName=${name}&page=${page}&size=${size}&phone=${phone}`;
+      const response = await fetch(`${API_CONST}/customers/search?${query}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + sessionStorage.getItem("token"),
+        },
+      });
+      const data = await response.json();
+      const customers = data.results;
+      dispatch({
+        type: "SET_CUSTOMERS_PAGE_SEARCH_RESULTS",
+        payload: customers,
+      });
+      dispatch({ type: "SET_CUSTOMERS_PAGE_SHOW_RESULTS", payload: true });
+      dispatch({
+        type: "SET_CUSTOMERS_PAGE_SEARCH_PAGINATION_MODEL",
+        payload: { ...searchPaginationModel, total: data.total },
+      });
+    } catch (error) {
+      console.log("Error searching customers: ", error);
+    }
+  };
+
+  //TODO: fix api call
+  const handleExport = async () => {
+    try {
+      const response = await fetch(`${API_CONST}/customers/export/excel`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + sessionStorage.getItem("token"),
+        },
+      });
+      const data = await response.json();
+      console.log("Exported customers: ", data);
+    } catch (error) {
+      console.log("Error exporting customers: ", error);
+    }
+  };
+
+  useEffect(() => {
+    if (subroute) {
+      let id = subroute.split("/")[1];
+      if (id) {
+        navigate(`/customers/${id}`);
+      } else if (subroute === "add") {
+        navigate("/customers/add");
+      }
+    }
+  }, [subroute]);
 
   //get customer list
   useEffect(() => {
-    fetch(API_CONST + "/customers", {
-      method: "GET",
-      headers: {
-        Authorization: "Bearer " + sessionStorage.getItem("token"),
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setCustomerRows(data.results);
-      })
-      .catch((error) => console.error("Error:", error))
-      .finally(() => {
-        setLoading(false);
-      });
-  }, []);
+    fetchCustomers(paginationModel.page, paginationModel.pageSize);
+  }, [paginationModel.page, paginationModel.pageSize]);
 
   //Add customer
-  const handleClick = () => {
+  const navigateToNewProduct = () => {
+    dispatch({ type: "SET_CUSTOMERS_PAGE_SUBROUTE", payload: "add" });
     navigate("/customers/add");
   };
 
   //Delete customer
-  const handleDelete = async () => {
-    if (
-      window.confirm("Are you sure you want to delete the selected customers?")
-    ) {
-      for (const id of selectedRows) {
-        await fetch(API_CONST + "/customers/" + id, {
-          method: "DELETE",
-          headers: {
-            Authorization: "Bearer " + sessionStorage.getItem("token"),
+  const handleDelete = async (selectedRowIds) => {
+    try {
+      if (
+        window.confirm(
+          "Are you sure you want to delete the selected customer?"
+        ) !== true
+      )
+        return;
+      await Promise.all(
+        selectedRowIds.map((id) =>
+          fetch(`${API_CONST}/customers/${id}`, {
+            method: "DELETE",
+            headers: {
+              Authorization: "Bearer " + sessionStorage.getItem("token"),
+              "Content-Type": "application/json",
+            },
+          })
+        )
+      );
+      if (searchResults.length > 0) {
+        dispatch({
+          type: "SET_CUSTOMERS_PAGE_SEARCH_RESULTS",
+          payload: searchResults.filter(
+            (customer) => !selectedRowIds.includes(customer.id)
+          ),
+        });
+        dispatch({
+          type: "SET_CUSTOMERS_PAGE_SEARCH_PAGINATION_MODEL",
+          payload: {
+            ...searchPaginationModel,
+            total: searchPaginationModel.total - selectedRowIds.length,
+          },
+        });
+      } else {
+        dispatch({
+          type: "SET_CUSTOMERS_PAGE_CUSTOMERS",
+          payload: customers.filter(
+            (customer) => !selectedRowIds.includes(customer.id)
+          ),
+        });
+        dispatch({
+          type: "SET_CUSTOMERS_PAGE_PAGINATION_MODEL",
+          payload: {
+            ...paginationModel,
+            total: paginationModel.total - selectedRowIds.length,
           },
         });
       }
-
-      const newCustomerRows = customerRows.filter(
-        (customer) => !selectedRows.includes(customer.id)
-      );
-      setCustomerRows(newCustomerRows);
+    } catch (error) {
+      console.log("Error deleting customers: ", error);
     }
   };
 
-  //table
-  const options = ["Name", "Phone", "Address", "Orders"];
+  const handleSearchQueryChange = (event) => {
+    dispatch({ type: "SET_CUSTOMERS_PAGE_NAME", payload: event.target.value });
+    if (event.target.value === "" || event.target.value == null) {
+      dispatch({ type: "SET_CUSTOMERS_PAGE_SHOW_RESULTS", payload: false });
+      dispatch({ type: "SET_CUSTOMERS_PAGE_SEARCH_RESULTS", payload: [] });
+      fetchCustomers(paginationModel.page, paginationModel.pageSize);
+    }
+  };
+
+  const handleCellClick = (params, event) => {
+    if (params.field === "name") {
+      dispatch({
+        type: "SET_CUSTOMERS_PAGE_SUBROUTE",
+        payload: `add/${params.id}`,
+      });
+      navigate(`/customers/${params.id}`);
+      event.stopPropagation();
+    }
+  };
 
   const customerColumns = [
     {
       field: "index",
       headerName: "No.",
       width: 50,
-      valueGetter: (params) => customerRows.indexOf(params.row) + 1,
+      renderCell: (params) =>
+        showSearchResults
+          ? searchPaginationModel.page * 10 +
+            searchResults.indexOf(params.row) +
+            1
+          : paginationModel.page * 10 + customers.indexOf(params.row) + 1,
     },
     {
       field: "name",
@@ -103,29 +257,76 @@ function Customer(props) {
   ];
 
   return (
-    <div className="pageContainer">
-      {loading && <LoadingCircle />}
+    <div className="customerPageContainer">
+      {isLoading && <LoadingCircle />}
       <div className="toolBar">
         <SearchBar
+          handleSearch={handleSearch}
           className="searchBar"
-          options={options}
-          placeholder="Search Products by name, ID or any related keywords"
+          placeholder="Search Customer by name"
+          handleSearchQueryChange={handleSearchQueryChange}
+          value={name}
         />
         <div className="buttonContainer">
-          <ExportButton onClick={() => {}} />
-          <DeleteButton onClick={handleDelete} />
-          <NewButton text=" New Customer" onClick={handleClick} />
+          <ExportButton onClick={handleExport} />
+          <DeleteButton onClick={() => handleDelete(selectedRowIds)} />
+          <NewButton text=" New Customer" onClick={navigateToNewProduct} />
         </div>
+      </div>
+      <div className="filters">
+        <InputComponent
+          type="number"
+          placeholder="Phone Number"
+          value={phone}
+          setValue={(value) =>
+            dispatch({
+              type: "SET_CUSTOMERS_PAGE_PHONE",
+              payload: value,
+            })
+          }
+        />
+        <InputComponent
+          type="text"
+          placeholder="Address"
+          value={address}
+          setValue={(value) =>
+            dispatch({
+              type: "SET_CUSTOMERS_PAGE_ADDRESS",
+              payload: value,
+            })
+          }
+        />
       </div>
       <Table
         className="table"
         columns={customerColumns}
-        rows={customerRows}
+        rows={showSearchResults ? searchResults : customers}
+        handleCellClick={handleCellClick}
+        selectedRowIds={selectedRowIds}
         cellName="name"
         identifyRoute="id"
         onRowSelection={(newSelection) => {
-          setSelectedRows(newSelection);
+          dispatch({
+            type: "SET_CUSTOMERS_PAGE_SELECTED_ROW_IDS",
+            payload: newSelection,
+          });
         }}
+        paginationModel={
+          showSearchResults ? searchPaginationModel : paginationModel
+        }
+        onPaginationModelChange={
+          showSearchResults
+            ? (newPaginationModel) =>
+                dispatch({
+                  type: "SET_CUSTOMERS_PAGE_SEARCH_PAGINATION_MODEL",
+                  payload: newPaginationModel,
+                })
+            : (newPaginationModel) =>
+                dispatch({
+                  type: "SET_CUSTOMERS_PAGE_PAGINATION_MODEL",
+                  payload: newPaginationModel,
+                })
+        }
       />
     </div>
   );

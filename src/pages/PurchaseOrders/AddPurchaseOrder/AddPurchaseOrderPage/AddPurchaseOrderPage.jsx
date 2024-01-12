@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./AddPurchaseOrderPage.css";
+import Select from "react-select";
 
 //states
 import { useDispatch, useSelector } from "react-redux";
@@ -13,6 +14,7 @@ import {
   updateSelectedImportedProductsEXP,
   updateSelectedImportedProductsUnitPrice,
   updateSelectedImportedProductsAmount,
+  updateSelectedImportedProductsWarehouse,
 } from "../../../../actions/selectedImportedProductsAction";
 
 //pages and components
@@ -31,15 +33,27 @@ function AddSaleOrderPage() {
   const dispatch = useDispatch();
   const [deletedItems, setDeletedItems] = useState([]);
 
-  //get user type
-  const userType = useSelector((state) => state.user.userData.userType);
-
   const [total, setTotal] = useState(0);
   const [discount, setDiscount] = useState(0);
 
-  //select product modal
+  //select product and warehouse modal
   const [productRowPointer, setProductRowPointer] = useState("");
   const [showModal, setShowModal] = useState(false);
+
+  //get all warehouses
+  const [warehouses, setWarehouses] = useState([]);
+  useEffect(() => {
+    fetch(API_CONST + "/warehouses", {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + sessionStorage.getItem("token"),
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setWarehouses(data);
+      });
+  }, []);
 
   //loading
   const [loading, setLoading] = useState(false);
@@ -197,7 +211,37 @@ function AddSaleOrderPage() {
     {
       field: "warehouse",
       headerName: "Warehouse",
-      flex: 0.5,
+      flex: 0.4,
+      renderCell: (params) => {
+        return (
+          <Select
+            className="warehouse-select"
+            value={warehouses.find(
+              (warehouse) => warehouse.id === params.value
+            )}
+            onChange={(selectedOption) => {
+              dispatch(
+                updateSelectedImportedProductsWarehouse(
+                  params.id,
+                  selectedOption.value
+                )
+              );
+            }}
+            options={warehouses}
+            getOptionLabel={(warehouse) => warehouse.address}
+            getOptionValue={(warehouse) => warehouse.id}
+            menuPortalTarget={document.body}
+            styles={{
+              control: (base) => ({
+                ...base,
+                border: 0,
+                backgroundColor: "transparent",
+              }),
+            }}
+          />
+          
+        );
+      },
     },
   ];
 

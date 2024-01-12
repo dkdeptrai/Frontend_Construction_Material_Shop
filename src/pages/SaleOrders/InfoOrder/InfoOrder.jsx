@@ -56,9 +56,9 @@ const InfoOrder = () => {
         setCustomerName(customer.name);
         setDate(new Date(order.createdTime).toLocaleDateString());
         console.log(order);
-        await order.newInventoryItems.map(async (item) => {
-          const orderedInventoryItemData = await fetch(
-            API_CONST + "/inventories/" + item.inventoryItemId,
+        await order.orderItems.map(async (item) => {
+          const orderedProductData = await fetch(
+            API_CONST + "/products/" + item.productId,
             {
               method: "GET",
               headers: {
@@ -66,13 +66,14 @@ const InfoOrder = () => {
               },
             }
           );
-          const orderedInventoryItem = await orderedInventoryItemData.json();
+          const orderedProduct = await orderedProductData.json();
           const product = {
             id: item.productId,
-            name: orderedInventoryItem.product.name,
-            unitPrice: orderedInventoryItem.product.unitPrice,
+            name: orderedProduct.name,
+            imageUrl: orderedProduct.imageUrl,
+            unitPrice: orderedProduct.unitPrice,
             amount: item.quantity,
-            total: item.quantity * orderedInventoryItem.product.unitPrice,
+            total: item.quantity * orderedProduct.unitPrice,
           };
           setProducts((products) => [...products, product]);
         });
@@ -85,7 +86,17 @@ const InfoOrder = () => {
   }, []);
 
   const productColumns = [
-    { headerName: "Product name", field: "name", flex: 0.7 },
+    {
+      headerName: "Product name",
+      field: "name",
+      flex: 0.7,
+      renderCell: (params) => (
+        <div className="productNameCell">
+          <img className="productImage" src={params.row.imageUrl} />
+          <span>{params.value}</span>
+        </div>
+      ),
+    },
     { headerName: "Price/Unit", field: "unitPrice", flex: 0.4 },
     { headerName: "Amount", field: "amount", flex: 0.4 },
     {

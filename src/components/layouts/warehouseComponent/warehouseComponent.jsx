@@ -5,17 +5,11 @@ import { useNavigate } from "react-router-dom";
 
 import "./warehouseComponent.css";
 
-function WarehouseComponent({ warehouse }) {
-  const navigate = useNavigate();
-
-  function handleClick() {
-    navigate(`/warehouses/${warehouse.address}`, { state: { warehouse } });
-  }
-
+function WarehouseComponent(props) {
   return (
-    <div className="warehouseComponent" onClick={handleClick}>
+    <div className="warehouseComponent" onClick={props.onClick}>
       <WarehouseIcon className="warehouseIcon" />
-      <div> {warehouse.name} </div>
+      <div> {props.warehouse.address} </div>
       <NextIcon className="nextIcon" />
     </div>
   );

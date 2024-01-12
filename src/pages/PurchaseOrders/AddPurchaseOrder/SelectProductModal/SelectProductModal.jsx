@@ -116,6 +116,7 @@ const SelectProductModal = ({ handleClose, productRowPointer }) => {
             );
             handleClose();
           }}
+          noCheckboxSelection
         />
       </div>
     </div>

@@ -12,6 +12,7 @@ import NewButton from "../../../components/layouts/newButton/newButton.jsx";
 import StatusContainer from "../../../components/StatusContainer/StatusContainer.jsx";
 import LoadingCircle from "../../../components/LoadingCircle/LoadingCircle.jsx";
 import { API_CONST } from "../../../constants/apiConstants.jsx";
+import CustomerIcon from "../../../assets/icons/customer_default.png";
 
 import "./SaleOrders.css";
 
@@ -37,7 +38,7 @@ function SaleOrdersPage() {
       setLoading(false);
       return;
     }
-    fetch(API_CONST + "/orders?orderType=SALE", {
+    fetch(`${API_CONST}/orders?orderType=SALE&page=0&size=10`, {
       method: "GET",
       headers: {
         Authorization: "Bearer " + sessionStorage.getItem("token"),

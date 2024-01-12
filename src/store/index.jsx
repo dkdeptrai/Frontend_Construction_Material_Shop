@@ -1,4 +1,8 @@
-import { configureStore } from "@reduxjs/toolkit";
+import {
+  combineSlices,
+  configureStore,
+  combineReducers,
+} from "@reduxjs/toolkit";
 import rootReducer from "../reducers/index.jsx";
 import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
