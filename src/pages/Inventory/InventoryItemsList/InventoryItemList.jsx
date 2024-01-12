@@ -13,43 +13,50 @@ const InventoryItemList = () => {
   const inventoryItemsFromStore = useSelector(
     (state) => state.inventoryItems.inventoryItemsData
   );
-
-  const [loading, setLoading] = useState(true);
+  console.log("inventory items from store", inventoryItemsFromStore);
+  const [loading, setLoading] = useState(false);
 
   const options = ["Name", "Quantity", "Unit", "Unit Price", "Total"];
 
-  const [inventoryItems, setInventoryItems] = useState([]);
-
+  const paginationModel = useSelector(
+    (state) => state.inventoryItems.paginationModel
+  );
+  console.log(paginationModel);
   //get all inventory items
   useEffect(() => {
-    if (inventoryItemsFromStore.length > 0) {
-      console.log("get sale orders from store");
-      setInventoryItems(inventoryItemsFromStore);
-      setLoading(false);
-      return;
-    }
-    fetch(API_CONST + "/inventories?page=0&size=10", {
-      method: "GET",
-      headers: {
-        Authorization: "Bearer " + sessionStorage.getItem("token"),
-      },
-    })
+    setLoading(true);
+    fetch(
+      API_CONST +
+        `/inventories?page=${paginationModel.page}&size=${paginationModel.pageSize}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + sessionStorage.getItem("token"),
+        },
+      }
+    )
       .then((resp) => resp.json())
       .then((data) => {
-        dispatch({ type: "SET_INVENTORY_ITEMS", payload: data.results });
-        console.log("get inventory items from api")
-        setInventoryItems(data.results);
+        dispatch({
+          type: "SET_INVENTORY_PAGE_INVENTORY_ITEM",
+          payload: data.results,
+        });
+        dispatch({
+          type: "SET_INVENTORY_PAGE_PAGINATION_MODEL",
+          payload: { ...paginationModel, total: data.total },
+        });
+        console.log("get inventory items from api", data.results);
       })
       .then(() => setLoading(false))
       .catch((error) => console.error("Error:", error));
-  }, []);
+  }, [paginationModel.page, paginationModel.pageSize]);
 
   const inventoryColumns = [
     {
       field: "index",
       headerName: "No.",
       width: 50,
-      valueGetter: (params) => inventoryItems.indexOf(params.row) + 1,
+      valueGetter: (params) => inventoryItemsFromStore.indexOf(params.row) + 1,
     },
     {
       headerName: "Name",
@@ -111,8 +118,15 @@ const InventoryItemList = () => {
         <ExportButton onClick={() => {}} />
       </div>
       <Table
+        paginationModel={paginationModel}
+        onPaginationModelChange={(newPaginationModel) =>
+          dispatch({
+            type: "SET_INVENTORY_PAGE_PAGINATION_MODEL",
+            payload: newPaginationModel,
+          })
+        }
         columns={inventoryColumns}
-        rows={inventoryItems}
+        rows={inventoryItemsFromStore}
         noCheckboxSelection
       />
     </div>

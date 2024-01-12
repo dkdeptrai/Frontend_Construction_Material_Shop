@@ -30,7 +30,7 @@ function MenuItemComponent({ icon, link }) {
       active={location.pathname.startsWith(link)}
       component={<NavLink to={link} />}
     >
-      {link === "/purchaseorders"
+      {link === "/purchase-orders"
         ? "Purchase Orders"
         : link.charAt(1).toUpperCase() + link.slice(2)}
     </MenuItem>
@@ -50,7 +50,7 @@ function MenuBar() {
     dispatch(resetUserData());
     dispatch(setSelectedProducts([]));
     dispatch({ type: "SET_SALE_ORDERS", payload: [] });
-    dispatch({ type: "SET_INVENTORY_ITEMS", payload: [] });
+    dispatch({ type: "SET_INVENTORY_PAGE_INVENTORY_ITEM", payload: [] });
     dispatch({ type: "SET_PURCHASE_ORDERS", payload: [] });
     await persistor.purge();
     sessionStorage.removeItem("token");

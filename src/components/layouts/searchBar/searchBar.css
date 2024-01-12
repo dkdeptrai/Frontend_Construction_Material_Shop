@@ -1,8 +1,10 @@
 .searchBarContainer {
+  padding: 4px;
   display: flex;
   align-items: center;
   justify-content: space-around;
-  width: auto;
+  width: 80%;
+  min-width: 400px;
   height: 100%;
   padding: 0px 12px;
   border: 1px solid #eaecf0;
@@ -10,34 +12,16 @@
   font-weight: 400;
   font-size: 14px;
   border-radius: 7px;
+  margin: 0px 12px 0px 12px;
 }
 
 .searchBarContainer input {
   width: auto;
-  min-width: 400px;
+  min-width: 300px;
 }
 
-.removeFilterButton {
-  width: auto;
-  color: var(--red-pastel);
-}
-
-.filterGrid {
-  padding: 0px;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1rem;
-}
-
-.filterKey {
-  font-weight: 600;
-}
-
-.filterItem {
-  list-style-type: none;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+.searchOptions {
+  width: 20%;
 }
 
 .searchBar {
@@ -45,12 +29,12 @@
   border: none;
 }
 
-.searchButton,
-.filterButton {
+.searchButton {
+  justify-self: end;
   background: transparent;
   width: auto;
   height: auto;
-  aspect-ratio: 1;
   color: var(--text-color);
   padding: 12px;
+  margin-left: 12px;
 }

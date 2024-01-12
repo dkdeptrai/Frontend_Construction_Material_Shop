@@ -18,6 +18,9 @@ import "./SaleOrders.css";
 function SaleOrdersPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const subroute = useSelector((state) => state.saleOrders.subroute);
+  //loadiing circle
+  const [loading, setLoading] = useState(false);
 
   const saleOrdersFromStore = useSelector(
     (state) => state.saleOrders.saleOrdersData
@@ -26,19 +29,17 @@ function SaleOrdersPage() {
 
   const [saleOrders, setSaleOrders] = useState([]);
 
-  //loadiing circle
-  const [loading, setLoading] = useState(true);
+  // pagination
+  const paginationModel = useSelector(
+    (state) => state.saleOrders.paginationModel
+  );
 
   //get all sale orders
   useEffect(() => {
-    if (saleOrdersFromStore.length > 0) {
-      console.log("get sale orders from store");
-      setSaleOrders(saleOrdersFromStore);
-      setLoading(false);
-      return;
-    }
+    setLoading(true);
+    console.log(paginationModel.page, paginationModel.pageSize);
     fetch(
-      `${API_CONST}/orders?page=0&size=10&status=PROCESSING&orderType=PURCHASE`,
+      `${API_CONST}/orders?page=${paginationModel.page}&size=${paginationModel.pageSize}&orderType=SALE`,
       {
         method: "GET",
         headers: {
@@ -48,6 +49,10 @@ function SaleOrdersPage() {
     )
       .then((response) => response.json())
       .then(async (data) => {
+        dispatch({
+          type: "SET_SALE_ORDERS_PAGE_PAGINATION_MODEL",
+          payload: { ...paginationModel, total: data.total },
+        });
         const newSaleOrders = [];
         for (let i = 0; i < data.results.length; i++) {
           const order = data.results[i];
@@ -86,12 +91,15 @@ function SaleOrdersPage() {
       .finally(() => {
         setLoading(false);
       });
-  }, []);
+  }, [paginationModel.page, paginationModel.pageSize]);
 
   //Navigate to add new sale order page
   const handleClick = () => {
+    dispatch({ type: "SET_SALE_ORDERS_PAGE_SUBROUTE", payload: "add" });
     navigate("/orders/add");
   };
+
+  useEffect(() => {}, [subroute]);
 
   //table
   const options = [
@@ -145,7 +153,7 @@ function SaleOrdersPage() {
       <div className="toolBar">
         <SearchBar
           className="searchBar"
-          options={options}
+          // options={options}
           placeholder="Search Products by name, ID or any related keywords"
         />
         <div className="buttonContainer-order">
@@ -160,6 +168,13 @@ function SaleOrdersPage() {
         cellName="customerPhone"
         identifyRoute="id"
         noCheckboxSelection
+        paginationModel={paginationModel}
+        onPaginationModelChange={(newPaginationModel) =>
+          dispatch({
+            type: "SET_SALE_ORDERS_PAGE_PAGINATION_MODEL",
+            payload: newPaginationModel,
+          })
+        }
       />
     </div>
   );

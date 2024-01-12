@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   PieChart,
   Pie,
@@ -19,6 +19,7 @@ import {
 import ValuableCustomerComponent from "../../components/ValuableCustomerComponent/valuableCustomerComponent";
 
 import "./Overview.css";
+import { API_CONST } from "../../constants/apiConstants";
 
 function Overview() {
   const revenueData = [
@@ -153,6 +154,25 @@ function Overview() {
     },
     {},
   ];
+
+  const fetchOverviewData = async () => {
+    try {
+      const response = await fetch(`${API_CONST}/overview`, {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + sessionStorage.getItem("token"),
+        },
+      });
+      const data = await response.json();
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchOverviewData();
+  }, []);
 
   return (
     <>
