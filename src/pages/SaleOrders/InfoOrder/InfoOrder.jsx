@@ -55,7 +55,8 @@ const InfoOrder = () => {
         setCustomerPhone(customer.phone);
         setCustomerName(customer.name);
         setDate(new Date(order.createdTime).toLocaleDateString());
-        await order.orderItems.map(async (item) => {
+        console.log(order);
+        await order.newInventoryItems.map(async (item) => {
           const orderedInventoryItemData = await fetch(
             API_CONST + "/inventories/" + item.inventoryItemId,
             {

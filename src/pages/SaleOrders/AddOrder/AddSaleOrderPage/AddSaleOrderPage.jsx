@@ -187,6 +187,7 @@ function AddSaleOrderPage() {
       },
       body: JSON.stringify(yourData),
     }).finally(() => {
+      dispatch({ type: "SET_SALE_ORDERS", payload: [] });
       dispatch(setSelectedCustomer(null, null));
       dispatch(setSelectedProducts([]));
       setLoading(false);

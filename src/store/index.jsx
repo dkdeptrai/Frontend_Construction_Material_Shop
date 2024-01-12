@@ -1,12 +1,18 @@
-import { configureStore } from '@reduxjs/toolkit';
-import rootReducer from '../reducers/index.jsx';
-import { persistStore, persistReducer } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
+import { configureStore } from "@reduxjs/toolkit";
+import rootReducer from "../reducers/index.jsx";
+import { persistStore, persistReducer } from "redux-persist";
+import storage from "redux-persist/lib/storage";
 
 const persistConfig = {
-  key: 'root',
+  key: "root",
   storage,
-  blacklist: ["modal", "selectedOrder", "saleOrders", "inventoryItems"]
+  blacklist: [
+    "modal",
+    "selectedOrder",
+    "saleOrders",
+    "inventoryItems",
+    "selectedImportedProducts",
+  ],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -16,4 +22,3 @@ export const store = configureStore({
 });
 
 export const persistor = persistStore(store);
-

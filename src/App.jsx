@@ -130,10 +130,6 @@ function App() {
                   element={<AddPurchaseOrderPage />}
                 />
                 <Route
-                  path="/purchase-orders/add/add-products"
-                  element={<NewProducts />}
-                />
-                <Route
                   path="/purchase-orders/:id"
                   element={<InfoPurchaseOrder />}
                 />

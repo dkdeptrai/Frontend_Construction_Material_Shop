@@ -37,7 +37,7 @@ function SaleOrdersPage() {
       setLoading(false);
       return;
     }
-    fetch(API_CONST + "/orders", {
+    fetch(API_CONST + "/orders?orderType=SALE", {
       method: "GET",
       headers: {
         Authorization: "Bearer " + sessionStorage.getItem("token"),

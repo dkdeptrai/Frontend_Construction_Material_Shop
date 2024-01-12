@@ -33,7 +33,7 @@ const PurchaseOrders = () => {
       setLoading(false);
       return;
     }
-    fetch(API_CONST + "/orders", {
+    fetch(API_CONST + "/orders?orderType=PURCHASE", {
       method: "GET",
       headers: {
         Authorization: "Bearer " + sessionStorage.getItem("token"),
@@ -44,9 +44,6 @@ const PurchaseOrders = () => {
         const newPurchaseOrders = [];
         for (let i = 0; i < data.results.length; i++) {
           const order = data.results[i];
-          if (order.orderType === "SALE") {
-            continue;
-          }
           const employeeData = await fetch(
             API_CONST + "/users/employees/" + order.createdUserId,
             {

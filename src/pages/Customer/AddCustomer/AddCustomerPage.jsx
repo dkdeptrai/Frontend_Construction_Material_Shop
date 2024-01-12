@@ -71,7 +71,7 @@ function AddCustomerPage(props) {
   };
 
   return (
-    <div>
+    <div className="add-customer-page">
       {loading && <LoadingCircle />}
       <BackButton content="Add Customer" />
       <form>
@@ -87,6 +87,11 @@ function AddCustomerPage(props) {
           setValue={setName}
           className={isNameValid ? "" : "invalid-input"}
         />
+        {!isNameValid && (
+          <div className="input-missing-alert">
+            <span>Missing name</span>
+          </div>
+        )}
         <InputComponent
           label={
             <>
@@ -99,6 +104,11 @@ function AddCustomerPage(props) {
           setValue={setPhoneNumber}
           className={isPhoneNumberValid ? "" : "invalid-input"}
         />
+        {!isPhoneNumberValid && (
+          <div className="input-missing-alert">
+            <span>Missing phone</span>
+          </div>
+        )}
         <InputComponent
           label={
             <>
@@ -111,6 +121,11 @@ function AddCustomerPage(props) {
           setValue={setAddress}
           className={isAddressValid ? "" : "invalid-input"}
         />
+        {!isAddressValid && (
+          <div className="input-missing-alert">
+            <span>Missing address</span>
+          </div>
+        )}
         <InputComponent
           label={
             <>
@@ -123,6 +138,11 @@ function AddCustomerPage(props) {
           setValue={setDateOfBirth}
           className={isDateOfBirthValid ? "" : "invalid-input"}
         />
+        {!isDateOfBirthValid && (
+          <div className="input-missing-alert">
+            <span>Missing date of birth</span>
+          </div>
+        )}
         <InputComponent
           label={
             <>
@@ -135,6 +155,11 @@ function AddCustomerPage(props) {
           setValue={setTax}
           className={isTaxValid ? "" : "invalid-input"}
         />
+        {!isTaxValid && (
+          <div className="input-missing-alert">
+            <span>Missing tax</span>
+          </div>
+        )}
       </form>
       <div className="button-container">
         <button className="submit-button" onClick={handleAddCustomer}>

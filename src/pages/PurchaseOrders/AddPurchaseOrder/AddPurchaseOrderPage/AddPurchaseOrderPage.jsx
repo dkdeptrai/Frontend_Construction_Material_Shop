@@ -5,10 +5,15 @@ import "./AddPurchaseOrderPage.css";
 //states
 import { useDispatch, useSelector } from "react-redux";
 import {
-  setSelectedProducts,
-  deleteSelectedProducts,
-  updateSelectedProductsAmount,
-} from "../../../../actions/selectedProductsAction";
+  setSelectedImportedProducts,
+  addSelectedImportedProduct,
+  addSelectedImportedProducts,
+  deleteSelectedImportedProducts,
+  updateSelectedImportedProductsMFG,
+  updateSelectedImportedProductsEXP,
+  updateSelectedImportedProductsUnitPrice,
+  updateSelectedImportedProductsAmount,
+} from "../../../../actions/selectedImportedProductsAction";
 
 //pages and components
 import InputComponent from "../../../../components/InputComponent/InputComponent";
@@ -19,23 +24,28 @@ import Table from "../../../../components/core/table/table";
 import InlineInputComponent from "../../../../components/inlineInputComponent/inlineInputComponent";
 import { API_CONST } from "../../../../constants/apiConstants";
 import LoadingCircle from "../../../../components/LoadingCircle/LoadingCircle";
+import SelectProductModal from "../SelectProductModal/SelectProductModal";
 
 function AddSaleOrderPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [deletedItems, setDeletedItems] = useState([]);
 
+  //get user type
+  const userType = useSelector((state) => state.user.userData.userType);
+
   const [total, setTotal] = useState(0);
   const [discount, setDiscount] = useState(0);
+
+  //select product modal
+  const [productRowPointer, setProductRowPointer] = useState("");
+  const [showModal, setShowModal] = useState(false);
 
   //loading
   const [loading, setLoading] = useState(false);
 
-  //Search for warehouse by name
-  const [searchedWarehouseName, setSearchedWarehouseName] = useState("");
-
   const selectedProducts = useSelector(
-    (state) => state.selectedOrder.selectedProductsData
+    (state) => state.selectedImportedProducts.importedProductsData
   );
 
   const userData = useSelector((state) => state.user.userData);
@@ -52,7 +62,19 @@ function AddSaleOrderPage() {
   }, [selectedProducts, discount]);
 
   const handleAddProducts = () => {
-    navigate("/purchase-orders/add/add-products");
+    const newInventoryItem = {
+      id: Date.now().toString(),
+      productId: 0,
+      productName: "",
+      imageUrl: "",
+      mfg: "",
+      exp: "",
+      unitPrice: 1,
+      amount: 1,
+      warehouse: "",
+    };
+
+    dispatch(addSelectedImportedProduct(newInventoryItem));
   };
 
   const productColumns = [
@@ -63,25 +85,94 @@ function AddSaleOrderPage() {
       renderCell: (params) => selectedProducts.indexOf(params.row) + 1,
     },
     {
-      field: "name",
+      field: "productName",
       headerName: "Product Name",
-      flex: 0.7,
+      flex: 0.4,
+      renderCell: (params) => {
+        if (params.value !== "") {
+          return (
+            <div className="productNameCell">
+              <img className="productImage" src={params.row.imageUrl} />
+              <span>{params.value}</span>
+            </div>
+          );
+        } else {
+          return (
+            <button
+              className="product-item-choose"
+              onClick={() => {
+                setProductRowPointer(params.row.id);
+                setShowModal(true);
+              }}
+            >
+              Choose a product
+            </button>
+          );
+        }
+      },
+    },
+    {
+      headerName: "MFG",
+      field: "mfg",
+      flex: 0.3,
       renderCell: (params) => (
-        <div className="productNameCell">
-          <img className="productImage" src={params.row.imageUrl} />
-          <span>{params.value}</span>
-        </div>
+        <input
+          type="date"
+          style={{ margin: "auto auto", border: "none" }}
+          value={params.value}
+          onChange={(e) => {
+            let newMFG = e.target.value;
+
+            dispatch(updateSelectedImportedProductsMFG(params.id, newMFG));
+          }}
+        />
+      ),
+    },
+    {
+      headerName: "EXP",
+      field: "exp",
+      flex: 0.3,
+      renderCell: (params) => (
+        <input
+          type="date"
+          style={{ margin: "auto auto", border: "none" }}
+          value={params.value}
+          onChange={(e) => {
+            let newEXP = e.target.value;
+
+            dispatch(updateSelectedImportedProductsEXP(params.id, newEXP));
+          }}
+        />
       ),
     },
     {
       field: "unitPrice",
       headerName: "Price/unit",
-      flex: 0.4,
+      flex: 0.3,
+      renderCell: (params) => (
+        <input
+          type="number"
+          style={{ margin: "auto auto", border: "none" }}
+          value={params.value}
+          min={1}
+          onChange={(e) => {
+            let newUnitPrice = e.target.value;
+
+            if (!newUnitPrice || isNaN(newUnitPrice)) {
+              newUnitPrice = 1;
+            }
+
+            dispatch(
+              updateSelectedImportedProductsUnitPrice(params.id, newUnitPrice)
+            );
+          }}
+        />
+      ),
     },
     {
       field: "amount",
       headerName: "Amount",
-      flex: 0.4,
+      flex: 0.3,
       disableClickEventBubbling: true,
       renderCell: (params) => (
         <input
@@ -96,16 +187,17 @@ function AddSaleOrderPage() {
               newAmount = 1;
             }
 
-            dispatch(updateSelectedProductsAmount(params.id, newAmount));
+            dispatch(
+              updateSelectedImportedProductsAmount(params.id, newAmount)
+            );
           }}
         />
       ),
     },
     {
-      field: "total",
-      headerName: "Total",
-      flex: 0.4,
-      renderCell: (params) => params.value + " $",
+      field: "warehouse",
+      headerName: "Warehouse",
+      flex: 0.5,
     },
   ];
 
@@ -118,30 +210,43 @@ function AddSaleOrderPage() {
       createdTime: new Date().toISOString(),
       discount: discount,
       status: "PROCESSING",
-      //selectedProducts is list of chosen inventory items, refactor later :))
-      orderItems: selectedProducts.map((product) => {
+      newInventoryItems: selectedProducts.map((product) => {
+        const importedDate = new Date();
+        console.log(importedDate);
         return {
-          inventoryItem: {
-            id: product.id,
+          product: {
+            id: product.productId,
+          },
+          warehouse: {
+            id: 1,
           },
           quantity: product.amount,
+          manufacturingDate: product.mfg,
+          expiryDate: product.exp,
+          importedDate: importedDate.toISOString().slice(0, 10),
+          importedPrice: product.unitPrice * product.amount,
         };
       }),
       orderType: "PURCHASE",
+      total: total,
     };
 
     await fetch(API_CONST + "/orders", {
       method: "POST",
       headers: {
-        "content-type": "application/json",
+        "Content-Type": "application/json",
         Authorization: "Bearer " + sessionStorage.getItem("token"),
       },
       body: JSON.stringify(yourData),
-    }).finally(() => {
-      dispatch(setSelectedProducts([]));
-      setLoading(false);
-      navigate("/purchase-orders");
-    });
+    })
+      .catch((error) => {
+        console.error("Error adding order:", error);
+      })
+      .finally(() => {
+        dispatch(setSelectedImportedProducts([]));
+        setLoading(false);
+        navigate("/purchase-orders");
+      });
 
     // // //Update inventory
     // for (let i = 0; i < selectedProducts.length; i++) {
@@ -176,6 +281,14 @@ function AddSaleOrderPage() {
   return (
     <div className="adding-page">
       {loading && <LoadingCircle />}
+      {showModal && (
+        <SelectProductModal
+          handleClose={() => {
+            setShowModal(false);
+          }}
+          productRowPointer={productRowPointer}
+        />
+      )}
       <BackButton content="Add Order" />
       <div className="employee-info">
         <InputComponent
@@ -191,23 +304,16 @@ function AddSaleOrderPage() {
           value={userData.name}
         ></InputComponent>
       </div>
-      <div style={{ marginRight: "57%" }}>
-        <InputComponent
-          label="Warehouse"
-          type="text"
-          value={""}
-        ></InputComponent>
-      </div>
 
       <div className="tool-bar">
-        <label>List of products</label>
+        <label>Inventory items</label>
         <div className="button-container">
           <DeleteButton
             onClick={() => {
-              dispatch(deleteSelectedProducts(deletedItems));
+              dispatch(deleteSelectedImportedProducts(deletedItems));
             }}
           />
-          <NewButton text="New Products" onClick={handleAddProducts} />
+          <NewButton text="New Item" onClick={handleAddProducts} />
         </div>
       </div>
       <Table
@@ -218,12 +324,16 @@ function AddSaleOrderPage() {
         onRowSelection={(newSelection) => {
           setDeletedItems(newSelection);
         }}
+        disableRowSelectionOnClick
       />
       <div className="total">
         <InlineInputComponent
           label="Discount(%):"
           type="number"
+          min={0}
+          max={100}
           value={discount}
+          setValue={setDiscount}
         />
         <InlineInputComponent label="Total:" type="text" value={total + " $"} />
       </div>

@@ -5,6 +5,7 @@ import selectedOrderReducer from "./selectedOrderReducer.jsx";
 import saleOrdersReducer from "./saleOrdersReducer.jsx";
 import inventoryItemsReducer from "./inventoryItemsReducer.jsx";
 import purchaseOrdersReducer from "./purchaseOrdersReducer.jsx";
+import selectedImportedProductsReducer from "./selectedImportedProducts.jsx";
 
 
 const rootReducer = combineReducers({
@@ -14,6 +15,7 @@ const rootReducer = combineReducers({
   saleOrders: saleOrdersReducer,
   inventoryItems: inventoryItemsReducer,
   purchaseOrders: purchaseOrdersReducer,
+  selectedImportedProducts: selectedImportedProductsReducer,
 });
 
 export default rootReducer;

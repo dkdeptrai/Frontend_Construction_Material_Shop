@@ -54,9 +54,9 @@ const InfoPurchaseOrder = () => {
         setEmployeeCode(employee.employeeCode);
         setEmployeeName(employee.name);
         setDate(new Date(order.createdTime).toLocaleDateString());
-        await order.orderItems.map(async (item) => {
+        await order.newInventoryItems.map(async (item) => {
           const orderedInventoryItemData = await fetch(
-            API_CONST + "/inventories/" + item.inventoryItemId,
+            API_CONST + "/inventories/" + item.id,
             {
               method: "GET",
               headers: {
@@ -68,6 +68,7 @@ const InfoPurchaseOrder = () => {
           const product = {
             id: item.productId,
             name: orderedInventoryItem.product.name,
+            imageUrl: orderedInventoryItem.product.imageUrl,
             unitPrice: orderedInventoryItem.product.unitPrice,
             amount: item.quantity,
             total: item.quantity * orderedInventoryItem.product.unitPrice,
@@ -83,7 +84,17 @@ const InfoPurchaseOrder = () => {
   }, []);
 
   const productColumns = [
-    { headerName: "Product name", field: "name", flex: 0.7 },
+    {
+      headerName: "Product name",
+      field: "name",
+      flex: 0.7,
+      renderCell: (params) => (
+        <div className="productNameCell">
+          <img className="productImage" src={params.row.imageUrl} />
+          <span>{params.value}</span>
+        </div>
+      ),
+    },
     { headerName: "Price/Unit", field: "unitPrice", flex: 0.4 },
     { headerName: "Amount", field: "amount", flex: 0.4 },
     {
@@ -98,10 +109,7 @@ const InfoPurchaseOrder = () => {
       {loading && <LoadingCircle />}
       <BackButton content="Order information" />
       <InformationLine label="Order ID:" content={orderId} />
-      <InformationLine
-        label="Employee's Code:"
-        content={employeeCode}
-      />
+      <InformationLine label="Employee's Code:" content={employeeCode} />
       <InformationLine label="Employee's name:" content={employeeName} />
       <InformationLine label="Date:" content={date} />
       <label>List of products:</label>

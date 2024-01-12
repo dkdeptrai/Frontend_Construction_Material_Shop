@@ -64,9 +64,6 @@ function Dashboard() {
         const newSaleOrders = [];
         for (let i = 0; i <= data.newestOrders.length - 1; i++) {
           const order = data.newestOrders[i];
-          if (order.orderType === "PURCHASE") {
-            continue;
-          }
           const customerData = await fetch(
             API_CONST + "/customers/" + order.customerId,
             {

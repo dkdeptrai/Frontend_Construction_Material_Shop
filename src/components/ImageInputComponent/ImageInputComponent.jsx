@@ -3,7 +3,7 @@ import UploadImageIcon from "../../assets/icons/uploadImage.svg?react";
 import "./ImageInputComponent.css";
 import Resizer from "react-image-file-resizer";
 
-const ImageInputComponent = ({ setImage, imageUrl }) => {
+const ImageInputComponent = ({ setImage, imageUrl, className }) => {
   const [backgroundImage, setBackgroundImage] = useState("");
   const [imageChosen, setImageChosen] = useState(false);
 
@@ -51,7 +51,7 @@ const ImageInputComponent = ({ setImage, imageUrl }) => {
 
   return (
     <div
-      className="imageContainer"
+      className={'imageContainer ' + className}
       style={{
         backgroundImage: imageUrl ? `url(${imageUrl})` : backgroundImage,
         backgroundSize: "cover", // Add this line

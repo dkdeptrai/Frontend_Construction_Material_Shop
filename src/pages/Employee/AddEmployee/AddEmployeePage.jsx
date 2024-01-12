@@ -21,10 +21,42 @@ const AddEmployee = () => {
 
   const [loading, setLoading] = useState(false);
 
+  //valid states
+  const [isNameValid, setIsNameValid] = useState(true);
+  const [isImageValid, setIsImageValid] = useState(true);
+  const [isEmailValid, setIsEmailValid] = useState(true);
+  const [isPhoneValid, setIsPhoneValid] = useState(true);
+  const [isAddressValid, setIsAddressValid] = useState(true);
+  const [isDateOfBirthValid, setIsDateOfBirthValid] = useState(true);
+  const [isSalaryValid, setIsSalaryValid] = useState(true);
+  const [isStartDateValid, setIsStartDateValid] = useState(true);
+
   const handleClick = async (e) => {
     e.preventDefault();
 
     setLoading(true);
+    setIsNameValid(employeeName !== "");
+    setIsImageValid(employeeImage !== "");
+    setIsEmailValid(email !== "");
+    setIsPhoneValid(phone !== "");
+    setIsAddressValid(address !== "");
+    setIsDateOfBirthValid(dateOfBirth !== "");
+    setIsSalaryValid(salary !== "");
+    setIsStartDateValid(startDate !== "");
+
+    if (
+      employeeName === "" ||
+      employeeImage === "" ||
+      email === "" ||
+      phone === "" ||
+      address === "" ||
+      dateOfBirth === "" ||
+      salary === "" ||
+      startDate === ""
+    ) {
+      setLoading(false);
+      return;
+    }
 
     const registerRequest = {
       email: email,
@@ -43,6 +75,7 @@ const AddEmployee = () => {
     for (let key in registerRequest) {
       if (registerRequest[key] === null || registerRequest[key] === "") {
         alert(`Please fill in the ${key}`);
+        setLoading(false);
         return;
       }
       formData.append(key, registerRequest[key]);
@@ -62,7 +95,6 @@ const AddEmployee = () => {
       }
 
       setLoading(false);
-      
     } catch (error) {
       console.log(error);
     } finally {
@@ -87,13 +119,29 @@ const AddEmployee = () => {
           type="email"
           value={email}
           setValue={setEmail}
+          className={isEmailValid ? "" : "invalid-input"}
         />
+        {!isEmailValid && (
+          <div className="input-missing-alert">
+            <span>Missing email</span>
+          </div>
+        )}
         <InputComponent
-          label="Name"
+          label={
+            <>
+              Name<span className="required-star">*</span>
+            </>
+          }
           type="text"
           value={employeeName}
           setValue={setEmployeeName}
+          className={isNameValid ? "" : "invalid-input"}
         />
+        {!isNameValid && (
+          <div className="input-missing-alert">
+            <span>Missing name</span>
+          </div>
+        )}
         <label>
           {
             <>
@@ -101,7 +149,15 @@ const AddEmployee = () => {
             </>
           }
         </label>
-        <ImageInputComponent setImage={setEmployeeImage} />
+        <ImageInputComponent
+          setImage={setEmployeeImage}
+          className={isImageValid ? "" : "invalid-input"}
+        />
+        {!isImageValid && (
+          <div className="input-missing-alert">
+            <span>Missing image</span>
+          </div>
+        )}
 
         <InputComponent
           label={
@@ -112,7 +168,13 @@ const AddEmployee = () => {
           type="tel"
           value={phone}
           setValue={setPhone}
+          className={isPhoneValid ? "" : "invalid-input"}
         />
+        {!isPhoneValid && (
+          <div className="input-missing-alert">
+            <span>Missing phone</span>
+          </div>
+        )}
         <InputComponent
           label={
             <>
@@ -122,7 +184,13 @@ const AddEmployee = () => {
           type="date"
           value={dateOfBirth}
           setValue={setDateOfBirth}
+          className={isDateOfBirthValid ? "" : "invalid-input"}
         />
+        {!isDateOfBirthValid && (
+          <div className="input-missing-alert">
+            <span>Missing date of birth</span>
+          </div>
+        )}
         <InputComponent
           label={
             <>
@@ -132,7 +200,13 @@ const AddEmployee = () => {
           type="text"
           value={address}
           setValue={setAddress}
+          className={isAddressValid ? "" : "invalid-input"}
         />
+        {!isAddressValid && (
+          <div className="input-missing-alert">
+            <span>Missing address</span>
+          </div>
+        )}
         <InputComponent
           label={
             <>
@@ -144,6 +218,7 @@ const AddEmployee = () => {
           setValue={setEmployeeType}
           options={["SALE", "WAREHOUSE", "SHIPPING"]}
         />
+
         <InputComponent
           label={
             <>
@@ -153,7 +228,13 @@ const AddEmployee = () => {
           type="number"
           value={salary}
           setValue={setSalary}
+          className={isSalaryValid ? "" : "invalid-input"}
         />
+        {!isSalaryValid && (
+          <div className="input-missing-alert">
+            <span>Missing salary</span>
+          </div>
+        )}
         <InputComponent
           label={
             <>
@@ -163,7 +244,13 @@ const AddEmployee = () => {
           type="date"
           value={startDate}
           setValue={setStartDate}
+          className={isStartDateValid ? "" : "invalid-input"}
         />
+        {!isStartDateValid && (
+          <div className="input-missing-alert">
+            <span>Missing start date</span>
+          </div>
+        )}
         <div className="button-margin">
           <button onClick={handleClick}>Submit</button>
         </div>

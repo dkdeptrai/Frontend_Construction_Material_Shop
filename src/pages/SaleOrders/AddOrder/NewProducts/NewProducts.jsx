@@ -6,10 +6,10 @@ import { useDispatch } from "react-redux";
 import { addSelectedProducts } from "../../../../actions/selectedProductsAction.jsx";
 
 //pages and components
-import BackButton from "../../../../components/layouts/backButton/backButton";
+import BackButton from "../../../../components/layouts/backButton/backButton.jsx";
 import SearchBar from "../../../../components/layouts/searchBar/searchBar.jsx";
 import Table from "../../../../components/core/table/table.jsx";
-import { API_CONST } from "../../../../constants/apiConstants";
+import { API_CONST } from "../../../../constants/apiConstants.jsx";
 import LoadingCircle from "../../../../components/LoadingCircle/LoadingCircle.jsx";
 
 const NewProducts = () => {

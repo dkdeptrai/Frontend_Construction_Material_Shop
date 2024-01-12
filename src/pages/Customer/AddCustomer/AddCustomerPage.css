@@ -9,4 +9,8 @@
   border: 1px solid red;
 }
 
+.input-missing-alert {
+  color: red;
+  margin-bottom: 0.875rem;
+}
 

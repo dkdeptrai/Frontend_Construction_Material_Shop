@@ -20,6 +20,7 @@ function Table(props) {
   const selectedRowIds = props.selectedRowIds;
 
   const noCheckboxSelection = props.noCheckboxSelection;
+  const disableRowSelectionOnClick = props.disableRowSelectionOnClick || false;
 
   const identifyRoute = props.identifyRoute;
   const handleRowSelection = props.onRowSelection;
@@ -49,7 +50,7 @@ function Table(props) {
     ) {
       navigate(location.pathname + "/" + params.row[identifyRoute]);
     }
-    if (params.field === cellName && params.field === "amount") {
+    if (params.field === cellName && (params.field === "amount" || params.field === "unitPrice")) {
       event.stopPropagation();
     }
   };
@@ -68,6 +69,7 @@ function Table(props) {
         onPaginationModelChange={setPaginationModel}
         pageSizeOptions={[10]}
         onCellClick={handleCellClick}
+        disableRowSelectionOnClick={disableRowSelectionOnClick}
         sx={{
           "& .MuiDataGrid-columnHeaders": {
             backgroundColor: "#FAFBFB",
