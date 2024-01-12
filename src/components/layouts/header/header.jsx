@@ -14,7 +14,7 @@ function Header() {
   const pageTitle = location.pathname.split("/")[1];
   const userData = useSelector((state) => state.user.userData);
   const pageTitleText =
-    pageTitle === "purchaseorders"
+    pageTitle === "purchase-orders"
       ? "Purchase Orders"
       : pageTitle === "add"
       ? "Employees"

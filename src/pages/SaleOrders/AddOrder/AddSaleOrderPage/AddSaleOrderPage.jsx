@@ -95,6 +95,10 @@ function AddSaleOrderPage() {
 
   //navigate to add new products page
   const handleAddProducts = () => {
+    dispatch({
+      type: "SET_SALE_ORDERS_PAGE_SUBROUTE",
+      payload: "add/add-products",
+    });
     navigate("/orders/add/add-products");
   };
 
@@ -190,7 +194,8 @@ function AddSaleOrderPage() {
       dispatch(setSelectedCustomer(null, null));
       dispatch(setSelectedProducts([]));
       setLoading(false);
-      navigate("/orders");
+
+      navigateBackToOrders();
     });
   };
 
@@ -248,13 +253,18 @@ function AddSaleOrderPage() {
     },
   ];
 
+  const navigateBackToOrders = () => {
+    dispatch({ type: "SET_SALE_ORDERS_PAGE_SUBROUTE", payload: null });
+    navigate("/orders");
+  };
+
   return (
     <div className="adding-page">
       {loading ? <LoadingCircle /> : null}
       {open === "true" ? (
         <AmountInputModal open={open} setOpen={setOpen} />
       ) : null}
-      <BackButton content="Add Order" />
+      <BackButton content="Add Order" handleClick={navigateBackToOrders} />
       <div className="customer-info">
         <InputComponent
           label="Customer's phone number"

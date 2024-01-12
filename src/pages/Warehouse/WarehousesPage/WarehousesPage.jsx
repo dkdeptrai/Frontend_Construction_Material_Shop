@@ -18,10 +18,6 @@ function WarehousesPage() {
   const warehouses = useSelector((state) => state.warehouses.warehouses);
   const searchQuery = useSelector((state) => state.warehouses.searchQuery);
 
-  console.log("warehouses", warehouses);
-  console.log("search query", searchQuery);
-  console.log("subroute", subroute);
-
   const fetchWarehouses = async () => {
     try {
       setIsLoading(true);

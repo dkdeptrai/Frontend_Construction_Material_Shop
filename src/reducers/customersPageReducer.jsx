@@ -1,7 +1,7 @@
 const initialState = {
   customers: [],
   subroute: null,
-  searchResults: ["abc"],
+  searchResults: [],
   showSearchResults: false,
   selectedRowIds: [],
   paginationModel: {
@@ -15,9 +15,8 @@ const initialState = {
     total: 0,
   },
   // search Filters
-  name: "",
-  phone: "",
-  address: "",
+  searchQuery: "",
+  filterOption: "name",
 };
 
 const customersPageReducer = (state = initialState, action) => {
@@ -57,20 +56,16 @@ const customersPageReducer = (state = initialState, action) => {
         ...state,
         searchPaginationModel: action.payload,
       };
-    case "SET_CUSTOMERS_PAGE_NAME":
+    case "SET_CUSTOMERS_PAGE_SEARCH_QUERY":
       return {
         ...state,
-        name: action.payload,
+        searchQuery: action.payload,
       };
-    case "SET_CUSTOMERS_PAGE_PHONE":
+    case "SET_CUSTOMERS_PAGE_FILTER_OPTION":
+      console.log("filter option", action.payload);
       return {
         ...state,
-        phone: action.payload,
-      };
-    case "SET_CUSTOMERS_PAGE_ADDRESS":
-      return {
-        ...state,
-        address: action.payload,
+        filterOption: action.payload,
       };
   }
   return state;

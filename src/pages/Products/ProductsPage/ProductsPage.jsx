@@ -100,6 +100,7 @@ function ProductsPage() {
       if (priceEnd) {
         query += `&maxPrice=${priceEnd}`;
       }
+      console.log("query", query);
       const response = await fetch(`${API_CONST}/products/search?${query}`, {
         method: "GET",
         headers: {

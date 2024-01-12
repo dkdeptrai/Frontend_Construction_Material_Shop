@@ -82,16 +82,9 @@ function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    window.addEventListener("beforeunload", () => {
-      dispatch({ type: "CLEAR_REDUX_STORE" });
-    });
-
-    // Cleanup function
-    return () => {
-      window.removeEventListener("beforeunload");
-    };
+    // Dispatch the action when the component mounts (i.e., when the page reloads)
+    dispatch({ type: "CLEAR_REDUX_STORE", payload: { keepUser: true } });
   }, [dispatch]);
-
   return (
     <>
       {isOpen ? <SettingModal /> : null}

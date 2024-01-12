@@ -168,12 +168,20 @@ function Employee() {
       valueGetter: (params) => employees.indexOf(params.row) + 1,
     },
     {
+      field: "employeeCode",
+      headerName: "Employee Code",
+      flex: 0.3,
+    },
+    {
       field: "name",
       headerName: "Employee Name",
       flex: 0.5,
       renderCell: (params) => (
         <div className="productNameCell">
-          <img className="productImage" src={params.row.imageUrl || CustomerIcon} />
+          <img
+            className="productImage"
+            src={params.row.imageUrl || CustomerIcon}
+          />
           <span>{params.value}</span>
         </div>
       ),
