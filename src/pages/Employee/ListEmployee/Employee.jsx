@@ -19,35 +19,43 @@ function Employee() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
-  const options = ["SALE", "WAREHOUSE", "DELIVERY"];
+  const subroute = useSelector((state) => state.employees.subroute);
+
+  const options = {
+    name: "NAME",
+    phone: "PHONE",
+    email: "EMAIL",
+    "emloyee code": "CODE",
+  };
 
   // table states
-  const [selectedRowIds, setSelectedRowIds] = useState([]);
-  const [paginationModel, setPaginationModel] = useState({
-    pageSize: 10,
-    page: 0,
-    total: 0,
-  });
-  const [searchPaginationModel, setSearchPaginationModel] = useState({
-    pageSize: 10,
-    page: 0,
-    total: 0,
-  });
+  const selectedRowIds = useSelector((state) => state.employees.selectedRowIds);
 
   // search states
-  const [searchResults, setSearchResults] = useState([]);
-  const [showSearchResults, setShowSearchResults] = useState(false);
 
-  const [employees, setEmployees] = useState([]);
-
-  // filter options
-  const [name, setName] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [address, setAddress] = useState("");
-  const [position, setPosition] = useState("");
+  const searchResults = useSelector((state) => state.employees.searchResults);
+  const showSearchResults = useSelector(
+    (state) => state.employees.showSearchResults
+  );
+  const searchQuery = useSelector((state) => state.employees.searchQuery);
+  const filterOption = useSelector((state) => state.employees.filterOption);
+  const employees = useSelector((state) => state.employees.employees);
+  const paginationModel = useSelector(
+    (state) => state.employees.paginationModel
+  );
+  const searchPaginationModel = useSelector(
+    (state) => state.employees.searchPaginationModel
+  );
+  dispatch({
+    type: "SET_EMPLOYEES_PAGE_SHOW_SEARCH_RESULTS",
+    payload: false,
+  });
+  console.log("showSearchResults: ", showSearchResults);
 
   const fetchEmployees = async (page, size) => {
+    console.log("fetching employees");
     try {
+      setLoading(true);
       const response = await fetch(
         `${API_CONST}/users/employees?page=${page}&size=${size}`,
         {
@@ -58,40 +66,60 @@ function Employee() {
         }
       );
       const data = await response.json();
-      setEmployees(data.results);
-      setPaginationModel({
-        ...paginationModel,
-        total: data.total,
-      });
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  const handleSearch = async () => {
-    try {
-      let query = `&page=0&size=10&name=${name}`;
-      if (phoneNumber !== "") query += `&phone=${phoneNumber}`;
-      if (address !== "") query += `&contactAddress=${address}`;
-      if (position !== "") query += `&employeeType=${position}`;
-      console.log(`QUERY: ${API_CONST}/`);
-      const response = await fetch(`${API_CONST}/users/employees?${query}`, {
-        method: "GET",
-        headers: {
-          Authorization: "Bearer " + sessionStorage.getItem("token"),
+      console.log(data);
+      dispatch({ type: "SET_EMPLOYEES_PAGE_EMPLOYEES", payload: data.results });
+      dispatch({
+        type: "SET_EMPLOYEES_PAGE_PAGINATION_MODEL",
+        payload: {
+          ...paginationModel,
+          total: data.total,
         },
       });
-      const data = await response.json();
-      const employees = data.results;
-      setSearchResults(employees);
-      setSearchPaginationModel((prevState) => ({
-        ...prevState,
-        total: data.total,
-      }));
-      setShowSearchResults(true);
     } catch (e) {
+      setLoading(false);
       console.log(e);
     }
+    setLoading(false);
+  };
+
+  const handleSearch = async (page, size) => {
+    try {
+      setLoading(true);
+      let query = `&page=${searchPaginationModel.page}&size=${searchPaginationModel.pageSize}&keyword=${searchQuery}&searchBy=${filterOption}`;
+      console.log(`QUERY: ${query}`);
+      const response = await fetch(
+        `${API_CONST}/users/employees/search?${query}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: "Bearer " + sessionStorage.getItem("token"),
+          },
+        }
+      );
+      const data = await response.json();
+      const employees = data.results;
+      dispatch({
+        type: "SET_EMPLOYEES_PAGE_SEARCH_RESULTS",
+        payload: employees,
+      });
+      dispatch({
+        type: "SET_EMPLOYEES_PAGE_SHOW_SEARCH_RESULTS",
+        payload: true,
+      });
+      dispatch({
+        type: "SET_EMPLOYEES_PAGE_SEARCH_PAGINATION_MODEL",
+        payload: { ...searchPaginationModel, total: data.total },
+      });
+    } catch (e) {
+      console.log("error error");
+      dispatch({
+        type: "SET_EMPLOYEES_PAGE_SHOW_SEARCH_RESULTS",
+        payload: false,
+      });
+      setLoading(false);
+      console.log(e);
+    }
+    setLoading(false);
   };
 
   const handleClick = () => {
@@ -140,26 +168,50 @@ function Employee() {
       });
     }
     if (searchResults.length > 0) {
-      setSearchResults(
-        searchResults.filter(
+      dispatch({
+        type: "SET_EMPLOYEES_PAGE_SEARCH_RESULTS",
+        payload: searchResults.filter(
           (employee) => !selectedRowIds.includes(employee.id)
-        )
-      );
-      setSearchPaginationModel((prevState) => ({
-        ...prevState,
-        total: prevState.total - selectedRowIds.length,
-      }));
+        ),
+      });
+      dispatch({
+        type: "SET_EMPLOYEES_PAGE_SEARCH_PAGINATION_MODEL",
+        payload: {
+          ...searchPaginationModel,
+          total: searchPaginationModel.total - selectedRowIds.length,
+        },
+      });
     } else {
-      setEmployees(
-        employees.filter((employee) => !selectedRowIds.includes(employee.id))
-      );
-      setPaginationModel((prevState) => ({
-        ...prevState,
-        total: prevState.total - selectedRowIds.length,
-      }));
+      dispatch({
+        type: "SET_EMPLOYEES_PAGE_EMPLOYEES",
+        payload: employees.filter(
+          (employee) => !selectedRowIds.includes(employee.id)
+        ),
+      });
+      dispatch({
+        type: "SET_EMPLOYEES_PAGE_PAGINATION_MODEL",
+        payload: {
+          ...paginationModel,
+          total: paginationModel.total - selectedRowIds.length,
+        },
+      });
     }
   };
 
+  const handleSearchQueryChange = (event) => {
+    dispatch({
+      type: "SET_EMPLOYEES_PAGE_SEARCH_QUERY",
+      payload: event.target.value,
+    });
+    if (event.target.value === "" || event.target.value === null) {
+      dispatch({
+        type: "SET_EMPLOYEES_PAGE_SHOW_SEARCH_RESULTS",
+        payload: false,
+      });
+      dispatch({ type: "SET_EMPLOYEES_PAGE_SEARCH_RESULTS", payload: [] });
+      fetchProducts(paginationModel.page, paginationModel.pageSize);
+    }
+  };
   const employeeColumns = [
     {
       field: "index",
@@ -201,7 +253,16 @@ function Employee() {
         <SearchBar
           className="searchBar"
           options={options}
-          placeholder="Search Products by name, ID or any related keywords"
+          placeholder="Search Employees"
+          handleSearch={handleSearch}
+          handleSearchQueryChange={handleSearchQueryChange}
+          value={searchQuery}
+          setFilter={(value) => {
+            dispatch({
+              type: "SET_EMPLOYEES_PAGE_FILTER_OPTION",
+              payload: value,
+            });
+          }}
         />
         <div className="buttonContainer">
           <ExportButton onClick={handleExport} />
@@ -213,16 +274,30 @@ function Employee() {
         className="table"
         columns={employeeColumns}
         rows={showSearchResults ? searchResults : employees}
+        selectedRowIds={selectedRowIds}
         cellName="name"
         identifyRoute="id"
         onRowSelection={(newSelection) => {
-          setSelectedRowIds(newSelection);
+          dispatch({
+            type: "SET_EMPLOYEES_PAGE_SELECTED_ROW_IDS",
+            payload: newSelection,
+          });
         }}
         paginationModel={
           showSearchResults ? searchPaginationModel : paginationModel
         }
         onPaginationModelChange={
-          showSearchResults ? setSearchPaginationModel : setPaginationModel
+          showSearchResults
+            ? (newPaginationModel) =>
+                dispatch({
+                  type: "SET_EMPLOYEES_SEARCH_PAGINATION_MODEL",
+                  payload: newPaginationModel,
+                })
+            : (newPaginationModel) =>
+                dispatch({
+                  type: "SET_EMPLOYEES_PAGINATION_MODEL",
+                  payload: newPaginationModel,
+                })
         }
       />
     </div>
