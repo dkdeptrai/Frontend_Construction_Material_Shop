@@ -46,10 +46,6 @@ function Employee() {
   const searchPaginationModel = useSelector(
     (state) => state.employees.searchPaginationModel
   );
-  dispatch({
-    type: "SET_EMPLOYEES_PAGE_SHOW_SEARCH_RESULTS",
-    payload: false,
-  });
   console.log("showSearchResults: ", showSearchResults);
 
   const fetchEmployees = async (page, size) => {
@@ -65,6 +61,9 @@ function Employee() {
           },
         }
       );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
       const data = await response.json();
       console.log(data);
       dispatch({ type: "SET_EMPLOYEES_PAGE_EMPLOYEES", payload: data.results });
@@ -96,8 +95,14 @@ function Employee() {
           },
         }
       );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
       const data = await response.json();
+
       const employees = data.results;
+      console.log("search results: ", employees);
       dispatch({
         type: "SET_EMPLOYEES_PAGE_SEARCH_RESULTS",
         payload: employees,
@@ -111,13 +116,13 @@ function Employee() {
         payload: { ...searchPaginationModel, total: data.total },
       });
     } catch (e) {
-      console.log("error error");
+      console.log("error ", e);
       dispatch({
         type: "SET_EMPLOYEES_PAGE_SHOW_SEARCH_RESULTS",
-        payload: false,
+        payload: true,
       });
+      dispatch({ type: "SET_EMPLOYEES_PAGE_SEARCH_RESULTS", payload: [] });
       setLoading(false);
-      console.log(e);
     }
     setLoading(false);
   };
@@ -130,6 +135,10 @@ function Employee() {
   useEffect(() => {
     fetchEmployees(paginationModel.page, paginationModel.pageSize);
   }, [paginationModel.page, paginationModel.pageSize]);
+
+  useEffect(() => {
+    handleSearch();
+  }, [searchPaginationModel.page, searchPaginationModel.pageSize]);
 
   const handleExport = async () => {
     const response = await fetch(API_CONST + "/users/employees/export/excel", {
@@ -217,7 +226,12 @@ function Employee() {
       field: "index",
       headerName: "No.",
       width: 50,
-      valueGetter: (params) => employees.indexOf(params.row) + 1,
+      renderCell: (params) =>
+        showSearchResults
+          ? searchPaginationModel.page * 10 +
+            searchResults.indexOf(params.row) +
+            1
+          : paginationModel.page * 10 + employees.indexOf(params.row) + 1,
     },
     {
       field: "employeeCode",
@@ -290,12 +304,12 @@ function Employee() {
           showSearchResults
             ? (newPaginationModel) =>
                 dispatch({
-                  type: "SET_EMPLOYEES_SEARCH_PAGINATION_MODEL",
+                  type: "SET_EMPLOYEES_PAGE_SEARCH_PAGINATION_MODEL",
                   payload: newPaginationModel,
                 })
             : (newPaginationModel) =>
                 dispatch({
-                  type: "SET_EMPLOYEES_PAGINATION_MODEL",
+                  type: "SET_EMPLOYEES_PAGE_PAGINATION_MODEL",
                   payload: newPaginationModel,
                 })
         }
