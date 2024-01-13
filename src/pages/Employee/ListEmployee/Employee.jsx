@@ -46,6 +46,9 @@ function Employee() {
   const [address, setAddress] = useState("");
   const [position, setPosition] = useState("");
 
+  //handle search
+  
+
   const fetchEmployees = async (page, size) => {
     try {
       const response = await fetch(
@@ -202,6 +205,7 @@ function Employee() {
           className="searchBar"
           options={options}
           placeholder="Search Products by name, ID or any related keywords"
+          handleSearch={handleSearch}
         />
         <div className="buttonContainer">
           <ExportButton onClick={handleExport} />

@@ -73,7 +73,7 @@ const InventoryItemList = () => {
       headerName: "MFG",
       field: "mfg",
       flex: 1,
-      valueGetter: (params) => params.row.manufacturingDate[0],
+      valueGetter: (params) => params.row.manufacturingDate,
     },
     {
       headerName: "EXP",

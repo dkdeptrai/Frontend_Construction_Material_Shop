@@ -173,7 +173,7 @@ function Dashboard() {
             <InfoContainer
               className="info-container"
               title="Earning"
-              info={revenue + " $"}
+              info={revenue}
               icon={<EarningIcon />}
             />
             <InfoContainer

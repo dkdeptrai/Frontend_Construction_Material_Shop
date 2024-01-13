@@ -17,10 +17,11 @@ function Customer() {
   const dispatch = useDispatch();
   const subroute = useSelector((state) => state.customers.subroute);
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const customers = useSelector((state) => state.customers.customers);
   const selectedRowIds = useSelector((state) => state.customers.selectedRowIds);
+  
   //table states
   const paginationModel = useSelector(
     (state) => state.customers.paginationModel
@@ -45,8 +46,8 @@ function Customer() {
   console.log(useSelector((state) => state.customers.searchResults));
 
   const fetchCustomers = async (page, size) => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
       const response = await fetch(
         `${API_CONST}/customers?page=${page}&size=${size}`,
         {

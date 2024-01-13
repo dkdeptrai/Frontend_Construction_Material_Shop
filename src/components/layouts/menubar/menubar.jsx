@@ -52,6 +52,7 @@ function MenuBar() {
     dispatch({ type: "SET_SALE_ORDERS", payload: [] });
     dispatch({ type: "SET_INVENTORY_PAGE_INVENTORY_ITEM", payload: [] });
     dispatch({ type: "SET_PURCHASE_ORDERS", payload: [] });
+    dispatch({ type: "SET_CUSTOMERS_PAGE_CUSTOMERS", payload: [] });
     await persistor.purge();
     sessionStorage.removeItem("token");
     navigate("/");

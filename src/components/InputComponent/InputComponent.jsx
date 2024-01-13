@@ -12,7 +12,8 @@ const InputComponent = ({
   className,
   placeholder,
   dataListOptions,
-  errorMessage
+  errorMessage,
+  max
 }) => {
   if (!type) {
     throw new Error("InputComponent: type is required!");
@@ -45,7 +46,7 @@ const InputComponent = ({
       </div>
     );
   }
-
+  console.log(max)
   return (
     <div>
       {renderedLabel}
@@ -58,6 +59,7 @@ const InputComponent = ({
         onChange={handleChange}
         className={className + " inputBarcodeField"}
         list={dataListOptions ? "dataListOptions" : null}
+        max={max}
       />
       {dataListOptions && (
         <datalist id="dataListOptions">

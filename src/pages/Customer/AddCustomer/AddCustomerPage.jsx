@@ -10,6 +10,17 @@ import RequiredStar from "../../../components/RequiredStar";
 import { API_CONST } from "../../../constants/apiConstants";
 import LoadingScreen from "../../../components/LoadingScreen/LoadingScreen";
 
+const transformISODate = (isoDate) => {
+  const date = new Date(isoDate);
+  const month = date.getMonth() + 1; // getMonth returns a zero-based value (where 0 indicates the first month)
+  const day = date.getDate();
+  const year = date.getFullYear();
+
+  return `${month.toString().padStart(2, "0")}/${day
+    .toString()
+    .padStart(2, "0")}/${year}`;
+};
+
 function AddCustomerPage(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -102,9 +113,13 @@ function AddCustomerPage(props) {
       .catch((error) => {
         console.error("Error:", error);
         alert("Add customer failed!");
-      }).finally(() => {
+      })
+      .finally(() => {
         alert("Add customer successfully!");
       })
+      .finally(() => {
+        dispatch({ type: "SET_CUSTOMERS_PAGE_CUSTOMERS", payload: [] });
+      });
     setLoading(false);
     clearInput();
   };
@@ -198,6 +213,7 @@ function AddCustomerPage(props) {
             })
           }
           className={isDateOfBirthValid ? "" : "invalid-input"}
+          max={new Date().toISOString().split("T")[0]}
         />
         {!isDateOfBirthValid && (
           <div className="input-missing-alert">

@@ -21,7 +21,7 @@ function SaleOrdersPage() {
   const dispatch = useDispatch();
   const subroute = useSelector((state) => state.saleOrders.subroute);
   //loadiing circle
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const saleOrdersFromStore = useSelector(
     (state) => state.saleOrders.saleOrdersData
@@ -37,12 +37,7 @@ function SaleOrdersPage() {
 
   //get all sale orders
   useEffect(() => {
-    if (saleOrdersFromStore.length > 0) {
-      console.log("get sale orders from store");
-      setSaleOrders(saleOrdersFromStore);
-      setLoading(false);
-      return;
-    }
+    setLoading(true);
     console.log(paginationModel.page, paginationModel.pageSize);
     fetch(
       `${API_CONST}/orders?page=${paginationModel.page}&size=${paginationModel.pageSize}&orderType=SALE`,

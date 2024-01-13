@@ -30,7 +30,7 @@ select {
 }
 
 .inputBarcodeField::-webkit-calendar-picker-indicator {
-  display:none !important;
+  display:none;
 }
 
 .data-option {

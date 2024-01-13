@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import "./NewProductsModal.css";
 
 //states
 import { useDispatch } from "react-redux";
 import { addSelectedProducts } from "../../../../actions/selectedProductsAction.jsx";
 
 //pages and components
-import BackButton from "../../../../components/layouts/backButton/backButton.jsx";
 import SearchBar from "../../../../components/layouts/searchBar/searchBar.jsx";
 import Table from "../../../../components/core/table/table.jsx";
 import { API_CONST } from "../../../../constants/apiConstants.jsx";
-import LoadingScreen from "../../../../components/LoadingScreen/LoadingScreen.jsx";
+import LoadingComponent from "../../../../components/LoadingComponent/LoadingComponent.jsx";
+import ExitButton from "../../../../assets/icons/exitbutton.svg?react";
 
-const NewProducts = () => {
+const NewProductsModal = ({ handleClose }) => {
   const [inventoryItems, setInventoryItems] = useState([]);
   const [selectedInventoryItems, setSelectedInventoryItems] = useState([]);
   const navigate = useNavigate();
@@ -36,7 +37,7 @@ const NewProducts = () => {
       return product;
     });
     dispatch(addSelectedProducts(selectedProducts));
-    navigate(-1);
+    handleClose(false);
   };
 
   const options = ["Product's name", "Product's code", "Price", "Quantity"];
@@ -124,40 +125,59 @@ const NewProducts = () => {
   ];
 
   return (
-    <>
-      {loading && <LoadingScreen />}
-      <BackButton content="Add products to order" />
-      <SearchBar
-        options={options}
-        placeholder="Search Products by name, ID or any related keywords"
-      />
-      <Table
-        columns={inventoryItemsColumns}
-        rows={inventoryItems}
-        selectedRowIds={selectedInventoryItems.map((item) => item.id)}
-        onRowSelection={(newSelection) => {
-          const selectedItems = newSelection.map((id) => {
-            const item = inventoryItems.find((item) => item.id === id);
+    <div className="new-products-modal-overlay">
+      <div className="new-products-modal-content">
+        <div className="new-products-modal-header">
+          <h2>Select Products</h2>
+          <div className="exit-button" onClick={() => handleClose(false)}>
+            <ExitButton />
+          </div>
+        </div>
 
-            return item;
-          });
-          setSelectedInventoryItems(selectedItems);
-        }}
-      />
-      <label style={{ marginTop: "80px" }}>Selected Items</label>
-      <Table
-        columns={inventoryItemsColumns}
-        rows={selectedInventoryItems}
-        noCheckboxSelection
-      />
-      <button
-        style={{ marginTop: "80px", marginLeft: "auto" }}
-        onClick={handleAddProducts}
-      >
-        Add products
-      </button>
-    </>
+        <SearchBar
+          className="searchBar"
+          options={options}
+          placeholder="Search Products by name, ID or any related keywords"
+        />
+        {!loading ? (
+          <Table
+            columns={inventoryItemsColumns}
+            rows={inventoryItems}
+            selectedRowIds={selectedInventoryItems.map((item) => item.id)}
+            onRowSelection={(newSelection) => {
+              const selectedItems = newSelection.map((id) => {
+                const item = inventoryItems.find((item) => item.id === id);
+
+                return item;
+              });
+              setSelectedInventoryItems(selectedItems);
+            }}
+          />
+        ) : (
+          <LoadingComponent />
+        )}
+
+        <label style={{ marginTop: "80px" }}>Selected Items</label>
+        <Table
+          columns={inventoryItemsColumns}
+          rows={selectedInventoryItems}
+          noCheckboxSelection
+        />
+        <button
+          style={{
+            marginTop: "80px",
+            marginLeft: "auto",
+            marginRight: "60px",
+            marginBottom: "80px",
+            height: "50px",
+          }}
+          onClick={handleAddProducts}
+        >
+          Add products
+        </button>
+      </div>
+    </div>
   );
 };
 
-export default NewProducts;
+export default NewProductsModal;

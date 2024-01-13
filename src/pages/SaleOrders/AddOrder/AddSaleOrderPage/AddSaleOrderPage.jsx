@@ -9,7 +9,6 @@ import {
   setSelectedProducts,
   updateSelectedProductsAmount,
 } from "../../../../actions/selectedProductsAction";
-import { addSaleOrder } from "../../../../actions/saleOrdersAction";
 
 //pages and components
 import InputComponent from "../../../../components/InputComponent/InputComponent";
@@ -18,10 +17,9 @@ import NewButton from "../../../../components/layouts/newButton/newButton";
 import DeleteButton from "../../../../components/layouts/deleteButton/deleteButton";
 import Table from "../../../../components/core/table/table";
 import InlineInputComponent from "../../../../components/inlineInputComponent/inlineInputComponent";
-import AmountInputModal from "../../../../components/AmountInputModal/AmountInputModal";
+import NewProductsModal from "../NewProductsModal/NewProductsModal";
 import { API_CONST } from "../../../../constants/apiConstants";
 import LoadingScreen from "../../../../components/LoadingScreen/LoadingScreen";
-import { setSelectedCustomer } from "../../../../actions/selectedCustomerAction";
 
 function AddSaleOrderPage() {
   const navigate = useNavigate();
@@ -32,6 +30,9 @@ function AddSaleOrderPage() {
   const [discount, setDiscount] = useState(0);
   const [oldDebt, setOldDebt] = useState(0.0);
   const [deposit, setDeposit] = useState(0.0);
+
+  //select products modal
+  const [openSelectProductsModal, setOpenSelectProductsModal] = useState(false);
 
   //search for customer by phone number
   const [searchedCustomerPhone, setSearchedCustomerPhone] = useState("");
@@ -70,8 +71,6 @@ function AddSaleOrderPage() {
         if (customers.results.length > 0) {
           // Update the customer name input with the fetched customer name
           const customer = customers.results[0];
-          setSearchedCustomerName(customer.name);
-          dispatch(setSelectedCustomer(customer.phone, customer.name));
           // Update the old debt input with the fetched customer debt
           const customerTotalDebt = await customer.debts.reduce(
             (totalDebt, debt) => {
@@ -82,6 +81,9 @@ function AddSaleOrderPage() {
             0
           );
           setOldDebt(customerTotalDebt);
+        }
+        if (customers.results.length === 1) {
+          setSearchedCustomerName(customers.results[0].name);
         }
       })
       .catch((error) => console.error("Error:", error));
@@ -107,15 +109,6 @@ function AddSaleOrderPage() {
 
   const handleNavigateAddCustomer = () => {
     navigate("/customers/add");
-  };
-
-  //navigate to add new products page
-  const handleAddProducts = () => {
-    dispatch({
-      type: "SET_SALE_ORDERS_PAGE_SUBROUTE",
-      payload: "add/add-products",
-    });
-    navigate("/orders/add/add-products");
   };
 
   //handle deposit
@@ -197,6 +190,7 @@ function AddSaleOrderPage() {
           id: customer.results[0].id,
         },
       },
+      orderType: "SALE",
     };
 
     await fetch(API_CONST + "/orders", {
@@ -208,10 +202,11 @@ function AddSaleOrderPage() {
       body: JSON.stringify(yourData),
     }).finally(() => {
       dispatch({ type: "SET_SALE_ORDERS", payload: [] });
-      dispatch(setSelectedCustomer(null, null));
       dispatch(setSelectedProducts([]));
       setLoading(false);
-
+      dispatch({ type: "SET_SALE_ORDERS", payload: [] });
+      dispatch({ type: "SET_INVENTORY_PAGE_INVENTORY_ITEM", payload: [] });
+      dispatch({ type: "SET_CUSTOMERS_PAGE_CUSTOMERS", payload: [] });
       navigateBackToOrders();
     });
   };
@@ -272,15 +267,18 @@ function AddSaleOrderPage() {
 
   const navigateBackToOrders = () => {
     dispatch({ type: "SET_SALE_ORDERS_PAGE_SUBROUTE", payload: null });
+    dispatch(setSelectedProducts([]));
     navigate("/orders");
   };
 
   return (
     <div className="adding-page">
       {loading ? <LoadingScreen /> : null}
-      {open === "true" ? (
-        <AmountInputModal open={open} setOpen={setOpen} />
+
+      {openSelectProductsModal ? (
+        <NewProductsModal handleClose={setOpenSelectProductsModal} />
       ) : null}
+
       <BackButton content="Add Order" handleClick={navigateBackToOrders} />
       <div className="customer-info">
         <InputComponent
@@ -310,7 +308,10 @@ function AddSaleOrderPage() {
               dispatch(deleteSelectedProducts(deletedItems));
             }}
           />
-          <NewButton text="New Products" onClick={handleAddProducts} />
+          <NewButton
+            text="New Products"
+            onClick={() => setOpenSelectProductsModal(true)}
+          />
         </div>
       </div>
       <Table

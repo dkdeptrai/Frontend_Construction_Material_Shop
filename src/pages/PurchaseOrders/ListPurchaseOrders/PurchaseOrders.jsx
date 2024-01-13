@@ -32,12 +32,7 @@ const PurchaseOrders = () => {
 
   //get all sale orders
   useEffect(() => {
-    if (purchaseOrdersFromStore.length > 0) {
-      console.log("get sale orders from store");
-      setPurchaseOrders(purchaseOrdersFromStore);
-      setLoading(false);
-      return;
-    }
+    setLoading(true);
     fetch(
       `${API_CONST}/orders?page=${paginationModel.page}&size=${paginationModel.pageSize}&orderType=PURCHASE`,
       {

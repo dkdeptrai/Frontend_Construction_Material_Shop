@@ -1,0 +1,33 @@
+.new-products-modal-overlay {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* semi-transparent background */
+  backdrop-filter: blur(5px); /* blur the background */
+  display: flex;
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+}
+
+.new-products-modal-content {
+  height: 90%;
+  width: 90%;
+  background-color: white;
+  border-radius: 14px;
+  overflow-y: auto;
+}
+
+.new-products-modal-content > * {
+  padding: 0 60px 0px 60px;
+}
+
+.new-products-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30px 60px 30px 60px;
+}
+

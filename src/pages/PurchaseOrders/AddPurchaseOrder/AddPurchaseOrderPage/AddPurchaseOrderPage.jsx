@@ -239,7 +239,6 @@ function AddSaleOrderPage() {
               }),
             }}
           />
-          
         );
       },
     },
@@ -288,6 +287,8 @@ function AddSaleOrderPage() {
       })
       .finally(() => {
         dispatch(setSelectedImportedProducts([]));
+        dispatch({ type: "SET_INVENTORY_PAGE_INVENTORY_ITEM", payload: [] });
+        dispatch({ type: "SET_PURCHASE_ORDERS", payload: [] });
         setLoading(false);
         navigate("/purchase-orders");
       });
@@ -322,6 +323,11 @@ function AddSaleOrderPage() {
     // }
   };
 
+  const handleClick = () => {
+    dispatch(setSelectedImportedProducts([]));
+    navigate("/purchase-orders");
+  };
+
   return (
     <div className="adding-page">
       {loading && <LoadingScreen />}
@@ -333,7 +339,7 @@ function AddSaleOrderPage() {
           productRowPointer={productRowPointer}
         />
       )}
-      <BackButton content="Add Order" />
+      <BackButton content="Add Order" handleClick={handleClick} />
       <div className="employee-info">
         <InputComponent
           label="Employee Code"

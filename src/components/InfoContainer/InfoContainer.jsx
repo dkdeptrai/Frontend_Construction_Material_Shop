@@ -9,10 +9,12 @@ const InfoContainer = ({ title, info, icon }) => {
     <div className="info-container">
       <div className="icon-container">{icon}</div>
       <div className="info">
-        <p>{info}</p>
+        <p>
+          {Math.floor(info)} {title === "Earning" && "$"}
+        </p>
         <span>{title}</span>
       </div>
-      <ExportIcon className="export-icon"/>
+      <ExportIcon className="export-icon" />
     </div>
   );
 };

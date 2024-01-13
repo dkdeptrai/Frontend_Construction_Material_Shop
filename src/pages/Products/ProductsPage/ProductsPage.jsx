@@ -103,6 +103,7 @@ function ProductsPage() {
       console.log("query", query);
       const response = await fetch(`${API_CONST}/products/search?${query}`, {
         method: "GET",
+        
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${sessionStorage.getItem("token")}`,
