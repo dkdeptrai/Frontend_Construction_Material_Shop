@@ -19,7 +19,6 @@ function SearchBar(props) {
         }))
     : [];
   const optionsCount = Object.keys(options).length;
-  console.log(options);
 
   const handleChange = (option) => {
     if (option === null) {

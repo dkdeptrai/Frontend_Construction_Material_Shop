@@ -15,7 +15,7 @@ const initialState = {
     total: 0,
   },
   searchQuery: "",
-  filterOption: "name",
+  filterOption: "NAME",
 };
 
 const employeePageReducer = (state = initialState, action) => {
