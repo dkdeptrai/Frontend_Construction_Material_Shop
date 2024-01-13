@@ -87,7 +87,8 @@ function ProductsPage() {
   };
   const handleSearch = async (page, size) => {
     try {
-      let query = `q=${name}&page=${page}&size=${size}`;
+      setIsLoading(true);
+      let query = `q=${name}&page=${searchPaginationModel.page}&size=${searchPaginationModel.pageSize}`;
       if (origin) {
         query += `&origin=${origin}`;
       }
@@ -100,7 +101,7 @@ function ProductsPage() {
       if (priceEnd) {
         query += `&maxPrice=${priceEnd}`;
       }
-      console.log("query", query);
+      console.log("query: ", query);
       const response = await fetch(`${API_CONST}/products/search?${query}`, {
         method: "GET",
         headers: {
@@ -119,9 +120,12 @@ function ProductsPage() {
           total: data.total,
         },
       });
+      setIsLoading(false);
     } catch (e) {
+      setIsLoading(false);
       console.error("Error fetching search results:", e);
     }
+    setIsLoading(false);
   };
 
   const handleExport = async () => {
@@ -158,6 +162,9 @@ function ProductsPage() {
   useEffect(() => {
     fetchProducts(paginationModel.page, paginationModel.pageSize);
   }, [paginationModel.page, paginationModel.pageSize]);
+  useEffect(() => {
+    handleSearch();
+  }, [searchPaginationModel.page, searchPaginationModel.pageSize]);
 
   const handleDelete = async (selectedRowIds) => {
     try {

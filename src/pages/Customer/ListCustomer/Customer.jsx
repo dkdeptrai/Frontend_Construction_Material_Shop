@@ -79,7 +79,7 @@ function Customer() {
 
   const handleSearch = async (page, size) => {
     try {
-      let query = `page=${page}&size=${size}`;
+      let query = `page=${searchPaginationModel.page}&size=${searchPaginationModel.pageSize}`;
       if (filter == "name") {
         query = query + `&customerName=${searchQuery}`;
       }
@@ -106,6 +106,8 @@ function Customer() {
         payload: { ...searchPaginationModel, total: data.total },
       });
     } catch (error) {
+      dispatch({ type: "SET_CUSTOMERS_PAGE_SHOW_RESULTS", payload: false });
+
       console.log("Error searching customers: ", error);
     }
   };
@@ -146,8 +148,12 @@ function Customer() {
     });
   }, [paginationModel.page, paginationModel.pageSize]);
 
+  // useEffect(() => {
+  //   handleSearch();
+  // }, [searchPaginationModel.page, searchPaginationModel.pageSize]);
+
   //Add customer
-  const navigateToNewProduct = () => {
+  const navigateToNewCustomer = () => {
     dispatch({ type: "SET_CUSTOMERS_PAGE_SUBROUTE", payload: "add" });
     navigate("/customers/add");
   };
@@ -276,9 +282,7 @@ function Customer() {
       <div className="toolBar">
         <SearchBar
           options={searchOptions}
-          handleSearch={() => {
-            handleSearch(paginationModel.page, paginationModel.pageSize);
-          }}
+          handleSearch={handleSearch}
           className="searchBar"
           placeholder="Search Customer by name"
           handleSearchQueryChange={handleSearchQueryChange}
@@ -293,7 +297,7 @@ function Customer() {
         <div className="buttonContainer">
           <ExportButton onClick={handleExport} />
           <DeleteButton onClick={() => handleDelete(selectedRowIds)} />
-          <NewButton text=" New Customer" onClick={navigateToNewProduct} />
+          <NewButton text=" New Customer" onClick={navigateToNewCustomer} />
         </div>
       </div>
       <Table
