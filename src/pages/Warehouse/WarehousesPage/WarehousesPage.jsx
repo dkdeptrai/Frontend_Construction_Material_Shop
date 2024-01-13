@@ -6,7 +6,7 @@ import WarehouseComponent from "../../../components/layouts/warehouseComponent/w
 import "./WarehousesPage.css";
 import NewButton from "../../../components/layouts/newButton/newButton";
 import { API_CONST } from "../../../constants/apiConstants";
-import LoadingCircle from "../../../components/LoadingCircle/LoadingCircle";
+import LoadingScreen from "../../../components/LoadingScreen/LoadingScreen";
 
 function WarehousesPage() {
   const dispatch = useDispatch();
@@ -92,7 +92,7 @@ function WarehousesPage() {
   };
   return (
     <div className="warehousePageContainer">
-      {isLoading && <LoadingCircle />}
+      {isLoading && <LoadingScreen />}
       <div className="toolbar">
         <SearchBar
           handleSearch={handleSearch}

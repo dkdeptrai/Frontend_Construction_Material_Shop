@@ -8,7 +8,7 @@ import InfoContainer from "../../components/InfoContainer/InfoContainer";
 import Table from "../../components/core/table/table.jsx";
 import StatusContainer from "../../components/StatusContainer/StatusContainer.jsx";
 import { API_CONST } from "../../constants/apiConstants.jsx";
-import LoadingCircle from "../../components/LoadingCircle/LoadingCircle.jsx";
+import LoadingScreen from "../../components/LoadingScreen/LoadingScreen.jsx";
 import CircularProgess from "../../components/CircularProgess/CircularProgress.jsx";
 
 //icons
@@ -151,7 +151,7 @@ function Dashboard() {
 
   return (
     <>
-      {loading && <LoadingCircle />}
+      {loading && <LoadingScreen />}
 
       <div className="statistic">
         <div className="info-bundle">

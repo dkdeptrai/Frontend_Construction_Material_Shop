@@ -12,6 +12,7 @@ const InputComponent = ({
   className,
   placeholder,
   dataListOptions,
+  errorMessage
 }) => {
   if (!type) {
     throw new Error("InputComponent: type is required!");
@@ -66,6 +67,11 @@ const InputComponent = ({
             </option>
           ))}
         </datalist>
+      )}
+      {errorMessage && (
+        <div className="input-missing-alert">
+          <span>{errorMessage}</span>
+        </div>
       )}
     </div>
   );

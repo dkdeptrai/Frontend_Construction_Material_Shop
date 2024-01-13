@@ -8,7 +8,7 @@ import BackButton from "../../../components/layouts/backButton/backButton";
 import InputComponent from "../../../components/InputComponent/InputComponent";
 import RequiredStar from "../../../components/RequiredStar";
 import { API_CONST } from "../../../constants/apiConstants";
-import LoadingCircle from "../../../components/LoadingCircle/LoadingCircle";
+import LoadingScreen from "../../../components/LoadingScreen/LoadingScreen";
 
 function AddCustomerPage(props) {
   const dispatch = useDispatch();
@@ -102,7 +102,9 @@ function AddCustomerPage(props) {
       .catch((error) => {
         console.error("Error:", error);
         alert("Add customer failed!");
-      });
+      }).finally(() => {
+        alert("Add customer successfully!");
+      })
     setLoading(false);
     clearInput();
   };
@@ -114,7 +116,7 @@ function AddCustomerPage(props) {
 
   return (
     <div className="add-customer-page">
-      {loading && <LoadingCircle />}
+      {loading && <LoadingScreen />}
       <BackButton
         content="Add Customer"
         handleClick={navigateBackToCustomers}

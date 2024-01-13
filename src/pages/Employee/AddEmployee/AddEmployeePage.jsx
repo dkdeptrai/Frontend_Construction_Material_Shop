@@ -7,7 +7,7 @@ import InputComponent from "../../../components/InputComponent/InputComponent";
 import BackButton from "../../../components/layouts/backButton/backButton.jsx";
 import { API_CONST } from "../../../constants/apiConstants.jsx";
 import ImageInputComponent from "../../../components/imageInputComponent/imageInputComponent.jsx";
-import LoadingCircle from "../../../components/LoadingCircle/LoadingCircle.jsx";
+import LoadingScreen from "../../../components/LoadingScreen/LoadingScreen.jsx";
 
 const AddEmployee = () => {
   const dispatch = useDispatch();
@@ -111,7 +111,7 @@ const AddEmployee = () => {
 
   return (
     <div className="employee-page">
-      {loading && <LoadingCircle />}
+      {loading && <LoadingScreen />}
       <BackButton content="Add Employee" />
       <form>
         <InputComponent
@@ -124,12 +124,9 @@ const AddEmployee = () => {
           value={email}
           setValue={setEmail}
           className={isEmailValid ? "" : "invalid-input"}
+          errorMessage={isEmailValid ? null : "Missing email"}
         />
-        {!isEmailValid && (
-          <div className="input-missing-alert">
-            <span>Missing email</span>
-          </div>
-        )}
+
         <InputComponent
           label={
             <>
@@ -140,12 +137,9 @@ const AddEmployee = () => {
           value={employeeName}
           setValue={setEmployeeName}
           className={isNameValid ? "" : "invalid-input"}
+          errorMessage={isNameValid ? null : "Missing name"}
         />
-        {!isNameValid && (
-          <div className="input-missing-alert">
-            <span>Missing name</span>
-          </div>
-        )}
+
         <label>
           {
             <>
@@ -156,12 +150,8 @@ const AddEmployee = () => {
         <ImageInputComponent
           setImage={setEmployeeImage}
           className={isImageValid ? "" : "invalid-input"}
+          errorMessage={isImageValid ? null : "Missing image"}
         />
-        {!isImageValid && (
-          <div className="input-missing-alert">
-            <span>Missing image</span>
-          </div>
-        )}
 
         <InputComponent
           label={
@@ -173,12 +163,9 @@ const AddEmployee = () => {
           value={phone}
           setValue={setPhone}
           className={isPhoneValid ? "" : "invalid-input"}
+          errorMessage={isPhoneValid ? null : "Missing phone"}
         />
-        {!isPhoneValid && (
-          <div className="input-missing-alert">
-            <span>Missing phone</span>
-          </div>
-        )}
+
         <InputComponent
           label={
             <>
@@ -189,12 +176,9 @@ const AddEmployee = () => {
           value={dateOfBirth}
           setValue={setDateOfBirth}
           className={isDateOfBirthValid ? "" : "invalid-input"}
+          errorMessage={isDateOfBirthValid ? null : "Missing date of birth"}
         />
-        {!isDateOfBirthValid && (
-          <div className="input-missing-alert">
-            <span>Missing date of birth</span>
-          </div>
-        )}
+
         <InputComponent
           label={
             <>
@@ -205,12 +189,9 @@ const AddEmployee = () => {
           value={address}
           setValue={setAddress}
           className={isAddressValid ? "" : "invalid-input"}
+          errorMessage={isAddressValid ? null : "Missing address"}
         />
-        {!isAddressValid && (
-          <div className="input-missing-alert">
-            <span>Missing address</span>
-          </div>
-        )}
+
         <InputComponent
           label={
             <>
@@ -233,12 +214,9 @@ const AddEmployee = () => {
           value={salary}
           setValue={setSalary}
           className={isSalaryValid ? "" : "invalid-input"}
+          errorMessage={isSalaryValid ? null : "Missing salary"}
         />
-        {!isSalaryValid && (
-          <div className="input-missing-alert">
-            <span>Missing salary</span>
-          </div>
-        )}
+
         <InputComponent
           label={
             <>
@@ -249,12 +227,9 @@ const AddEmployee = () => {
           value={startDate}
           setValue={setStartDate}
           className={isStartDateValid ? "" : "invalid-input"}
+          errorMessage={isStartDateValid ? null : "Missing start date"}
         />
-        {!isStartDateValid && (
-          <div className="input-missing-alert">
-            <span>Missing start date</span>
-          </div>
-        )}
+
         <div className="button-margin">
           <button onClick={handleClick}>Submit</button>
         </div>

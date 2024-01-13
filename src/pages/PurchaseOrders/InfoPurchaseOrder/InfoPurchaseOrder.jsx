@@ -6,7 +6,7 @@ import BackButton from "../../../components/layouts/backButton/backButton";
 import InformationLine from "../../../components/InformationLine/InformationLine";
 import Table from "../../../components/core/table/table";
 import { API_CONST } from "../../../constants/apiConstants";
-import LoadingCircle from "../../../components/LoadingCircle/LoadingCircle.jsx";
+import LoadingScreen from "../../../components/LoadingScreen/LoadingScreen.jsx";
 
 const InfoPurchaseOrder = () => {
   const { id } = useParams();
@@ -106,7 +106,7 @@ const InfoPurchaseOrder = () => {
 
   return (
     <div>
-      {loading && <LoadingCircle />}
+      {loading && <LoadingScreen />}
       <BackButton content="Order information" />
       <InformationLine label="Order ID:" content={orderId} />
       <InformationLine label="Employee's Code:" content={employeeCode} />

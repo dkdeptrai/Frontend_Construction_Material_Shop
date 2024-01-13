@@ -9,7 +9,7 @@ import ExportButton from "../../../components/layouts/exportButton/exportButton"
 import DeleteButton from "../../../components/layouts/deleteButton/deleteButton";
 import NewButton from "../../../components/layouts/newButton/newButton";
 import CustomerIcon from "../../../assets/icons/customer_default.png";
-import LoadingCircle from "../../../components/LoadingCircle/LoadingCircle";
+import LoadingScreen from "../../../components/LoadingScreen/LoadingScreen";
 import InputComponent from "../../../components/InputComponent/InputComponent";
 import { API_CONST } from "../../../constants/apiConstants";
 
@@ -258,7 +258,7 @@ function Customer() {
 
   return (
     <div className="customerPageContainer">
-      {isLoading && <LoadingCircle />}
+      {isLoading && <LoadingScreen />}
       <div className="toolBar">
         <SearchBar
           handleSearch={handleSearch}

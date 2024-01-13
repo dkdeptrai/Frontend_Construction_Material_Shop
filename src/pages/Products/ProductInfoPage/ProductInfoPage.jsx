@@ -7,7 +7,7 @@ import InputComponent from "../../../components/InputComponent/InputComponent.js
 import ImageInputComponent from "../../../components/ImageInputComponent/ImageInputComponent.jsx";
 import "./ProductInfoPage.css";
 import { API_CONST } from "../../../constants/apiConstants.jsx";
-import LoadingCircle from "../../../components/LoadingCircle/LoadingCircle.jsx";
+import LoadingScreen from "../../../components/LoadingScreen/LoadingScreen.jsx";
 
 function ProductInfoPage() {
   const dispatch = useDispatch();
@@ -148,7 +148,7 @@ function ProductInfoPage() {
 
   return (
     <div className="addProductPage">
-      {isLoading && <LoadingCircle />}
+      {isLoading && <LoadingScreen />}
 
       <BackButton content="Add Product" handleClick={navigateBackToProducts} />
       <form>

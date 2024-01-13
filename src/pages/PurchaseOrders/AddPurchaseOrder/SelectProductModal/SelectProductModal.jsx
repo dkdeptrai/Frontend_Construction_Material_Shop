@@ -7,7 +7,7 @@ import { updateSelectedImportedProduct } from "../../../../actions/selectedImpor
 
 //components
 import Table from "../../../../components/core/table/table";
-import LoadingCircle from "../../../../components/LoadingCircle/LoadingCircle";
+import LoadingScreen from "../../../../components/LoadingScreen/LoadingScreen";
 import ExitButton from "../../../../assets/icons/exitbutton.svg?react";
 import SearchBar from "../../../../components/layouts/searchBar/searchBar";
 
@@ -88,7 +88,7 @@ const SelectProductModal = ({ handleClose, productRowPointer }) => {
 
   return (
     <div className="product-modal-overlay">
-      {loading && <LoadingCircle />}
+      {loading && <LoadingScreen />}
       <div className="product-modal-content">
         <div className="product-modal-header">
           <h2>Select a product</h2>

@@ -4,9 +4,9 @@ import { useParams } from "react-router-dom";
 //pages and components
 import BackButton from "../../../components/layouts/backButton/backButton";
 import InputComponent from "../../../components/InputComponent/InputComponent";
-import ImageInputComponent from "../../../components/ImageInputComponent/ImageInputComponent";
+import ImageInputComponent from "../../../components/ImageInputComponent/ImageInputComponent.jsx";
 import { API_CONST } from "../../../constants/apiConstants";
-import LoadingCircle from "../../../components/LoadingCircle/LoadingCircle";
+import LoadingScreen from "../../../components/LoadingScreen/LoadingScreen.jsx";
 
 function EmployeeInformationPage() {
   const { id } = useParams();
@@ -68,10 +68,12 @@ function EmployeeInformationPage() {
 
   //update employee
   const handleUpdate = () => {
+    setLoading(true);
+
     const employee = {
       email: email,
       name: employeeName,
-      imageUrl: employeeImage,
+      image: employeeImage,
       phone: phone,
       dateOfBirth: dateOfBirth,
       contactAddress: address,
@@ -112,7 +114,7 @@ function EmployeeInformationPage() {
 
   return (
     <div>
-      {loading && <LoadingCircle />}
+      {loading && <LoadingScreen />}
       <BackButton content="Employee Information" />
       <form>
         <InputComponent

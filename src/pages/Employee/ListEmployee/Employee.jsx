@@ -8,7 +8,7 @@ import Table from "../../../components/core/table/table.jsx";
 import ExportButton from "../../../components/layouts/exportButton/exportButton.jsx";
 import DeleteButton from "../../../components/layouts/deleteButton/deleteButton.jsx";
 import NewButton from "../../../components/layouts/newButton/newButton.jsx";
-import LoadingCircle from "../../../components/LoadingCircle/LoadingCircle.jsx";
+import LoadingScreen from "../../../components/LoadingScreen/LoadingScreen.jsx";
 import CustomerIcon from "../../../assets/icons/customer_default.png";
 import { API_CONST } from "../../../constants/apiConstants.jsx";
 
@@ -188,7 +188,7 @@ function Employee() {
   ];
   return (
     <div className="pageContainer">
-      {loading && <LoadingCircle />}
+      {loading && <LoadingScreen />}
       <div className="toolBar">
         <SearchBar
           className="searchBar"

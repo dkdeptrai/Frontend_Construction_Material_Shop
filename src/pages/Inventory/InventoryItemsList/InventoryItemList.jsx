@@ -6,7 +6,7 @@ import SearchBar from "../../../components/layouts/searchBar/searchBar";
 import ExportButton from "../../../components/layouts/exportButton/exportButton";
 import Table from "../../../components/core/table/table"; // Change the import statement to use lowercase 'table' instead of uppercase 'Table'
 import { API_CONST } from "../../../constants/apiConstants";
-import LoadingCircle from "../../../components/LoadingCircle/LoadingCircle";
+import LoadingScreen from "../../../components/LoadingScreen/LoadingScreen";
 
 const InventoryItemList = () => {
   const dispatch = useDispatch();
@@ -72,12 +72,7 @@ const InventoryItemList = () => {
       headerName: "EXP",
       field: "exp",
       flex: 1,
-      valueGetter: (params) =>
-        params.row.expiryDate[1] +
-        "/" +
-        params.row.expiryDate[2] +
-        "/" +
-        params.row.expiryDate[0],
+      valueGetter: (params) => params.row.expiryDate,
     },
     {
       headerName: "Quantity",
@@ -100,7 +95,7 @@ const InventoryItemList = () => {
 
   return (
     <div className="pageContainer">
-      {loading && <LoadingCircle />}
+      {loading && <LoadingScreen />}
       <div className="toolBar">
         <SearchBar
           className="searchBar"

@@ -1,7 +1,7 @@
 import { ClipLoader } from "react-spinners";
-import "./LoadingCircle.css";
+import "./LoadingScreen.css";
 
-const LoadingCircle = () => {
+const LoadingScreen = () => {
   return (
     <div className="blur-background">
       <ClipLoader color="var(--button-color)" size={100} />
@@ -9,4 +9,4 @@ const LoadingCircle = () => {
   );
 };
 
-export default LoadingCircle;
+export default LoadingScreen;

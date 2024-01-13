@@ -10,7 +10,7 @@ import BackButton from "../../../../components/layouts/backButton/backButton.jsx
 import SearchBar from "../../../../components/layouts/searchBar/searchBar.jsx";
 import Table from "../../../../components/core/table/table.jsx";
 import { API_CONST } from "../../../../constants/apiConstants.jsx";
-import LoadingCircle from "../../../../components/LoadingCircle/LoadingCircle.jsx";
+import LoadingScreen from "../../../../components/LoadingScreen/LoadingScreen.jsx";
 
 const NewProducts = () => {
   const [inventoryItems, setInventoryItems] = useState([]);
@@ -125,7 +125,7 @@ const NewProducts = () => {
 
   return (
     <>
-      {loading && <LoadingCircle />}
+      {loading && <LoadingScreen />}
       <BackButton content="Add products to order" />
       <SearchBar
         options={options}

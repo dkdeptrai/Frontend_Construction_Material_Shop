@@ -8,7 +8,7 @@ import ExportButton from "../../../components/layouts/exportButton/exportButton.
 import NewButton from "../../../components/layouts/newButton/newButton.jsx";
 import StatusContainer from "../../../components/StatusContainer/StatusContainer.jsx";
 import { API_CONST } from "../../../constants/apiConstants.jsx";
-import LoadingCircle from "../../../components/LoadingCircle/LoadingCircle.jsx";
+import LoadingScreen from "../../../components/LoadingScreen/LoadingScreen.jsx";
 
 //selected products state
 import { useDispatch, useSelector } from "react-redux";
@@ -129,7 +129,7 @@ const PurchaseOrders = () => {
 
   return (
     <div className="pageContainer">
-      {loading && <LoadingCircle />}
+      {loading && <LoadingScreen />}
       <div className="toolBar">
         <SearchBar
           className="searchBar"

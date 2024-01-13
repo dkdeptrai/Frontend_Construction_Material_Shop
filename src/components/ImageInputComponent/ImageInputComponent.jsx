@@ -3,7 +3,12 @@ import UploadImageIcon from "../../assets/icons/uploadImage.svg?react";
 import Resizer from "react-image-file-resizer";
 import "./ImageInputComponent.css";
 
-const ImageInputComponent = ({ setImage, imageUrl, className }) => {
+const ImageInputComponent = ({
+  setImage,
+  imageUrl,
+  className,
+  errorMessage,
+}) => {
   const [backgroundImage, setBackgroundImage] = useState("");
   const [imageChosen, setImageChosen] = useState(false);
   const fileInputRef = useRef();
@@ -66,25 +71,32 @@ const ImageInputComponent = ({ setImage, imageUrl, className }) => {
   };
 
   return (
-    <div
-      className={'imageContainer ' + className}
-      style={{
-        backgroundImage: imageChosen ? backgroundImage : undefined,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-      }}
-      onClick={handleImageClick}
-    >
-      {!imageChosen && <UploadImageIcon />}
-      <input
-        ref={fileInputRef}
-        type="file"
-        accept="image/jpeg, image/png"
-        style={{ display: "none" }}
-        onChange={handleFileInputChange} // Attach onChange handler
-      />
-    </div>
+    <>
+      <div
+        className={"imageContainer " + className}
+        style={{
+          backgroundImage: imageChosen ? backgroundImage : undefined,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+        }}
+        onClick={handleImageClick}
+      >
+        {!imageChosen && <UploadImageIcon />}
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/jpeg, image/png"
+          style={{ display: "none" }}
+          onChange={handleFileInputChange} // Attach onChange handler
+        />
+      </div>
+      {errorMessage && (
+        <div className="input-missing-alert">
+          <span>{errorMessage}</span>
+        </div>
+      )}
+    </>
   );
 };
 

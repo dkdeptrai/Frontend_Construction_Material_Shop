@@ -10,7 +10,7 @@ import Table from "../../../components/core/table/table.jsx";
 import ExportButton from "../../../components/layouts/exportButton/exportButton.jsx";
 import NewButton from "../../../components/layouts/newButton/newButton.jsx";
 import StatusContainer from "../../../components/StatusContainer/StatusContainer.jsx";
-import LoadingCircle from "../../../components/LoadingCircle/LoadingCircle.jsx";
+import LoadingScreen from "../../../components/LoadingScreen/LoadingScreen.jsx";
 import { API_CONST } from "../../../constants/apiConstants.jsx";
 import CustomerIcon from "../../../assets/icons/customer_default.png";
 
@@ -139,7 +139,6 @@ function SaleOrdersPage() {
   ];
   return (
     <div className="pageContainer">
-      {loading && <LoadingCircle />}
       <div className="toolBar">
         <SearchBar
           className="searchBar"
@@ -151,14 +150,18 @@ function SaleOrdersPage() {
           <NewButton text="New Order" onClick={handleClick} />
         </div>
       </div>
-      <Table
-        className="table"
-        columns={productColumns}
-        rows={saleOrders}
-        cellName="customerPhone"
-        identifyRoute="id"
-        noCheckboxSelection
-      />
+      {loading ? (
+        <LoadingScreen />
+      ) : (
+        <Table
+          className="table"
+          columns={productColumns}
+          rows={saleOrders}
+          cellName="customerPhone"
+          identifyRoute="id"
+          noCheckboxSelection
+        />
+      )}
     </div>
   );
 }

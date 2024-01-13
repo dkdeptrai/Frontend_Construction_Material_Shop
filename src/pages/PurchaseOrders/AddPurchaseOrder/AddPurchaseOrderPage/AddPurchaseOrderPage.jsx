@@ -25,7 +25,7 @@ import DeleteButton from "../../../../components/layouts/deleteButton/deleteButt
 import Table from "../../../../components/core/table/table";
 import InlineInputComponent from "../../../../components/inlineInputComponent/inlineInputComponent";
 import { API_CONST } from "../../../../constants/apiConstants";
-import LoadingCircle from "../../../../components/LoadingCircle/LoadingCircle";
+import LoadingScreen from "../../../../components/LoadingScreen/LoadingScreen";
 import SelectProductModal from "../SelectProductModal/SelectProductModal";
 
 function AddSaleOrderPage() {
@@ -324,7 +324,7 @@ function AddSaleOrderPage() {
 
   return (
     <div className="adding-page">
-      {loading && <LoadingCircle />}
+      {loading && <LoadingScreen />}
       {showModal && (
         <SelectProductModal
           handleClose={() => {

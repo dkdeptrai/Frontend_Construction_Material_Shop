@@ -9,7 +9,7 @@ import NewButton from "../../../components/layouts/newButton/newButton.jsx";
 import "./ProductsPage.css";
 import { API_CONST } from "../../../constants/apiConstants.jsx";
 import InputComponent from "../../../components/InputComponent/InputComponent.jsx";
-import LoadingCircle from "../../../components/LoadingCircle/LoadingCircle.jsx";
+import LoadingScreen from "../../../components/LoadingScreen/LoadingScreen.jsx";
 import productsReducer from "../../../reducers/productPageReducer.jsx";
 
 function ProductsPage() {
@@ -268,7 +268,7 @@ function ProductsPage() {
   ];
   return (
     <div className="productPageContainer">
-      {isLoading && <LoadingCircle />}
+      {isLoading && <LoadingScreen />}
       <div>
         <div className="toolBar">
           <SearchBar

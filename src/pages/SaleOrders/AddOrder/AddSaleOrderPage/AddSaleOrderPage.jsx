@@ -20,7 +20,7 @@ import Table from "../../../../components/core/table/table";
 import InlineInputComponent from "../../../../components/inlineInputComponent/inlineInputComponent";
 import AmountInputModal from "../../../../components/AmountInputModal/AmountInputModal";
 import { API_CONST } from "../../../../constants/apiConstants";
-import LoadingCircle from "../../../../components/LoadingCircle/LoadingCircle";
+import LoadingScreen from "../../../../components/LoadingScreen/LoadingScreen";
 import { setSelectedCustomer } from "../../../../actions/selectedCustomerAction";
 
 function AddSaleOrderPage() {
@@ -59,13 +59,14 @@ function AddSaleOrderPage() {
     })
       .then((response) => response.json())
       .then(async (customers) => {
-        setCustomerOptions(customers.results);
         // If there is only one customer with the phone number, fetch for the customer name
         if (customers.results.length === 0) {
           setSearchedCustomerName("Customer not found");
+          setCustomerOptions([]);
           setOldDebt(0);
           return;
-        } 
+        }
+        setCustomerOptions(customers.results);
         if (customers.results.length > 0) {
           // Update the customer name input with the fetched customer name
           const customer = customers.results[0];
@@ -266,7 +267,7 @@ function AddSaleOrderPage() {
 
   return (
     <div className="adding-page">
-      {loading ? <LoadingCircle /> : null}
+      {loading ? <LoadingScreen /> : null}
       {open === "true" ? (
         <AmountInputModal open={open} setOpen={setOpen} />
       ) : null}

@@ -81,16 +81,16 @@ function App() {
   );
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    window.addEventListener("beforeunload", () => {
-      dispatch({ type: "CLEAR_REDUX_STORE" });
-    });
+  // useEffect(() => {
+  //   window.addEventListener("beforeunload", () => {
+  //     dispatch({ type: "CLEAR_REDUX_STORE" });
+  //   });
 
-    // Cleanup function
-    return () => {
-      window.removeEventListener("beforeunload");
-    };
-  }, [dispatch]);
+  //   // Cleanup function
+  //   return () => {
+  //     window.removeEventListener("beforeunload");
+  //   };
+  // }, [dispatch]);
 
   return (
     <>
