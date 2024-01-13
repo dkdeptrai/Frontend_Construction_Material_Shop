@@ -19,8 +19,6 @@ function Employee() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
 
-  const options = ["SALE", "WAREHOUSE", "DELIVERY"];
-
   // table states
   const [selectedRowIds, setSelectedRowIds] = useState([]);
   const [paginationModel, setPaginationModel] = useState({
@@ -34,6 +32,9 @@ function Employee() {
     total: 0,
   });
 
+  //search query
+  const [searchQuery, setSearchQuery] = useState("");
+
   // search states
   const [searchResults, setSearchResults] = useState([]);
   const [showSearchResults, setShowSearchResults] = useState(false);
@@ -41,13 +42,14 @@ function Employee() {
   const [employees, setEmployees] = useState([]);
 
   // filter options
+  const options = ["Code", "Name", "Phone"];
+  const [filter, setFilter] = useState(options[0]);
   const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [address, setAddress] = useState("");
   const [position, setPosition] = useState("");
 
   //handle search
-  
 
   const fetchEmployees = async (page, size) => {
     try {
@@ -71,27 +73,35 @@ function Employee() {
     }
   };
 
-  const handleSearch = async () => {
+  const handleSearch = async (page, size) => {
     try {
-      let query = `&page=0&size=10&name=${name}`;
-      if (phoneNumber !== "") query += `&phone=${phoneNumber}`;
-      if (address !== "") query += `&contactAddress=${address}`;
-      if (position !== "") query += `&employeeType=${position}`;
-      console.log(`QUERY: ${API_CONST}/`);
-      const response = await fetch(`${API_CONST}/users/employees?${query}`, {
-        method: "GET",
-        headers: {
-          Authorization: "Bearer " + sessionStorage.getItem("token"),
-        },
-      });
-      const data = await response.json();
-      const employees = data.results;
-      setSearchResults(employees);
-      setSearchPaginationModel((prevState) => ({
-        ...prevState,
-        total: data.total,
-      }));
+      let query = `page=${page}&size=${size}`;
+      if (filter === "Code") {
+        query += `&keyword=${searchQuery}&searchBy=CODE`;
+      }
+      if (filter === "Name") {
+        query += `&keyword=${searchQuery}&searchBy=NAME`;
+      }
+      if (filter === "Phone") {
+        query += `&keyword=${searchQuery}&searchBy=PHONE`;
+      }
+
+      const response = await fetch(
+        `${API_CONST}/users/employees/search?${query}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: "Bearer " + sessionStorage.getItem("token"),
+          },
+        }
+      );
+      const searchedEmployees = await response.json();
+      setSearchResults(searchedEmployees.results);
       setShowSearchResults(true);
+      setSearchPaginationModel({
+        ...searchPaginationModel,
+        total: searchedEmployees.total,
+      });
     } catch (e) {
       console.log(e);
     }
@@ -204,8 +214,20 @@ function Employee() {
         <SearchBar
           className="searchBar"
           options={options}
-          placeholder="Search Products by name, ID or any related keywords"
-          handleSearch={handleSearch}
+          placeholder="Search Employee"
+          handleSearch={() => {
+            handleSearch(paginationModel.page, paginationModel.pageSize);
+          }}
+          value={searchQuery}
+          handleSearchQueryChange={(e) => {
+            setSearchQuery(e.target.value);
+            if (e.target.value === "" || e.target.value == null) {
+              setShowSearchResults(false);
+              setSearchResults([]);
+              fetchEmployees(paginationModel.page, paginationModel.pageSize);
+            }
+          }}
+          setFilter={(filter) => setFilter(filter)}
         />
         <div className="buttonContainer">
           <ExportButton onClick={handleExport} />
@@ -218,7 +240,7 @@ function Employee() {
           className="table"
           columns={employeeColumns}
           rows={showSearchResults ? searchResults : employees}
-          cellName="name"
+          cellName="employeeCode"
           identifyRoute="id"
           onRowSelection={(newSelection) => {
             setSelectedRowIds(newSelection);
