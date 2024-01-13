@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./Customer.css";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+
 //pages and components
 import Table from "../../../components/core/table/table";
 import SearchBar from "../../../components/layouts/searchBar/searchBar";
@@ -9,21 +10,17 @@ import ExportButton from "../../../components/layouts/exportButton/exportButton"
 import DeleteButton from "../../../components/layouts/deleteButton/deleteButton";
 import NewButton from "../../../components/layouts/newButton/newButton";
 import CustomerIcon from "../../../assets/icons/customer_default.png";
-import LoadingScreen from "../../../components/LoadingScreen/LoadingScreen";
-import InputComponent from "../../../components/InputComponent/InputComponent";
+import LoadingComponent from "../../../components/LoadingComponent/LoadingComponent";
 import { API_CONST } from "../../../constants/apiConstants";
 
 function Customer() {
   const dispatch = useDispatch();
   const subroute = useSelector((state) => state.customers.subroute);
-  console.log("subroute: ", subroute);
   const navigate = useNavigate();
-  const dummy = useSelector((state) => state.customers.dummy);
   const [isLoading, setIsLoading] = useState(true);
 
   const customers = useSelector((state) => state.customers.customers);
   const selectedRowIds = useSelector((state) => state.customers.selectedRowIds);
-
   //table states
   const paginationModel = useSelector(
     (state) => state.customers.paginationModel
@@ -33,14 +30,19 @@ function Customer() {
   );
 
   //search states
+  const searchOptions = ["name", "phone"];
+
   const searchResults = useSelector((state) => state.customers.searchResults);
+
   const showSearchResults = useSelector(
     (state) => state.customers.showSearchResults
   );
+  console.log("showSearchResults", showSearchResults);
   // filter options
-  const name = useSelector((state) => state.customers.name);
-  const phone = useSelector((state) => state.customers.phone);
-  const address = useSelector((state) => state.customers.address);
+  const filter = useSelector((state) => state.customers.filterOption);
+  const searchQuery = useSelector((state) => state.customers.searchQuery);
+
+  console.log(useSelector((state) => state.customers.searchResults));
 
   const fetchCustomers = async (page, size) => {
     try {
@@ -76,11 +78,17 @@ function Customer() {
     }
   };
 
-  //TODO: fix api call (no document)
   const handleSearch = async (page, size) => {
     try {
-      let query = `customerName=${name}&page=${page}&size=${size}&phone=${phone}`;
-      const response = await fetch(`${API_CONST}/customers/search?${query}`, {
+      let query = `page=${page}&size=${size}`;
+      if (filter == "name") {
+        query = query + `&customerName=${searchQuery}`;
+      }
+      if (filter == "phone") {
+        query = query + `&phone=${searchQuery}`;
+      }
+      console.log("query", query);
+      const response = await fetch(`${API_CONST}/customers?${query}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -103,7 +111,6 @@ function Customer() {
     }
   };
 
-  //TODO: fix api call
   const handleExport = async () => {
     try {
       const response = await fetch(`${API_CONST}/customers/export/excel`, {
@@ -134,6 +141,10 @@ function Customer() {
   //get customer list
   useEffect(() => {
     fetchCustomers(paginationModel.page, paginationModel.pageSize);
+    dispatch({
+      type: "SET_CUSTOMERS_PAGE_SHOW_SEARCH_RESULTS",
+      payload: false,
+    });
   }, [paginationModel.page, paginationModel.pageSize]);
 
   //Add customer
@@ -197,7 +208,11 @@ function Customer() {
   };
 
   const handleSearchQueryChange = (event) => {
-    dispatch({ type: "SET_CUSTOMERS_PAGE_NAME", payload: event.target.value });
+    console.log("filter", filter);
+    dispatch({
+      type: "SET_CUSTOMERS_PAGE_SEARCH_QUERY",
+      payload: event.target.value,
+    });
     if (event.target.value === "" || event.target.value == null) {
       dispatch({ type: "SET_CUSTOMERS_PAGE_SHOW_RESULTS", payload: false });
       dispatch({ type: "SET_CUSTOMERS_PAGE_SEARCH_RESULTS", payload: [] });
@@ -258,14 +273,22 @@ function Customer() {
 
   return (
     <div className="customerPageContainer">
-      {isLoading && <LoadingScreen />}
       <div className="toolBar">
         <SearchBar
-          handleSearch={handleSearch}
+          options={searchOptions}
+          handleSearch={() => {
+            handleSearch(paginationModel.page, paginationModel.pageSize);
+          }}
           className="searchBar"
           placeholder="Search Customer by name"
           handleSearchQueryChange={handleSearchQueryChange}
-          value={name}
+          value={searchQuery}
+          setFilter={(value) =>
+            dispatch({
+              type: "SET_CUSTOMERS_PAGE_FILTER_OPTION",
+              payload: value,
+            })
+          }
         />
         <div className="buttonContainer">
           <ExportButton onClick={handleExport} />
@@ -273,61 +296,39 @@ function Customer() {
           <NewButton text=" New Customer" onClick={navigateToNewProduct} />
         </div>
       </div>
-      <div className="filters">
-        <InputComponent
-          type="number"
-          placeholder="Phone Number"
-          value={phone}
-          setValue={(value) =>
+      {!isLoading ? (
+        <Table
+          className="table"
+          columns={customerColumns}
+          rows={showSearchResults ? searchResults : customers}
+          handleCellClick={handleCellClick}
+          selectedRowIds={selectedRowIds}
+          cellName="name"
+          identifyRoute="id"
+          onRowSelection={(newSelection) => {
             dispatch({
-              type: "SET_CUSTOMERS_PAGE_PHONE",
-              payload: value,
-            })
+              type: "SET_CUSTOMERS_PAGE_SELECTED_ROW_IDS",
+              payload: newSelection,
+            });
+          }}
+          paginationModel={
+            showSearchResults ? searchPaginationModel : paginationModel
+          }
+          onPaginationModelChange={
+            showSearchResults
+              ? (newPaginationModel) =>
+                  dispatch({
+                    type: "SET_CUSTOMERS_PAGE_SEARCH_PAGINATION_MODEL",
+                    payload: newPaginationModel,
+                  })
+              : (newPaginationModel) =>
+                  dispatch({
+                    type: "SET_CUSTOMERS_PAGE_PAGINATION_MODEL",
+                    payload: newPaginationModel,
+                  })
           }
         />
-        <InputComponent
-          type="text"
-          placeholder="Address"
-          value={address}
-          setValue={(value) =>
-            dispatch({
-              type: "SET_CUSTOMERS_PAGE_ADDRESS",
-              payload: value,
-            })
-          }
-        />
-      </div>
-      <Table
-        className="table"
-        columns={customerColumns}
-        rows={showSearchResults ? searchResults : customers}
-        handleCellClick={handleCellClick}
-        selectedRowIds={selectedRowIds}
-        cellName="name"
-        identifyRoute="id"
-        onRowSelection={(newSelection) => {
-          dispatch({
-            type: "SET_CUSTOMERS_PAGE_SELECTED_ROW_IDS",
-            payload: newSelection,
-          });
-        }}
-        paginationModel={
-          showSearchResults ? searchPaginationModel : paginationModel
-        }
-        onPaginationModelChange={
-          showSearchResults
-            ? (newPaginationModel) =>
-                dispatch({
-                  type: "SET_CUSTOMERS_PAGE_SEARCH_PAGINATION_MODEL",
-                  payload: newPaginationModel,
-                })
-            : (newPaginationModel) =>
-                dispatch({
-                  type: "SET_CUSTOMERS_PAGE_PAGINATION_MODEL",
-                  payload: newPaginationModel,
-                })
-        }
-      />
+      ) : <LoadingComponent />}
     </div>
   );
 }

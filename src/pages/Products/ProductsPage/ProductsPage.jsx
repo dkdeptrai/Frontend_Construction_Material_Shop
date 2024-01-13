@@ -9,7 +9,7 @@ import NewButton from "../../../components/layouts/newButton/newButton.jsx";
 import "./ProductsPage.css";
 import { API_CONST } from "../../../constants/apiConstants.jsx";
 import InputComponent from "../../../components/InputComponent/InputComponent.jsx";
-import LoadingScreen from "../../../components/LoadingScreen/LoadingScreen.jsx";
+import LoadingComponent from "../../../components/LoadingComponent/LoadingComponent.jsx";
 import productsReducer from "../../../reducers/productPageReducer.jsx";
 
 function ProductsPage() {
@@ -100,6 +100,7 @@ function ProductsPage() {
       if (priceEnd) {
         query += `&maxPrice=${priceEnd}`;
       }
+      console.log("query", query);
       const response = await fetch(`${API_CONST}/products/search?${query}`, {
         method: "GET",
         headers: {
@@ -268,7 +269,6 @@ function ProductsPage() {
   ];
   return (
     <div className="productPageContainer">
-      {isLoading && <LoadingScreen />}
       <div>
         <div className="toolBar">
           <SearchBar
@@ -330,7 +330,7 @@ function ProductsPage() {
           />
         </div>
       </div>
-      {products && (
+      {!isLoading ? (
         <Table
           className="table"
           columns={productColumns}
@@ -362,6 +362,8 @@ function ProductsPage() {
                   })
           }
         />
+      ) : (
+        <LoadingComponent />
       )}
     </div>
   );

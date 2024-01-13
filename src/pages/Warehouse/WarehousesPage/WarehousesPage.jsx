@@ -6,7 +6,7 @@ import WarehouseComponent from "../../../components/layouts/warehouseComponent/w
 import "./WarehousesPage.css";
 import NewButton from "../../../components/layouts/newButton/newButton";
 import { API_CONST } from "../../../constants/apiConstants";
-import LoadingScreen from "../../../components/LoadingScreen/LoadingScreen";
+import LoadingComponent from "../../../components/LoadingComponent/LoadingComponent";
 
 function WarehousesPage() {
   const dispatch = useDispatch();
@@ -17,10 +17,6 @@ function WarehousesPage() {
   const subroute = useSelector((state) => state.warehouses.subroute);
   const warehouses = useSelector((state) => state.warehouses.warehouses);
   const searchQuery = useSelector((state) => state.warehouses.searchQuery);
-
-  console.log("warehouses", warehouses);
-  console.log("search query", searchQuery);
-  console.log("subroute", subroute);
 
   const fetchWarehouses = async () => {
     try {
@@ -92,7 +88,6 @@ function WarehousesPage() {
   };
   return (
     <div className="warehousePageContainer">
-      {isLoading && <LoadingScreen />}
       <div className="toolbar">
         <SearchBar
           handleSearch={handleSearch}
@@ -105,16 +100,20 @@ function WarehousesPage() {
           onClick={() => navigateToNewWarehouse()}
         />
       </div>
-      <div className="warehousesListContainer">
-        {warehouses.map((warehouse) => (
-          <WarehouseComponent
-            onClick={() => navigateToWarehouse(warehouse)}
-            className="warehouse"
-            key={warehouse.id}
-            warehouse={warehouse}
-          />
-        ))}
-      </div>
+      {isLoading ? (
+        <LoadingComponent />
+      ) : (
+        <div className="warehousesListContainer">
+          {warehouses.map((warehouse) => (
+            <WarehouseComponent
+              onClick={() => navigateToWarehouse(warehouse)}
+              className="warehouse"
+              key={warehouse.id}
+              warehouse={warehouse}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

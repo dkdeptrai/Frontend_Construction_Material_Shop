@@ -8,23 +8,23 @@ import ExportButton from "../../../components/layouts/exportButton/exportButton.
 import NewButton from "../../../components/layouts/newButton/newButton.jsx";
 import StatusContainer from "../../../components/StatusContainer/StatusContainer.jsx";
 import { API_CONST } from "../../../constants/apiConstants.jsx";
-import LoadingScreen from "../../../components/LoadingScreen/LoadingScreen.jsx";
 
 //selected products state
 import { useDispatch, useSelector } from "react-redux";
+import LoadingComponent from "../../../components/LoadingComponent/LoadingComponent.jsx";
 
 const PurchaseOrders = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [purchaseOrders, setPurchaseOrders] = useState([]);
-  const [paginationModel, setPaginationModel] = useState({
-    pageSize: 10,
-    page: 0,
-    total: 0,
-  });
 
-  //loadiing circle
+  const [purchaseOrders, setPurchaseOrders] = useState([]);
+  //loading circle
   const [loading, setLoading] = useState(true);
+
+  const paginationModel = useSelector(
+    (state) => state.purchaseOrders.paginationModel
+  );
+  console.log(paginationModel);
 
   const purchaseOrdersFromStore = useSelector(
     (state) => state.purchaseOrders.purchaseOrdersData
@@ -33,17 +33,20 @@ const PurchaseOrders = () => {
   //get all sale orders
   useEffect(() => {
     if (purchaseOrdersFromStore.length > 0) {
-      console.log("get purchase orders from store");
+      console.log("get sale orders from store");
       setPurchaseOrders(purchaseOrdersFromStore);
       setLoading(false);
       return;
     }
-    fetch(API_CONST + "/orders?orderType=PURCHASE", {
-      method: "GET",
-      headers: {
-        Authorization: "Bearer " + sessionStorage.getItem("token"),
-      },
-    })
+    fetch(
+      `${API_CONST}/orders?page=${paginationModel.page}&size=${paginationModel.pageSize}&orderType=PURCHASE`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + sessionStorage.getItem("token"),
+        },
+      }
+    )
       .then((response) => response.json())
       .then(async (data) => {
         const newPurchaseOrders = [];
@@ -74,14 +77,17 @@ const PurchaseOrders = () => {
           newPurchaseOrders.push(newOrder);
         }
         dispatch({ type: "SET_PURCHASE_ORDERS", payload: newPurchaseOrders });
-        console.log("get PUrCHASE orders from api");
+        dispatch({
+          type: "SET_PURCHASE_ORDERS_PAGE_PAGINATION_MODEL",
+          payload: { ...paginationModel, total: data.total },
+        });
         setPurchaseOrders(newPurchaseOrders);
       })
       .catch((error) => console.error("Error:", error))
       .finally(() => {
         setLoading(false);
       });
-  }, []);
+  }, [paginationModel.page, paginationModel.pageSize]);
 
   const handleClick = () => {
     navigate("/purchase-orders/add");
@@ -94,7 +100,7 @@ const PurchaseOrders = () => {
       field: "id",
       headerName: "No.",
       width: 50,
-      valueGetter: (params) => purchaseOrders.indexOf(params.row) + 1,
+      valueGetter: (params) => purchaseOrdersFromStore.indexOf(params.row) + 1,
     },
     {
       field: "employeeCode",
@@ -116,7 +122,8 @@ const PurchaseOrders = () => {
       field: "total",
       headerName: "Total",
       flex: 0.4,
-      valueGetter: (params) => params.row.total.toLocaleString() + " $",
+      valueGetter: (params) =>
+        params.row.total ? params.row.total.toLocaleString() + " $" : "0.0 $",
     },
     { field: "date", headerName: "Date", flex: 0.4 },
     {
@@ -129,11 +136,10 @@ const PurchaseOrders = () => {
 
   return (
     <div className="pageContainer">
-      {loading && <LoadingScreen />}
       <div className="toolBar">
         <SearchBar
           className="searchBar"
-          options={options}
+          // options={options}
           placeholder="Search Products by name, ID or any related keywords"
         />
         <div className="buttonContainer">
@@ -141,15 +147,25 @@ const PurchaseOrders = () => {
           <NewButton text="New Order" onClick={handleClick} />
         </div>
       </div>
-      <Table
-        className="table"
-        columns={orderColumns}
-        rows={purchaseOrders}
-        cellName="employeeCode"
-        identifyRoute="id"
-        paginationModel={paginationModel}
-        noCheckboxSelection
-      />
+      {!loading ? (
+        <Table
+          className="table"
+          columns={orderColumns}
+          rows={purchaseOrders}
+          cellName="employeeCode"
+          identifyRoute="id"
+          paginationModel={paginationModel}
+          onPaginationModelChange={(newPaginationModel) => {
+            dispatch({
+              type: "SET_PURCHASE_ORDERS_PAGE_PAGINATION_MODEL",
+              payload: newPaginationModel,
+            });
+          }}
+          noCheckboxSelection
+        />
+      ) : (
+        <LoadingComponent />
+      )}
     </div>
   );
 };

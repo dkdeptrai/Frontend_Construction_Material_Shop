@@ -121,7 +121,10 @@ function CustomerInformationPage() {
       headerName: "Number of items",
       field: "numberOfItems",
       renderCell: (params) =>
-        params.row.orderItems.reduce((sum, item) => sum + item.quantity, 0),
+        params.row.orderItems.reduce(
+          (sum, item) => (sum + item ? item.quantity : 0),
+          0
+        ),
       flex: 0.4,
     },
     { headerName: "Total", field: "total", flex: 0.4 },

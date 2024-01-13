@@ -15,7 +15,14 @@ import addCustomerPageReducer from "./addCustomerPageReducer.jsx";
 
 const rootReducer = (state, action) => {
   if (action.type === "CLEAR_REDUX_STORE") {
-    state = undefined;
+    const keepUser = action.payload?.keepUser;
+    if (keepUser) {
+      const userState = state.user;
+      state = undefined;
+      state = { user: userState };
+    } else {
+      state = undefined;
+    }
   }
 
   return combineReducers({

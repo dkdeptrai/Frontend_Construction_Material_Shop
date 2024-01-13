@@ -8,7 +8,7 @@ import Table from "../../../components/core/table/table.jsx";
 import ExportButton from "../../../components/layouts/exportButton/exportButton.jsx";
 import DeleteButton from "../../../components/layouts/deleteButton/deleteButton.jsx";
 import NewButton from "../../../components/layouts/newButton/newButton.jsx";
-import LoadingScreen from "../../../components/LoadingScreen/LoadingScreen.jsx";
+import LoadingComponent from "../../../components/LoadingComponent/LoadingComponent.jsx";
 import CustomerIcon from "../../../assets/icons/customer_default.png";
 import { API_CONST } from "../../../constants/apiConstants.jsx";
 
@@ -17,7 +17,7 @@ import "./Employee.css";
 function Employee() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const options = ["SALE", "WAREHOUSE", "DELIVERY"];
 
@@ -101,6 +101,7 @@ function Employee() {
   //get employee list
   useEffect(() => {
     fetchEmployees(paginationModel.page, paginationModel.pageSize);
+    setLoading(false);
   }, [paginationModel.page, paginationModel.pageSize]);
 
   const handleExport = async () => {
@@ -168,12 +169,20 @@ function Employee() {
       valueGetter: (params) => employees.indexOf(params.row) + 1,
     },
     {
+      field: "employeeCode",
+      headerName: "Employee Code",
+      flex: 0.3,
+    },
+    {
       field: "name",
       headerName: "Employee Name",
       flex: 0.5,
       renderCell: (params) => (
         <div className="productNameCell">
-          <img className="productImage" src={params.row.imageUrl || CustomerIcon} />
+          <img
+            className="productImage"
+            src={params.row.imageUrl || CustomerIcon}
+          />
           <span>{params.value}</span>
         </div>
       ),
@@ -188,7 +197,6 @@ function Employee() {
   ];
   return (
     <div className="pageContainer">
-      {loading && <LoadingScreen />}
       <div className="toolBar">
         <SearchBar
           className="searchBar"
@@ -201,22 +209,26 @@ function Employee() {
           <NewButton text="New Employee" onClick={handleClick} />
         </div>
       </div>
-      <Table
-        className="table"
-        columns={employeeColumns}
-        rows={showSearchResults ? searchResults : employees}
-        cellName="name"
-        identifyRoute="id"
-        onRowSelection={(newSelection) => {
-          setSelectedRowIds(newSelection);
-        }}
-        paginationModel={
-          showSearchResults ? searchPaginationModel : paginationModel
-        }
-        onPaginationModelChange={
-          showSearchResults ? setSearchPaginationModel : setPaginationModel
-        }
-      />
+      {!loading ? (
+        <Table
+          className="table"
+          columns={employeeColumns}
+          rows={showSearchResults ? searchResults : employees}
+          cellName="name"
+          identifyRoute="id"
+          onRowSelection={(newSelection) => {
+            setSelectedRowIds(newSelection);
+          }}
+          paginationModel={
+            showSearchResults ? searchPaginationModel : paginationModel
+          }
+          onPaginationModelChange={
+            showSearchResults ? setSearchPaginationModel : setPaginationModel
+          }
+        />
+      ) : (
+        <LoadingComponent />
+      )}
     </div>
   );
 }

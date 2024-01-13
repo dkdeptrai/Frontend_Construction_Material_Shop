@@ -1,5 +1,17 @@
 const initialState = {
   saleOrdersData: [],
+  subroute: null,
+  searchResults: [],
+  paginationModel: {
+    pageSize: 10,
+    page: 0,
+    total: 0,
+  },
+  searchPaginationModel: {
+    pageSize: 10,
+    page: 0,
+    total: 0,
+  },
 };
 
 const saleOrdersReducer = (state = initialState, action) => {
@@ -14,9 +26,28 @@ const saleOrdersReducer = (state = initialState, action) => {
         ...state,
         saleOrdersData: [...state.saleOrders, action.payload],
       };
-    default:
-      return state;
+    case "SET_SALE_ORDERS_PAGE_SUBROUTE":
+      return {
+        ...state,
+        subroute: action.payload,
+      };
+    case "SET_SALE_ORDERS_PAGE_PAGINATION_MODEL":
+      return {
+        ...state,
+        paginationModel: action.payload,
+      };
+    case "SET_SALE_ORDERS_PAGE_SEARCH_PAGINATION_MODEL":
+      return {
+        ...state,
+        searchPaginationModel: action.payload,
+      };
+    case "SET_SALE_ORDERS_PAGE_SEARCH_RESULTS":
+      return {
+        ...state,
+        searchResults: action.payload,
+      };
   }
+  return state;
 };
 
 export default saleOrdersReducer;

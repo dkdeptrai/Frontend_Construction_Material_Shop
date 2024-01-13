@@ -1,13 +1,28 @@
 import React, { useState, useEffect } from "react";
 import SearchIcon from "../../../assets/icons/search.svg?react";
 import FilterIcon from "../../../assets/icons/filter.svg?react";
-import RemoveIcon from "../../../assets/icons/remove.svg?react";
 
 import "./searchBar.css";
+import Select from "react-select";
 
 function SearchBar(props) {
   const handleSearch = props.handleSearch;
+  const options = props.options
+    ? props.options.map((option) => ({
+        value: option,
+        label: option,
+      }))
+    : [];
+  const optionsCount = Object.keys(options).length;
+  console.log(options);
 
+  const handleChange = (option) => {
+    if (option === null) {
+      props.setFilter("");
+    } else {
+      props.setFilter(option.value);
+    }
+  };
   return (
     <div>
       <div className="searchBarContainer">
@@ -18,6 +33,26 @@ function SearchBar(props) {
           placeholder={props.placeholder}
           onChange={props.handleSearchQueryChange}
         />
+        {optionsCount > 0 && (
+          <Select
+            placeholder="Filter"
+            className="searchOptions"
+            options={options}
+            isSearchable={false}
+            isClearable={false}
+            defaultValue={options[0]}
+            onChange={handleChange}
+            components={{
+              DropdownIndicator: () => {
+                return (
+                  <div>
+                    <FilterIcon style={{ margin: "4px 10px 0px 10px" }} />
+                  </div>
+                );
+              },
+            }}
+          />
+        )}
         <button className="searchButton" onClick={handleSearch}>
           <SearchIcon />
         </button>
