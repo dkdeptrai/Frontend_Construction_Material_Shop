@@ -16,12 +16,51 @@ const InventoryItemList = () => {
   console.log("inventory items from store", inventoryItemsFromStore);
   const [loading, setLoading] = useState(false);
 
-  const options = ["Name", "Quantity", "Unit", "Unit Price", "Total"];
+  const options = ["Name", "Warehouse"];
 
+  //search
   const paginationModel = useSelector(
     (state) => state.inventoryItems.paginationModel
   );
-  console.log(paginationModel);
+  const searchPaginationModel = useSelector(
+    (state) => state.inventoryItems.searchPaginationModel
+  );
+  const searchQuery = useSelector((state) => state.inventoryItems.searchQuery);
+
+  const handleSearch = async () => {
+    try {
+      let query = `page=${searchPaginationModel.page}&size=${searchPaginationModel.pageSize}`;
+      if (filter == "Name") {
+        query = query + `&customerName=${searchQuery}`;
+      }
+      if (filter == "Warehouse") {
+        query = query + `&phone=${searchQuery}`;
+      }
+      console.log("query", query);
+      const response = await fetch(`${API_CONST}/customers?${query}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + sessionStorage.getItem("token"),
+        },
+      });
+      const data = await response.json();
+      const customers = data.results;
+      dispatch({
+        type: "SET_CUSTOMERS_PAGE_SEARCH_RESULTS",
+        payload: customers,
+      });
+      dispatch({ type: "SET_CUSTOMERS_PAGE_SHOW_RESULTS", payload: true });
+      dispatch({
+        type: "SET_CUSTOMERS_PAGE_SEARCH_PAGINATION_MODEL",
+        payload: { ...searchPaginationModel, total: data.total },
+      });
+    } catch (error) {
+      dispatch({ type: "SET_CUSTOMERS_PAGE_SHOW_RESULTS", payload: false });
+
+      console.log("Error searching customers: ", error);
+    }
+  };
 
   const fetchInventoryItems = async (page, size) => {
     try {
@@ -117,7 +156,14 @@ const InventoryItemList = () => {
         <SearchBar
           className="searchBar"
           options={options}
-          placeholder="Search Products by name, ID or any related keywords"
+          placeholder="Search inventory items by "
+          value={searchQuery}
+          setFilter={(value) =>
+            dispatch({
+              type: "SET_INVENTORY_ITEM_PAGE_FILTER_OPTION",
+              payload: value,
+            })
+          }
         />
 
         <ExportButton onClick={() => {}} />

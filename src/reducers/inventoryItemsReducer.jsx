@@ -1,10 +1,20 @@
 const initialState = {
   inventoryItemsData: [],
   subroute: null,
+  searchResults: [],
+  showSearchResults: false,
   paginationModel: {
     page: 0,
     pageSize: 10,
+    total: 0,
   },
+  searchPaginationModel: {
+    page: 0,
+    pageSize: 10,
+    total: 0,
+  },
+  searchQuery: "",
+  filterOption: "Name",
 };
 
 const inventoryItemsReducer = (state = initialState, action) => {
@@ -24,6 +34,33 @@ const inventoryItemsReducer = (state = initialState, action) => {
         ...state,
         paginationModel: action.payload,
       };
+    case "SET_INVENTORY_PAGE_SEARCH_PAGINATION_MODEL":
+      return {
+        ...state,
+        searchPaginationModel: action.payload,
+      };
+    case "SET_INVENTORY_PAGE_SEARCH_QUERY":
+      return {
+        ...state,
+        searchQuery: action.payload,
+      };
+    case "SET_INVENTORY_PAGE_SEARCH_RESULTS":
+      return {
+        ...state,
+        searchResults: action.payload,
+      };
+    case "SET_INVENTORY_PAGE_SHOW_RESULTS":
+      return {
+        ...state,
+        showSearchResults: action.payload,
+      };
+    case "SET_INVENTORY_PAGE_FILTER_OPTION":
+      return {
+        ...state,
+        filterOption: action.payload,
+      };
+    default:
+      break;
   }
   return state;
 };

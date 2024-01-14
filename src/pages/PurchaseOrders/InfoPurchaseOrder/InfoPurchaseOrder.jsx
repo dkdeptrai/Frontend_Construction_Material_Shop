@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
 //pages and components
 import BackButton from "../../../components/layouts/backButton/backButton";
@@ -9,6 +10,8 @@ import { API_CONST } from "../../../constants/apiConstants";
 import LoadingScreen from "../../../components/LoadingScreen/LoadingScreen.jsx";
 
 const InfoPurchaseOrder = () => {
+  const dispatch = useDispatch();
+
   const { id } = useParams();
   const [orderId, setOrderId] = useState("");
   const [employeeCode, setEmployeeCode] = useState("");
@@ -143,6 +146,10 @@ const InfoPurchaseOrder = () => {
               return;
             setOrderStatus(newStatus);
             handleChangeStatus(newStatus);
+            dispatch({
+              type: "SET_PURCHASE_ORDERS",
+              payload: [],
+            });
             window.history.back();
           }}
           disabled={orderStatus === "CANCELLED" || orderStatus === "COMPLETED"}
@@ -175,6 +182,10 @@ const InfoPurchaseOrder = () => {
             setLoading(true);
             await handleChangeStatus("CANCELLED");
             setOrderStatus("CANCELLED");
+            dispatch({
+              type: "SET_PURCHASE_ORDERS",
+              payload: [],
+            });
             window.history.back();
             setLoading(false);
           }}

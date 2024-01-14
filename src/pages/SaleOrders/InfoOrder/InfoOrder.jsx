@@ -148,6 +148,10 @@ const InfoOrder = () => {
               return;
             setOrderStatus(newStatus);
             handleChangeStatus(newStatus);
+            dispatch({
+              type: "SET_SALE_ORDERS",
+              payload: [],
+            });
             window.history.back();
           }}
           disabled={orderStatus === "CANCELLED" || orderStatus === "COMPLETED"}
@@ -180,6 +184,10 @@ const InfoOrder = () => {
             setLoading(true);
             await handleChangeStatus("CANCELLED");
             setOrderStatus("CANCELLED");
+            dispatch({
+              type: "SET_SALE_ORDERS",
+              payload: [],
+            });
             window.history.back();
             setLoading(false);
           }}

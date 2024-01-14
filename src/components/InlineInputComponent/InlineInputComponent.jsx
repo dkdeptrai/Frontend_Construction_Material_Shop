@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./InlineInputComponent.css";
 
 const InlineInputComponent = (props) => {
@@ -7,6 +7,12 @@ const InlineInputComponent = (props) => {
   const handleSetValue = (e) => {
     setValue(e.target.value);
   };
+
+  useEffect(() => {
+    if (value > max) {
+      setValue(max);
+    }
+  }, [value]);
 
   return (
     <div className="input-field">
