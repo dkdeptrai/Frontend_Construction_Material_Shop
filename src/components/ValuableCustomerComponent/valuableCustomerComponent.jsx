@@ -19,11 +19,11 @@ function ValuableCustomerComponent(props) {
       </div>
 
       <div className="valuableCustomerOrder">
-        {customer.orderCount ? customer.orderCount : 0} Orders
+        {customer.ordersCount ? customer.ordersCount : 0} Orders
       </div>
 
       <div className="valuableCustomerTotal">
-        ${customer.totalSpent ? customer.totalSpent : 0}
+        ${customer.ordersValue ? customer.ordersValue : 0}
       </div>
 
       <button
