@@ -27,6 +27,7 @@ import InlineInputComponent from "../../../../components/inlineInputComponent/in
 import { API_CONST } from "../../../../constants/apiConstants";
 import LoadingScreen from "../../../../components/LoadingScreen/LoadingScreen";
 import SelectProductModal from "../SelectProductModal/SelectProductModal";
+import { countDecimals } from "../../../../utils/numberUtils";
 
 function AddSaleOrderPage() {
   const navigate = useNavigate();
@@ -176,6 +177,12 @@ function AddSaleOrderPage() {
               newUnitPrice = 1;
             }
 
+            newUnitPrice = Number(newUnitPrice);
+
+            if (countDecimals(newUnitPrice) > 2) {
+              newUnitPrice = newUnitPrice.toFixed(2);
+            }
+
             dispatch(
               updateSelectedImportedProductsUnitPrice(params.id, newUnitPrice)
             );
@@ -220,7 +227,6 @@ function AddSaleOrderPage() {
               (warehouse) => warehouse.id === params.value
             )}
             onChange={(selectedOption) => {
-           
               dispatch(
                 updateSelectedImportedProductsWarehouse(
                   params.row.id,
@@ -257,7 +263,7 @@ function AddSaleOrderPage() {
       newInventoryItems: selectedProducts.map((product) => {
         const importedDate = new Date();
         console.log(importedDate);
-        console.log(product.warehouse)
+        console.log(product.warehouse);
         return {
           product: {
             id: product.productId,
@@ -406,7 +412,11 @@ function AddSaleOrderPage() {
           value={discount}
           setValue={setDiscount}
         />
-        <InlineInputComponent label="Total:" type="text" value={total + " $"} />
+        <InlineInputComponent
+          label="Total:"
+          type="text"
+          value={total.toFixed(2) + " $"}
+        />
       </div>
 
       <button style={{ margin: "50px auto" }} onClick={handleAddPurchaseOrder}>

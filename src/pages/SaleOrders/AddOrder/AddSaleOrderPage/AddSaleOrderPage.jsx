@@ -20,6 +20,9 @@ import InlineInputComponent from "../../../../components/inlineInputComponent/in
 import NewProductsModal from "../NewProductsModal/NewProductsModal";
 import { API_CONST } from "../../../../constants/apiConstants";
 import LoadingScreen from "../../../../components/LoadingScreen/LoadingScreen";
+import { countDecimals } from "../../../../utils/numberUtils";
+
+
 
 function AddSaleOrderPage() {
   const navigate = useNavigate();
@@ -368,8 +371,11 @@ function AddSaleOrderPage() {
             type="number"
             value={deposit}
             setValue={(e) => {
-              const newDeposit = Number(e);
+              let newDeposit = Number(e);
               if (newDeposit <= total) {
+                if (countDecimals(newDeposit) > 2) {
+                  newDeposit = newDeposit.toFixed(2);
+                } 
                 setDeposit(newDeposit);
               }
             }}

@@ -12,6 +12,7 @@ function Table(props) {
   //Add cellName's field's name so that we can navigate to more information page
 
   const cellName = props.cellName;
+  const longNavigate = props.longNavigate; //if true, we will navigate to more information page when click on any cell
   //IdentifyRoute is the field's name that we can identify each row
 
   const noCheckboxSelection = props.noCheckboxSelection;
@@ -32,10 +33,13 @@ function Table(props) {
     : (params, event) => {
         if (
           params.field === cellName &&
-          (params.field === "name" ||
-            params.field === "id" )
+          (params.field === "name" || params.field === "id")
         ) {
-          navigate(location.pathname + "/" + params.row[identifyRoute]);
+          if (longNavigate) {
+            navigate("/orders/" + params.row[identifyRoute]);
+          } else {
+            navigate(location.pathname + "/" + params.row[identifyRoute]);
+          }
         }
         if (params.field === cellName && params.field === "amount") {
           event.stopPropagation();

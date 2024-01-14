@@ -115,6 +115,7 @@ function Dashboard() {
       width: 50,
       valueGetter: (params) => saleOrders.indexOf(params.row) + 1,
     },
+    { field: "id", headerName: "ID", flex: 0.2 },
     {
       field: "customerPhone",
       headerName: "Customer's phone number",
@@ -201,7 +202,14 @@ function Dashboard() {
         <label className="newest-order-label">Newest Orders</label>
         <span onClick={handleViewAll}>View All</span>
       </div>
-      <Table columns={productColumns} rows={saleOrders} noCheckboxSelection />
+      <Table
+        columns={productColumns}
+        rows={saleOrders}
+        noCheckboxSelection
+        cellName="id"
+        identifyRoute="id"
+        longNavigate
+      />
     </>
   );
 }
