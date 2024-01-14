@@ -85,7 +85,7 @@ function AddSaleOrderPage() {
       exp: "",
       unitPrice: 1,
       amount: 1,
-      warehouse: "",
+      warehouse: 0,
     };
 
     dispatch(addSelectedImportedProduct(newInventoryItem));
@@ -220,10 +220,11 @@ function AddSaleOrderPage() {
               (warehouse) => warehouse.id === params.value
             )}
             onChange={(selectedOption) => {
+              console.log(params.row.id, selectedOption.id)
               dispatch(
                 updateSelectedImportedProductsWarehouse(
-                  params.id,
-                  selectedOption.value
+                  params.row.id,
+                  selectedOption.id
                 )
               );
             }}
@@ -256,12 +257,13 @@ function AddSaleOrderPage() {
       newInventoryItems: selectedProducts.map((product) => {
         const importedDate = new Date();
         console.log(importedDate);
+        console.log(product.warehouse)
         return {
           product: {
             id: product.productId,
           },
           warehouse: {
-            id: 1,
+            id: product.warehouse,
           },
           quantity: product.amount,
           manufacturingDate: product.mfg,
