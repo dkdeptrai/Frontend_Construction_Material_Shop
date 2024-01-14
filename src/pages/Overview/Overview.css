@@ -1,5 +1,5 @@
 .overviewContainer {
-  height: 100%;
+  height: 120%;
   width: 100%;
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -23,6 +23,13 @@
   width: 100%;
   font-size: 20px;
   font-weight: 500;
+}
+.revenueGrowth > * {
+  margin: 12px 0px;
+}
+
+.progressBar {
+  margin: 4px 0;
 }
 
 .pieChartContainer {
