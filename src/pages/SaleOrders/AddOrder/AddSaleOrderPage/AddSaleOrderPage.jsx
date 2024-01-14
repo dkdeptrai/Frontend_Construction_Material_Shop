@@ -367,7 +367,13 @@ function AddSaleOrderPage() {
             label="Deposit:"
             type="number"
             value={deposit}
-            setValue={setDeposit}
+            setValue={(e) => {
+              const newDeposit = Number(e);
+              if (newDeposit <= total) {
+                setDeposit(newDeposit);
+              }
+            }}
+            min={0}
             max={total}
             className="green-text"
           />
