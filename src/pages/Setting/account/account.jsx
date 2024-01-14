@@ -20,31 +20,45 @@ const Account = () => {
             <InputComponent
               label="Employee Code"
               type="text"
-              defaultValue={userData?.employeeCode}
+              value={userData?.employeeCode}
+              readOnly
             />
             <InputComponent
               label="Email"
               type="email"
-              defaultValue={userData?.email}
+              value={userData?.email}
+              readOnly
             />
             <InputComponent
               label="Phone"
               type="tel"
-              defaultValue={userData?.phone}
+              value={userData?.phone}
+              readOnly
             />
             <InputComponent
               label="Address"
               type="text"
-              defaultValue={userData?.contactAddress}
+              value={userData?.contactAddress}
+              readOnly
             />
             <InputComponent
               label="Date of birth"
               type="date"
-              defaultValue={userData?.dateOfBirth}
+              value={
+                userData?.dateOfBirth[1] +
+                "/" +
+                userData?.dateOfBirth[2] +
+                "/" +
+                userData?.dateOfBirth[0]
+              }
+              readOnly
             />
           </div>
           <div className="image">
-            <ImageInputComponent imageUrl={DefaultAvatar} />
+            <ImageInputComponent
+              imageUrl={userData.imageUrl || "https://picsum.photos/200"}
+              readOnly
+            />
           </div>
         </div>
       </div>
@@ -54,12 +68,7 @@ const Account = () => {
       <div className="setting">
         <div className="setting-page">
           <div>
-            <InputComponent
-              label="Name"
-              type="text"
-              value={userData?.name}
-              
-            />
+            <InputComponent label="Name" type="text" value={userData?.name} />
             <InputComponent
               label="Email"
               type="email"

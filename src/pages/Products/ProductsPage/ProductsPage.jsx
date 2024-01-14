@@ -22,7 +22,7 @@ function ProductsPage() {
   const products = useSelector((state) => state.products.products);
   const selectedRowIds = useSelector((state) => state.products.selectedRowIds);
 
-  const userType = useSelector((state) => state.user.userData.userType);
+  const userType = useSelector((state) => state.user.userData.userType) || "";
 
   //tables states
   const paginationModel = useSelector(
