@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   PieChart,
   Pie,
@@ -24,11 +25,31 @@ import { API_CONST } from "../../constants/apiConstants";
 import "./Overview.css";
 
 function Overview() {
+  const navigate = useNavigate();
+  const [customerData, setCustomerData] = useState([
+    [
+      {
+        name: "John",
+        phone: "1234567890",
+        orderCount: 5,
+        totalSpent: 500,
+      },
+      {
+        name: "John",
+        phone: "1234567890",
+        orderCount: 5,
+        totalSpent: 500,
+      },
+    ],
+  ]);
+
   const fetchOverviewData = async () => {
     try {
       const response = await fetch(API_CONST + "/overview", {
         method: "GET",
-        Authorization: "Bearer " + sessionStorage.getItem("token"),
+        headers: {
+          Authorization: "Bearer " + sessionStorage.getItem("token"),
+        },
       });
       if (!response.ok) {
         throw Error(response.statusText);
@@ -66,6 +87,15 @@ function Overview() {
       ];
       setOrderData(newOrderData);
       const valuableCustomers = data.valuableCustomers;
+      const newCustomerData = valuableCustomers.map((customer) => ({
+        id: customer.id,
+        name: customer.name,
+        phone: customer.phone,
+        orderCount: customer.orderCount && 0,
+        totalSpent: customer.totalSpent && 0,
+      }));
+      console.log(newCustomerData);
+      setCustomerData(newCustomerData);
     } catch (e) {
       console.log("Error in fetching overview data: ", e);
     }
@@ -84,48 +114,51 @@ function Overview() {
     },
   ]);
 
-  const customerData = [
-    {
-      name: "John",
-      phone: "1234567890",
-      orderCount: 5,
-      totalSpent: 500,
-    },
-  ];
-
   useEffect(() => {
     fetchOverviewData();
   }, []);
+
+  const handleClick = (customer) => {
+    console.log("clicked", customer);
+    navigate(`/customers/${customer.id}`);
+  };
 
   return (
     <>
       <div className="overviewContainer">
         <div className="monthlyRevenue">
           <div className="label">Monthly Revenue</div>
-          <AreaChart width={550} height={400} data={revenueData}>
-            <XAxis dataKey="month"></XAxis>
-            <YAxis />
-            <Tooltip />
-            <Area
-              type="monotone"
-              dataKey="revenue"
-              stroke="#8884d8"
-              fill="#8884d8"
-            />
-          </AreaChart>
+
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={revenueData}>
+              <XAxis dataKey="month"></XAxis>
+              <YAxis />
+              <Tooltip />
+              <Area
+                type="monotone"
+                dataKey="revenue"
+                stroke="#8884d8"
+                fill="#8884d8"
+              />
+            </AreaChart>
+          </ResponsiveContainer>
         </div>
         <div className="ordersStatus">
           <div className="label">Orders Status</div>
           <div className="pieChartContainer">
-            <ResponsiveContainer className="pieChartRC">
+            <ResponsiveContainer
+              className="pieChartRC"
+              width="100%"
+              height="100%"
+            >
               <PieChart>
                 <Pie
                   data={orderData}
                   cx="50%"
                   cy="50%"
                   labelLine={false}
-                  innerRadius={50}
-                  outerRadius={90}
+                  innerRadius="40%"
+                  outerRadius="80%"
                   dataKey="value"
                 ></Pie>
                 <Tooltip />
@@ -150,9 +183,16 @@ function Overview() {
         <div className="valuableCustomers">
           <div className="label">Valuable Customers</div>
 
-          {customerData.map((customer) => (
-            <ValuableCustomerComponent customer={customer} />
-          ))}
+          {customerData ? (
+            customerData.map((customer) => (
+              <ValuableCustomerComponent
+                customer={customer}
+                handleClick={() => handleClick(customer)}
+              />
+            ))
+          ) : (
+            <ValuableCustomerComponent customer={customerData} />
+          )}
         </div>
       </div>
     </>

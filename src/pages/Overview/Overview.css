@@ -15,6 +15,10 @@
   width: 100%;
 }
 
+.monthlyRevenue {
+  max-height: 500px;
+}
+
 .overviewContainer .label {
   width: 100%;
   font-size: 20px;
