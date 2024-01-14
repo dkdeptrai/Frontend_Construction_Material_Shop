@@ -72,9 +72,9 @@ const InfoPurchaseOrder = () => {
             id: item.productId,
             name: orderedInventoryItem.product.name,
             imageUrl: orderedInventoryItem.product.imageUrl,
-            unitPrice: orderedInventoryItem.product.unitPrice,
+            unitPrice: orderedInventoryItem.importedPrice,
             amount: item.quantity,
-            total: item.quantity * orderedInventoryItem.product.unitPrice,
+            total: item.quantity * orderedInventoryItem.importedPrice,
           };
           setProducts((products) => [...products, product]);
         });
@@ -152,8 +152,9 @@ const InfoPurchaseOrder = () => {
             dispatch({
               type: "SET_PURCHASE_ORDERS",
               payload: [],
+            }).then(() => {
+              window.history.back();
             });
-            window.history.back();
           }}
           disabled={orderStatus === "CANCELLED" || orderStatus === "COMPLETED"}
         >
@@ -188,8 +189,9 @@ const InfoPurchaseOrder = () => {
             dispatch({
               type: "SET_PURCHASE_ORDERS",
               payload: [],
+            }).then(() => {
+              window.history.back();
             });
-            window.history.back();
             setLoading(false);
           }}
         >

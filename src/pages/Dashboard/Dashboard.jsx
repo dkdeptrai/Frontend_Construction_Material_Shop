@@ -16,6 +16,7 @@ import CustomerIcon from "../../assets/icons/customer.svg?react";
 import OrderIcon from "../../assets/icons/order.svg?react";
 import ProductIcon from "../../assets/icons/product.svg?react";
 import EarningIcon from "../../assets/icons/earning.svg?react";
+import DefaultAvatar from "../../assets/icons/customer_default.png";
 
 function InStockCapacity() {
   return (
@@ -125,7 +126,10 @@ function Dashboard() {
       flex: 0.6,
       renderCell: (params) => (
         <div className="productNameCell">
-          <img className="productImage" src={params.row.image} />
+          <img
+            className="productImage"
+            src={params.row.image || DefaultAvatar}
+          />
           <span>{params.value}</span>
         </div>
       ),

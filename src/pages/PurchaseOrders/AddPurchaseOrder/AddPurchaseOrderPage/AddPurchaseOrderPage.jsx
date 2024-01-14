@@ -269,7 +269,7 @@ function AddSaleOrderPage() {
           manufacturingDate: product.mfg,
           expiryDate: product.exp,
           importedDate: importedDate.toISOString().slice(0, 10),
-          importedPrice: product.unitPrice * product.amount,
+          importedPrice: product.unitPrice,
         };
       }),
       orderType: "PURCHASE",
