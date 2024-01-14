@@ -147,14 +147,15 @@ const InfoPurchaseOrder = () => {
               ) === false
             )
               return;
+            setLoading(true);
             setOrderStatus(newStatus);
             handleChangeStatus(newStatus);
             dispatch({
               type: "SET_PURCHASE_ORDERS",
               payload: [],
-            }).then(() => {
-              window.history.back();
             });
+            setLoading(false);
+            window.history.back();
           }}
           disabled={orderStatus === "CANCELLED" || orderStatus === "COMPLETED"}
         >
@@ -189,10 +190,9 @@ const InfoPurchaseOrder = () => {
             dispatch({
               type: "SET_PURCHASE_ORDERS",
               payload: [],
-            }).then(() => {
-              window.history.back();
             });
             setLoading(false);
+            window.history.back();
           }}
         >
           Cancel this order

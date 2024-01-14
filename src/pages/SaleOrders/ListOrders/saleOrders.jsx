@@ -61,7 +61,7 @@ function SaleOrdersPage() {
         return;
       }
       let query = `&page=${searchPaginationModel.page}&size=${searchPaginationModel.pageSize}&orderType=SALE&id=${searchQuery}`;
-     
+
       if (filterStartDate !== "") {
         query += `&startDate=${filterStartDate}`;
       }
@@ -262,7 +262,7 @@ function SaleOrdersPage() {
       field: "total",
       headerName: "Total",
       flex: 0.4,
-      valueGetter: (params) => params.value + " $",
+      valueGetter: (params) => params.value.toFixed(2) + " $",
     },
     { field: "date", headerName: "Date", flex: 0.4 },
     {
@@ -283,7 +283,6 @@ function SaleOrdersPage() {
           value={searchQuery}
         />
         <div className="buttonContainer-order">
-        
           <NewButton text="New Order" onClick={handleClick} />
         </div>
       </div>
@@ -340,7 +339,7 @@ function SaleOrdersPage() {
           }
           onPaginationModelChange={
             showSearchResults
-              ? (newPaginationModel) => 
+              ? (newPaginationModel) =>
                   dispatch({
                     type: "SET_SALE_ORDERS_PAGE_SEARCH_PAGINATION_MODEL",
                     payload: newPaginationModel,

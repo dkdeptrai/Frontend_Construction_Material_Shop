@@ -58,7 +58,7 @@ const Account = () => {
               label="Name"
               type="text"
               value={userData?.name}
-              readOnly
+              
             />
             <InputComponent
               label="Email"
