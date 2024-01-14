@@ -50,22 +50,6 @@ const SidebarComponent = ({ selectedItem, onMenuItemClick }) => {
           >
             <span style={{ marginLeft: "25px" }}>Password</span>
           </MenuItem>
-          <MenuItem
-            icon={<BellIcon />}
-            active={selectedItem === "notifications"}
-            onClick={() => onMenuItemClick("notifications")}
-            style={{ margin: "20px" }}
-          >
-            <span style={{ marginLeft: "25px" }}>Notifications</span>
-          </MenuItem>
-          <MenuItem
-            icon={<TaxIcon />}
-            active={selectedItem === "tax"}
-            onClick={() => onMenuItemClick("tax")}
-            style={{ margin: "20px" }}
-          >
-            <span style={{ marginLeft: "25px" }}>Tax</span>
-          </MenuItem>
         </Menu>
       </Sidebar>
     </div>

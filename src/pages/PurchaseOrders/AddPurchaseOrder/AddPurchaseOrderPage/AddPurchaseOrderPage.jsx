@@ -220,7 +220,7 @@ function AddSaleOrderPage() {
               (warehouse) => warehouse.id === params.value
             )}
             onChange={(selectedOption) => {
-              console.log(params.row.id, selectedOption.id)
+           
               dispatch(
                 updateSelectedImportedProductsWarehouse(
                   params.row.id,
@@ -275,6 +275,25 @@ function AddSaleOrderPage() {
       orderType: "PURCHASE",
       total: total,
     };
+
+    if (yourData.newInventoryItems.length === 0) {
+      alert("Please add at least one product!");
+      return;
+    } else if (yourData.newInventoryItems.some((item) => !item.product.id)) {
+      alert("Please choose a product for all rows!");
+      return;
+    } else if (
+      yourData.newInventoryItems.some((item) => !item.manufacturingDate)
+    ) {
+      alert("Please choose a manufacturing date for all products!");
+      return;
+    } else if (yourData.newInventoryItems.some((item) => !item.expiryDate)) {
+      alert("Please choose an expiry date for all products!");
+      return;
+    } else if (yourData.newInventoryItems.some((item) => !item.warehouse.id)) {
+      alert("Please choose a warehouse for all products!");
+      return;
+    }
 
     await fetch(API_CONST + "/orders", {
       method: "POST",

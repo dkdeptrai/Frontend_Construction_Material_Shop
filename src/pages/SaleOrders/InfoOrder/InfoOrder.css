@@ -28,6 +28,13 @@
   width: 41%;
 }
 
+.infoHeader {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
 
 
 

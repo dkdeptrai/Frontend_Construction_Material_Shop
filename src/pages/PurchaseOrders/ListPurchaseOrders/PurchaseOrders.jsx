@@ -252,6 +252,7 @@ const PurchaseOrders = () => {
       field: "employeeCode",
       headerName: "Employee's code",
       flex: 0.4,
+      valueGetter: (params) => params.row.employeeCode || "MANAGER",
     },
     {
       field: "employeeName",
@@ -294,7 +295,6 @@ const PurchaseOrders = () => {
           handleSearchQueryChange={handleSearchQueryChange}
         />
         <div className="buttonContainer">
-          <ExportButton onClick={() => {}} />
           <NewButton text="New Order" onClick={handleClick} />
         </div>
       </div>

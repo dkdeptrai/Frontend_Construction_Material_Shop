@@ -25,7 +25,7 @@ const NewProductsModal = ({ handleClose }) => {
   const handleAddProducts = () => {
     const selectedProducts = selectedInventoryItems.map((item) => {
       const product = {
-        id: item.product.id,
+        id: item.id,
         name: item.product.name,
         imageUrl: item.product.imageUrl,
         unitPrice: item.product.unitPrice,
@@ -53,7 +53,10 @@ const NewProductsModal = ({ handleClose }) => {
         },
       });
       const data = await response.json();
-      setInventoryItems(data.results);
+      const fetchedInventoryItems = data.results.filter(
+        (item) => item.quantity > 0 && item.manufacturingDate && item.expiryDate
+      );
+      setInventoryItems(fetchedInventoryItems);
       console.log("Inventory 's products fetched:", data);
     } catch (error) {
       console.error("Error fetching products:", error);
@@ -74,7 +77,7 @@ const NewProductsModal = ({ handleClose }) => {
     {
       field: "name",
       headerName: "Product Name",
-      flex: 0.6,
+      flex: 0.4,
       renderCell: (params) => (
         <div className="productNameCell">
           <img className="productImage" src={params.row.product.imageUrl} />
@@ -85,19 +88,14 @@ const NewProductsModal = ({ handleClose }) => {
     {
       field: "mfg",
       headerName: "MFG",
-      flex: 0.2,
-      renderCell: (params) => params.row.manufacturingDate[0],
+      flex: 0.3,
+      renderCell: (params) => params.row.manufacturingDate,
     },
     {
       field: "exp",
       headerName: "Expiry Date",
       flex: 0.3,
-      renderCell: (params) =>
-        params.row.expiryDate[2] +
-        "/" +
-        params.row.expiryDate[1] +
-        "/" +
-        params.row.expiryDate[0],
+      renderCell: (params) => params.row.expiryDate,
     },
     {
       field: "calculationUnit",
@@ -150,6 +148,7 @@ const NewProductsModal = ({ handleClose }) => {
 
                 return item;
               });
+              console.log(selectedItems);
               setSelectedInventoryItems(selectedItems);
             }}
           />
