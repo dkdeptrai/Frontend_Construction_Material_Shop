@@ -193,17 +193,17 @@ function AddSaleOrderPage() {
       orderType: "SALE",
     };
 
-    await fetch(API_CONST + "/orders", {
+    fetch(API_CONST + "/orders", {
       method: "POST",
       headers: {
         "content-type": "application/json",
         Authorization: "Bearer " + sessionStorage.getItem("token"),
       },
       body: JSON.stringify(yourData),
-    })
-      .then((response) => response.json())
+    }).then((response) => response.json())
       .then((data) => {
-        if (window.confirm("DO you want to print out an invoice?")) {
+        console.log("Success:", data);
+        if (window.confirm("Do you want to print out an invoice?")) {
           fetch(API_CONST + "/orders/export/invoice/pdf/" + data.id, {
             method: "GET",
             headers: {
