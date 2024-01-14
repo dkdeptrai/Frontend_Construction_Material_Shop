@@ -12,6 +12,7 @@ import selectedImportedProductsReducer from "./selectedImportedProducts.jsx";
 import customersPageReducer from "./customersPageReducer.jsx";
 import productInfoPageReducer from "./productInfoPageReducer.jsx";
 import addCustomerPageReducer from "./addCustomerPageReducer.jsx";
+import employeePageReducer from "./employeePageReducer.jsx";
 
 const rootReducer = (state, action) => {
   if (action.type === "CLEAR_REDUX_STORE") {
@@ -39,6 +40,7 @@ const rootReducer = (state, action) => {
     warehouseInfo: warehouseInfoPageReducer,
     customers: customersPageReducer,
     addCustomerPage: addCustomerPageReducer,
+    employees: employeePageReducer,
   })(state, action);
 };
 

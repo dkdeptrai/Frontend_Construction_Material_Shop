@@ -7,6 +7,8 @@ import Table from "../../../components/core/table/table.jsx";
 import ExportButton from "../../../components/layouts/exportButton/exportButton.jsx";
 import NewButton from "../../../components/layouts/newButton/newButton.jsx";
 import StatusContainer from "../../../components/StatusContainer/StatusContainer.jsx";
+import InputComponent from "../../../components/InputComponent/InputComponent.jsx";
+import CustomerIcon from "../../../assets/icons/customer_default.png";
 import { API_CONST } from "../../../constants/apiConstants.jsx";
 
 //selected products state
@@ -17,7 +19,6 @@ const PurchaseOrders = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [purchaseOrders, setPurchaseOrders] = useState([]);
   //loading circle
   const [loading, setLoading] = useState(true);
 
@@ -30,9 +31,152 @@ const PurchaseOrders = () => {
     (state) => state.purchaseOrders.purchaseOrdersData
   );
 
+  //search
+  const searchQuery = useSelector((state) => state.purchaseOrders.searchQuery);
+  const searchPaginationModel = useSelector(
+    (state) => state.purchaseOrders.searchPaginationModel
+  );
+  const searchResults = useSelector(
+    (state) => state.purchaseOrders.searchResults
+  );
+  const showSearchResults = useSelector(
+    (state) => state.purchaseOrders.showSearchResults
+  );
+
+  const handleSearch = async () => {
+    try {
+      setLoading(true);
+      if (
+        (searchQuery === "" || searchQuery === null) &&
+        filterStartDate === "" &&
+        filterEndDate === "" &&
+        filterStatus === ""
+      ) {
+        dispatch({
+          type: "SET_PURCHASE_ORDERS_PAGE_SHOW_SEARCH_RESULTS",
+          payload: false,
+        });
+        setLoading(false);
+        return;
+      }
+      let query = `&page=${searchPaginationModel.page}&size=${searchPaginationModel.pageSize}&orderType=PURCHASE&id=${searchQuery}`;
+      if (filterStartDate !== "") {
+        query += `&startDate=${filterStartDate}`;
+      }
+      if (filterEndDate !== "") {
+        query += `&endDate=${filterEndDate}`;
+      }
+      if (filterStatus !== "") {
+        query += `&status=${filterStatus}`;
+      }
+      const response = await fetch(`${API_CONST}/orders?${query}`, {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + sessionStorage.getItem("token"),
+        },
+      });
+
+      const data = await response.json();
+
+      const searchedPurchaseOrders = [];
+      for (let i = 0; i < data.results.length; i++) {
+        const order = data.results[i];
+        const employeeData = await fetch(
+          API_CONST + "/users/employees/" + order.createdUserId,
+          {
+            method: "GET",
+            headers: {
+              Authorization: "Bearer " + sessionStorage.getItem("token"),
+            },
+          }
+        );
+
+        const employee = await employeeData.json();
+
+        const dateString = new Date(order.createdTime).toLocaleDateString();
+
+        const newOrder = {
+          id: order.id,
+          employeeCode: employee.employeeCode,
+          employeeName: employee.name,
+          total: order.total,
+          date: dateString,
+          status: order.status,
+        };
+        searchedPurchaseOrders.push(newOrder);
+      }
+
+      dispatch({
+        type: "SET_PURCHASE_ORDERS_PAGE_SEARCH_RESULTS",
+        payload: searchedPurchaseOrders,
+      });
+      dispatch({
+        type: "SET_PURCHASE_ORDERS_PAGE_SHOW_SEARCH_RESULTS",
+        payload: true,
+      });
+      dispatch({
+        type: "SET_PURCHASE_ORDERS_PAGE_SEARCH_PAGINATION_MODEL",
+        payload: { ...searchPaginationModel, total: data.total },
+      });
+    } catch (e) {
+      console.log("error ", e);
+      dispatch({
+        type: "SET_PURCHASE_ORDERS_PAGE_SHOW_SEARCH_RESULTS",
+        payload: true,
+      });
+      dispatch({
+        type: "SET_PURCHASE_ORDERS_PAGE_SEARCH_RESULTS",
+        payload: [],
+      });
+      setLoading(false);
+    }
+    setLoading(false);
+  };
+
+  const handleSearchQueryChange = (event) => {
+    dispatch({
+      type: "SET_PURCHASE_ORDERS_PAGE_SEARCH_QUERY",
+      payload: event.target.value,
+    });
+    if (event.target.value === "" || event.target.value === null) {
+      dispatch({
+        type: "SET_PURCHASE_ORDERS_PAGE_SHOW_SEARCH_RESULTS",
+        payload: false,
+      });
+      dispatch({
+        type: "SET_PURCHASE_ORDERS_PAGE_SEARCH_RESULTS",
+        payload: [],
+      });
+    }
+  };
+
+  //filter
+  const filterStartDate = useSelector(
+    (state) => state.purchaseOrders.startDate
+  );
+  const filterEndDate = useSelector((state) => state.purchaseOrders.endDate);
+  const filterStatus = useSelector((state) => state.purchaseOrders.status);
+  const statusOptions = ["PROCESSING", "DELIVERING", "COMPLETED", "CANCELLED"];
+
   //get all sale orders
   useEffect(() => {
     setLoading(true);
+    dispatch({
+      type: "SET_PURCHASE_ORDERS_PAGE_SHOW_SEARCH_RESULTS",
+      payload: false,
+    });
+    dispatch({
+      type: "SET_PURCHASE_ORDERS_PAGE_START_DATE",
+      payload: "",
+    });
+    dispatch({
+      type: "SET_PURCHASE_ORDERS_PAGE_END_DATE",
+      payload: "",
+    });
+    dispatch({
+      type: "SET_PURCHASE_ORDERS_PAGE_STATUS",
+      payload: "",
+    });
     fetch(
       `${API_CONST}/orders?page=${paginationModel.page}&size=${paginationModel.pageSize}&orderType=PURCHASE`,
       {
@@ -76,7 +220,6 @@ const PurchaseOrders = () => {
           type: "SET_PURCHASE_ORDERS_PAGE_PAGINATION_MODEL",
           payload: { ...paginationModel, total: data.total },
         });
-        setPurchaseOrders(newPurchaseOrders);
       })
       .catch((error) => console.error("Error:", error))
       .finally(() => {
@@ -88,14 +231,22 @@ const PurchaseOrders = () => {
     navigate("/purchase-orders/add");
   };
 
-  const options = ["Employee Code", "Employee Name", "Total", "Date", "Status"];
-
   const orderColumns = [
     {
-      field: "id",
+      field: "index",
       headerName: "No.",
       width: 50,
-      valueGetter: (params) => purchaseOrdersFromStore.indexOf(params.row) + 1,
+      valueGetter: (params) => {
+        if (showSearchResults) {
+          return searchResults.indexOf(params.row) + 1;
+        }
+        return purchaseOrdersFromStore.indexOf(params.row) + 1;
+      },
+    },
+    {
+      field: "id",
+      headerName: "ID",
+      flex: 0.2,
     },
     {
       field: "employeeCode",
@@ -108,7 +259,10 @@ const PurchaseOrders = () => {
       flex: 0.6,
       renderCell: (params) => (
         <div className="productNameCell">
-          <img className="productImage" src={params.row.image} />
+          <img
+            className="productImage"
+            src={params.row.image || CustomerIcon}
+          />
           <span>{params.value}</span>
         </div>
       ),
@@ -134,28 +288,79 @@ const PurchaseOrders = () => {
       <div className="toolBar">
         <SearchBar
           className="searchBar"
-          // options={options}
-          placeholder="Search Products by name, ID or any related keywords"
+          placeholder="Search for orders by id"
+          value={searchQuery}
+          handleSearch={handleSearch}
+          handleSearchQueryChange={handleSearchQueryChange}
         />
         <div className="buttonContainer">
           <ExportButton onClick={() => {}} />
           <NewButton text="New Order" onClick={handleClick} />
         </div>
       </div>
+      <div className="filters-container">
+        <div className="filters">
+          <InputComponent
+            type="dateFilter"
+            placeholder="Start date"
+            value={filterStartDate}
+            setValue={(value) =>
+              dispatch({
+                type: "SET_PURCHASE_ORDERS_PAGE_START_DATE",
+                payload: value,
+              })
+            }
+          />
+
+          <InputComponent
+            type="dateFilter"
+            placeholder="Date"
+            value={filterEndDate}
+            setValue={(value) =>
+              dispatch({
+                type: "SET_PURCHASE_ORDERS_PAGE_END_DATE",
+                payload: value,
+              })
+            }
+          />
+
+          <InputComponent
+            type="select"
+            options={statusOptions}
+            placeholder="All status"
+            value={filterStatus}
+            setValue={(value) =>
+              dispatch({
+                type: "SET_PURCHASE_ORDERS_PAGE_STATUS",
+                payload: value,
+              })
+            }
+          />
+        </div>
+      </div>
       {!loading ? (
         <Table
           className="table"
           columns={orderColumns}
-          rows={purchaseOrders}
+          rows={showSearchResults ? searchResults : purchaseOrdersFromStore}
           cellName="employeeCode"
           identifyRoute="id"
-          paginationModel={paginationModel}
-          onPaginationModelChange={(newPaginationModel) => {
-            dispatch({
-              type: "SET_PURCHASE_ORDERS_PAGE_PAGINATION_MODEL",
-              payload: newPaginationModel,
-            });
-          }}
+          paginationModel={
+            showSearchResults ? searchPaginationModel : paginationModel
+          }
+          onPaginationModelChange={
+            showSearchResults
+              ? (newPaginationModel) =>
+                  dispatch({
+                    type: "SET_PURCHASE_ORDERS_PAGE_SEARCH_PAGINATION_MODEL",
+                    payload: newPaginationModel,
+                  })
+              : (newPaginationModel) =>
+                  dispatch({
+                    type: "SET_PURCHASE_ORDERS_PAGE_PAGINATION_MODEL",
+                    payload: newPaginationModel,
+                  })
+          }
           noCheckboxSelection
         />
       ) : (

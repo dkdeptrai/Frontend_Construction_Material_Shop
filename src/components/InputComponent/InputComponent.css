@@ -29,8 +29,8 @@ select {
   color: var(--text-color);
 }
 
-.inputBarcodeField::-webkit-calendar-picker-indicator {
-  display:none;
+.inputBarcodeField::-webkit-search-cancel-button {
+  -webkit-appearance: none;
 }
 
 .data-option {

@@ -10,21 +10,14 @@ import "./ProductsPage.css";
 import { API_CONST } from "../../../constants/apiConstants.jsx";
 import InputComponent from "../../../components/InputComponent/InputComponent.jsx";
 import LoadingComponent from "../../../components/LoadingComponent/LoadingComponent.jsx";
-import productsReducer from "../../../reducers/productPageReducer.jsx";
+import { productOrigins } from "../../../constants/productConstants.jsx";
+
 
 function ProductsPage() {
   const dispatch = useDispatch();
   const subroute = useSelector((state) => state.products.subroute);
   const navigate = useNavigate();
-  const options = [
-    "Vietnam",
-    "China",
-    "USA",
-    "Japan",
-    "Korea",
-    "Germany",
-    "Russia",
-  ];
+  const options = productOrigins;
   const [isLoading, setIsLoading] = useState(false);
 
   const products = useSelector((state) => state.products.products);
@@ -68,6 +61,9 @@ function ProductsPage() {
           },
         }
       );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
       const data = await response.json();
       const products = data.results;
       dispatch({ type: "SET_PRODUCTS_PAGE_PRODUCTS", payload: products });
@@ -84,10 +80,13 @@ function ProductsPage() {
       setIsLoading(false);
       console.error("Error fetching products:", error);
     }
+    setIsLoading(false);
   };
+
   const handleSearch = async (page, size) => {
     try {
-      let query = `q=${name}&page=${page}&size=${size}`;
+      setIsLoading(true);
+      let query = `keyword=${name}&page=${searchPaginationModel.page}&size=${searchPaginationModel.pageSize}`;
       if (origin) {
         query += `&origin=${origin}`;
       }
@@ -100,7 +99,7 @@ function ProductsPage() {
       if (priceEnd) {
         query += `&maxPrice=${priceEnd}`;
       }
-      console.log("query", query);
+      console.log("query: ", query);
       const response = await fetch(`${API_CONST}/products/search?${query}`, {
         method: "GET",
         
@@ -109,8 +108,12 @@ function ProductsPage() {
           Authorization: `Bearer ${sessionStorage.getItem("token")}`,
         },
       });
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
       const data = await response.json();
       const products = data.results;
+
       dispatch({ type: "SET_PRODUCTS_PAGE_SEARCH_RESULTS", payload: products });
       dispatch({ type: "SET_PRODUCTS_PAGE_SHOW_RESULTS", payload: true });
       dispatch({
@@ -122,7 +125,11 @@ function ProductsPage() {
       });
     } catch (e) {
       console.error("Error fetching search results:", e);
+      dispatch({ type: "SET_PRODUCTS_PAGE_SHOW_RESULTS", payload: true });
+      dispatch({ type: "SET_PRODUCTS_PAGE_SEARCH_RESULTS", payload: [] });
+      setIsLoading(false);
     }
+    setIsLoading(false);
   };
 
   const handleExport = async () => {
@@ -159,6 +166,12 @@ function ProductsPage() {
   useEffect(() => {
     fetchProducts(paginationModel.page, paginationModel.pageSize);
   }, [paginationModel.page, paginationModel.pageSize]);
+
+  useEffect(() => {
+    if (showSearchResults) {
+      handleSearch();
+    }
+  }, [searchPaginationModel.page, searchPaginationModel.pageSize]);
 
   const handleDelete = async (selectedRowIds) => {
     try {

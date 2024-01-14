@@ -8,13 +8,17 @@ import Select from "react-select";
 function SearchBar(props) {
   const handleSearch = props.handleSearch;
   const options = props.options
-    ? props.options.map((option) => ({
-        value: option,
-        label: option,
-      }))
+    ? Array.isArray(props.options)
+      ? props.options.map((option) => ({
+          value: option,
+          label: option,
+        }))
+      : Object.entries(props.options).map(([key, value]) => ({
+          value: value,
+          label: key,
+        }))
     : [];
   const optionsCount = Object.keys(options).length;
-  console.log(options);
 
   const handleChange = (option) => {
     if (option === null) {

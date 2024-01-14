@@ -48,11 +48,7 @@ const SelectProductModal = ({ handleClose, productRowPointer }) => {
   }, []);
 
   const options = [
-    "name",
-    "origin",
-    "calculation unit",
-    "price start",
-    "price end",
+    "Name"
   ];
 
   const productColumns = [

@@ -22,33 +22,41 @@ const InventoryItemList = () => {
     (state) => state.inventoryItems.paginationModel
   );
   console.log(paginationModel);
+
+  const fetchInventoryItems = async (page, size) => {
+    try {
+      setLoading(true);
+      const response = await fetch(
+        API_CONST + `/inventories?page=${page}&size=${size}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: "Bearer " + sessionStorage.getItem("token"),
+          },
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+      console.log("get inventory items from api", data.results);
+      dispatch({
+        type: "SET_INVENTORY_PAGE_INVENTORY_ITEM",
+        payload: data.results,
+      });
+      dispatch({
+        type: "SET_INVENTORY_PAGE_PAGINATION_MODEL",
+        payload: { ...paginationModel, total: data.total },
+      });
+    } catch (error) {
+      setLoading(false);
+      console.error("Error:", error);
+    }
+    setLoading(false);
+  };
   //get all inventory items
   useEffect(() => {
-    setLoading(true);
-    fetch(
-      API_CONST +
-        `/inventories?page=${paginationModel.page}&size=${paginationModel.pageSize}`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: "Bearer " + sessionStorage.getItem("token"),
-        },
-      }
-    )
-      .then((resp) => resp.json())
-      .then((data) => {
-        dispatch({
-          type: "SET_INVENTORY_PAGE_INVENTORY_ITEM",
-          payload: data.results,
-        });
-        dispatch({
-          type: "SET_INVENTORY_PAGE_PAGINATION_MODEL",
-          payload: { ...paginationModel, total: data.total },
-        });
-        console.log("get inventory items from api", data.results);
-      })
-      .then(() => setLoading(false))
-      .catch((error) => console.error("Error:", error));
+    fetchInventoryItems(paginationModel.page, paginationModel.pageSize);
   }, [paginationModel.page, paginationModel.pageSize]);
 
   const inventoryColumns = [
@@ -56,7 +64,10 @@ const InventoryItemList = () => {
       field: "index",
       headerName: "No.",
       width: 50,
-      valueGetter: (params) => inventoryItemsFromStore.indexOf(params.row) + 1,
+      renderCell: (params) =>
+        paginationModel.page * 10 +
+        inventoryItemsFromStore.indexOf(params.row) +
+        1,
     },
     {
       headerName: "Name",

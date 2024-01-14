@@ -17,42 +17,41 @@ import "./Employee.css";
 function Employee() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+
+  const subroute = useSelector((state) => state.employees.subroute);
+
+  const options = {
+    name: "NAME",
+    phone: "PHONE",
+    email: "EMAIL",
+    "emloyee code": "CODE",
+  };
 
   // table states
-  const [selectedRowIds, setSelectedRowIds] = useState([]);
-  const [paginationModel, setPaginationModel] = useState({
-    pageSize: 10,
-    page: 0,
-    total: 0,
-  });
-  const [searchPaginationModel, setSearchPaginationModel] = useState({
-    pageSize: 10,
-    page: 0,
-    total: 0,
-  });
-
-  //search query
-  const [searchQuery, setSearchQuery] = useState("");
+  const selectedRowIds = useSelector((state) => state.employees.selectedRowIds);
 
   // search states
-  const [searchResults, setSearchResults] = useState([]);
-  const [showSearchResults, setShowSearchResults] = useState(false);
 
-  const [employees, setEmployees] = useState([]);
-
-  // filter options
-  const options = ["Code", "Name", "Phone"];
-  const [filter, setFilter] = useState(options[0]);
-  const [name, setName] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [address, setAddress] = useState("");
-  const [position, setPosition] = useState("");
-
-  //handle search
+  const searchResults = useSelector((state) => state.employees.searchResults);
+  const showSearchResults = useSelector(
+    (state) => state.employees.showSearchResults
+  );
+  const searchQuery = useSelector((state) => state.employees.searchQuery);
+  const filterOption = useSelector((state) => state.employees.filterOption);
+  const employees = useSelector((state) => state.employees.employees);
+  const paginationModel = useSelector(
+    (state) => state.employees.paginationModel
+  );
+  const searchPaginationModel = useSelector(
+    (state) => state.employees.searchPaginationModel
+  );
+  console.log("showSearchResults: ", showSearchResults);
 
   const fetchEmployees = async (page, size) => {
+    console.log("fetching employees");
     try {
+      setLoading(true);
       const response = await fetch(
         `${API_CONST}/users/employees?page=${page}&size=${size}`,
         {
@@ -62,30 +61,31 @@ function Employee() {
           },
         }
       );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
       const data = await response.json();
-      setEmployees(data.results);
-      setPaginationModel({
-        ...paginationModel,
-        total: data.total,
+      console.log(data);
+      dispatch({ type: "SET_EMPLOYEES_PAGE_EMPLOYEES", payload: data.results });
+      dispatch({
+        type: "SET_EMPLOYEES_PAGE_PAGINATION_MODEL",
+        payload: {
+          ...paginationModel,
+          total: data.total,
+        },
       });
     } catch (e) {
+      setLoading(false);
       console.log(e);
     }
+    setLoading(false);
   };
 
   const handleSearch = async (page, size) => {
     try {
-      let query = `page=${page}&size=${size}`;
-      if (filter === "Code") {
-        query += `&keyword=${searchQuery}&searchBy=CODE`;
-      }
-      if (filter === "Name") {
-        query += `&keyword=${searchQuery}&searchBy=NAME`;
-      }
-      if (filter === "Phone") {
-        query += `&keyword=${searchQuery}&searchBy=PHONE`;
-      }
-
+      setLoading(true);
+      let query = `&page=${searchPaginationModel.page}&size=${searchPaginationModel.pageSize}&keyword=${searchQuery}&searchBy=${filterOption}`;
+      console.log(`QUERY: ${query}`);
       const response = await fetch(
         `${API_CONST}/users/employees/search?${query}`,
         {
@@ -95,16 +95,36 @@ function Employee() {
           },
         }
       );
-      const searchedEmployees = await response.json();
-      setSearchResults(searchedEmployees.results);
-      setShowSearchResults(true);
-      setSearchPaginationModel({
-        ...searchPaginationModel,
-        total: searchedEmployees.total,
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const data = await response.json();
+
+      const employees = data.results;
+      console.log("search results: ", employees);
+      dispatch({
+        type: "SET_EMPLOYEES_PAGE_SEARCH_RESULTS",
+        payload: employees,
+      });
+      dispatch({
+        type: "SET_EMPLOYEES_PAGE_SHOW_SEARCH_RESULTS",
+        payload: true,
+      });
+      dispatch({
+        type: "SET_EMPLOYEES_PAGE_SEARCH_PAGINATION_MODEL",
+        payload: { ...searchPaginationModel, total: data.total },
       });
     } catch (e) {
-      console.log(e);
+      console.log("error ", e);
+      dispatch({
+        type: "SET_EMPLOYEES_PAGE_SHOW_SEARCH_RESULTS",
+        payload: true,
+      });
+      dispatch({ type: "SET_EMPLOYEES_PAGE_SEARCH_RESULTS", payload: [] });
+      setLoading(false);
     }
+    setLoading(false);
   };
 
   const handleClick = () => {
@@ -116,6 +136,10 @@ function Employee() {
     fetchEmployees(paginationModel.page, paginationModel.pageSize);
     setLoading(false);
   }, [paginationModel.page, paginationModel.pageSize]);
+
+  useEffect(() => {
+    handleSearch();
+  }, [searchPaginationModel.page, searchPaginationModel.pageSize]);
 
   const handleExport = async () => {
     const response = await fetch(API_CONST + "/users/employees/export/excel", {
@@ -154,32 +178,61 @@ function Employee() {
       });
     }
     if (searchResults.length > 0) {
-      setSearchResults(
-        searchResults.filter(
+      dispatch({
+        type: "SET_EMPLOYEES_PAGE_SEARCH_RESULTS",
+        payload: searchResults.filter(
           (employee) => !selectedRowIds.includes(employee.id)
-        )
-      );
-      setSearchPaginationModel((prevState) => ({
-        ...prevState,
-        total: prevState.total - selectedRowIds.length,
-      }));
+        ),
+      });
+      dispatch({
+        type: "SET_EMPLOYEES_PAGE_SEARCH_PAGINATION_MODEL",
+        payload: {
+          ...searchPaginationModel,
+          total: searchPaginationModel.total - selectedRowIds.length,
+        },
+      });
     } else {
-      setEmployees(
-        employees.filter((employee) => !selectedRowIds.includes(employee.id))
-      );
-      setPaginationModel((prevState) => ({
-        ...prevState,
-        total: prevState.total - selectedRowIds.length,
-      }));
+      dispatch({
+        type: "SET_EMPLOYEES_PAGE_EMPLOYEES",
+        payload: employees.filter(
+          (employee) => !selectedRowIds.includes(employee.id)
+        ),
+      });
+      dispatch({
+        type: "SET_EMPLOYEES_PAGE_PAGINATION_MODEL",
+        payload: {
+          ...paginationModel,
+          total: paginationModel.total - selectedRowIds.length,
+        },
+      });
     }
   };
 
+  const handleSearchQueryChange = (event) => {
+    dispatch({
+      type: "SET_EMPLOYEES_PAGE_SEARCH_QUERY",
+      payload: event.target.value,
+    });
+    if (event.target.value === "" || event.target.value === null) {
+      dispatch({
+        type: "SET_EMPLOYEES_PAGE_SHOW_SEARCH_RESULTS",
+        payload: false,
+      });
+      dispatch({ type: "SET_EMPLOYEES_PAGE_SEARCH_RESULTS", payload: [] });
+      fetchProducts(paginationModel.page, paginationModel.pageSize);
+    }
+  };
   const employeeColumns = [
     {
       field: "index",
       headerName: "No.",
       width: 50,
-      valueGetter: (params) => employees.indexOf(params.row) + 1,
+      renderCell: (params) =>
+        showSearchResults
+          ? searchPaginationModel.page * 10 +
+            searchResults.indexOf(params.row) +
+            1
+          : paginationModel.page * 10 + employees.indexOf(params.row) + 1,
     },
     {
       field: "employeeCode",
@@ -214,20 +267,16 @@ function Employee() {
         <SearchBar
           className="searchBar"
           options={options}
-          placeholder="Search Employee"
-          handleSearch={() => {
-            handleSearch(paginationModel.page, paginationModel.pageSize);
-          }}
+          placeholder="Search Employees"
+          handleSearch={handleSearch}
+          handleSearchQueryChange={handleSearchQueryChange}
           value={searchQuery}
-          handleSearchQueryChange={(e) => {
-            setSearchQuery(e.target.value);
-            if (e.target.value === "" || e.target.value == null) {
-              setShowSearchResults(false);
-              setSearchResults([]);
-              fetchEmployees(paginationModel.page, paginationModel.pageSize);
-            }
+          setFilter={(value) => {
+            dispatch({
+              type: "SET_EMPLOYEES_PAGE_FILTER_OPTION",
+              payload: value,
+            });
           }}
-          setFilter={(filter) => setFilter(filter)}
         />
         <div className="buttonContainer">
           <ExportButton onClick={handleExport} />
@@ -235,26 +284,37 @@ function Employee() {
           <NewButton text="New Employee" onClick={handleClick} />
         </div>
       </div>
-      {!loading ? (
-        <Table
-          className="table"
-          columns={employeeColumns}
-          rows={showSearchResults ? searchResults : employees}
-          cellName="employeeCode"
-          identifyRoute="id"
-          onRowSelection={(newSelection) => {
-            setSelectedRowIds(newSelection);
-          }}
-          paginationModel={
-            showSearchResults ? searchPaginationModel : paginationModel
-          }
-          onPaginationModelChange={
-            showSearchResults ? setSearchPaginationModel : setPaginationModel
-          }
-        />
-      ) : (
-        <LoadingComponent />
-      )}
+
+      <Table
+        className="table"
+        columns={employeeColumns}
+        rows={showSearchResults ? searchResults : employees}
+        selectedRowIds={selectedRowIds}
+        cellName="name"
+        identifyRoute="id"
+        onRowSelection={(newSelection) => {
+          dispatch({
+            type: "SET_EMPLOYEES_PAGE_SELECTED_ROW_IDS",
+            payload: newSelection,
+          });
+        }}
+        paginationModel={
+          showSearchResults ? searchPaginationModel : paginationModel
+        }
+        onPaginationModelChange={
+          showSearchResults
+            ? (newPaginationModel) =>
+                dispatch({
+                  type: "SET_EMPLOYEES_PAGE_SEARCH_PAGINATION_MODEL",
+                  payload: newPaginationModel,
+                })
+            : (newPaginationModel) =>
+                dispatch({
+                  type: "SET_EMPLOYEES_PAGE_PAGINATION_MODEL",
+                  payload: newPaginationModel,
+                })
+        }
+      />
     </div>
   );
 }
