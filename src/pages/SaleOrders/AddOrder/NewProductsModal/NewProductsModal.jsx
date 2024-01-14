@@ -25,7 +25,7 @@ const NewProductsModal = ({ handleClose }) => {
   const handleAddProducts = () => {
     const selectedProducts = selectedInventoryItems.map((item) => {
       const product = {
-        id: item.product.id,
+        id: item.id,
         name: item.product.name,
         imageUrl: item.product.imageUrl,
         unitPrice: item.product.unitPrice,
@@ -53,7 +53,10 @@ const NewProductsModal = ({ handleClose }) => {
         },
       });
       const data = await response.json();
-      setInventoryItems(data.results);
+      const fetchedInventoryItems = data.results.filter(
+        (item) => item.quantity > 0
+      );
+      setInventoryItems(fetchedInventoryItems);
       console.log("Inventory 's products fetched:", data);
     } catch (error) {
       console.error("Error fetching products:", error);
@@ -150,6 +153,7 @@ const NewProductsModal = ({ handleClose }) => {
 
                 return item;
               });
+              console.log(selectedItems);
               setSelectedInventoryItems(selectedItems);
             }}
           />
