@@ -8,6 +8,7 @@ const ImageInputComponent = ({
   imageUrl,
   className,
   errorMessage,
+  readOnly
 }) => {
   const [backgroundImage, setBackgroundImage] = useState("");
   const [imageChosen, setImageChosen] = useState(false);
@@ -89,6 +90,7 @@ const ImageInputComponent = ({
           accept="image/jpeg, image/png"
           style={{ display: "none" }}
           onChange={handleFileInputChange} // Attach onChange handler
+          readOnly={readOnly}
         />
       </div>
       {errorMessage && (

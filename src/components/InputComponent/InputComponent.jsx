@@ -14,6 +14,7 @@ const InputComponent = ({
   dataListOptions,
   errorMessage,
   max,
+  readOnly
 }) => {
   if (!type) {
     throw new Error("InputComponent: type is required!");
@@ -62,6 +63,7 @@ const InputComponent = ({
         max={max}
         onFocus={type === "dateFilter" ? (e) => (e.target.type = "date") : null}
         onBlur={(e) => e.target.value === "" ? (e.target.type = "text") : null}
+        readOnly={readOnly}
       />
       {dataListOptions && (
         <datalist id="dataListOptions">

@@ -175,8 +175,9 @@ const InfoOrder = () => {
             dispatch({
               type: "SET_SALE_ORDERS",
               payload: [],
+            }).then(() => {
+              window.history.back();
             });
-            window.history.back();
           }}
           disabled={orderStatus === "CANCELLED" || orderStatus === "COMPLETED"}
         >
@@ -211,8 +212,9 @@ const InfoOrder = () => {
             dispatch({
               type: "SET_SALE_ORDERS",
               payload: [],
+            }).then(() => {
+              window.history.back();
             });
-            window.history.back();
             setLoading(false);
           }}
         >
