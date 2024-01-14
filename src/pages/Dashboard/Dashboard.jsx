@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import "./Dashboard.css";
 
 //pages
@@ -17,6 +18,7 @@ import OrderIcon from "../../assets/icons/order.svg?react";
 import ProductIcon from "../../assets/icons/product.svg?react";
 import EarningIcon from "../../assets/icons/earning.svg?react";
 import DefaultAvatar from "../../assets/icons/customer_default.png";
+import Pic from "../../assets/icons/pic.jpg";
 
 function InStockCapacity() {
   return (
@@ -47,6 +49,8 @@ function Dashboard() {
   const [usedCapacity, setUsedCapacity] = useState(0);
 
   const [loading, setLoading] = useState(true);
+
+  const userType = useSelector((state) => state.user.userData.userType) || "";
 
   //get all sale orders
   useEffect(() => {
@@ -159,36 +163,41 @@ function Dashboard() {
       {loading && <LoadingScreen />}
 
       <div className="statistic">
-        <div className="info-bundle">
-          <div className="upper-info">
-            <InfoContainer
-              className="info-container"
-              title="Customer"
-              info={customerNumber}
-              icon={<CustomerIcon />}
-            />
-            <InfoContainer
-              className="info-container"
-              title="Orders"
-              info={orderNumber}
-              icon={<OrderIcon />}
-            />
+        {userType === "MANAGER" ? (
+          <div className="info-bundle">
+            <div className="upper-info">
+              <InfoContainer
+                className="info-container"
+                title="Customer"
+                info={customerNumber}
+                icon={<CustomerIcon />}
+              />
+              <InfoContainer
+                className="info-container"
+                title="Orders"
+                info={orderNumber}
+                icon={<OrderIcon />}
+              />
+            </div>
+            <div className="lower-info">
+              <InfoContainer
+                className="info-container"
+                title="Earning"
+                info={revenue}
+                icon={<EarningIcon />}
+              />
+              <InfoContainer
+                className="info-container"
+                title="Products"
+                info={productNumber}
+                icon={<ProductIcon />}
+              />
+            </div>
           </div>
-          <div className="lower-info">
-            <InfoContainer
-              className="info-container"
-              title="Earning"
-              info={revenue}
-              icon={<EarningIcon />}
-            />
-            <InfoContainer
-              className="info-container"
-              title="Products"
-              info={productNumber}
-              icon={<ProductIcon />}
-            />
-          </div>
-        </div>
+        ) : (
+          <img className="cat-pics" src={Pic}/>
+        )}
+
         <div className="capacity-indicator">
           <CircularProgess value={usedCapacity} max={capacity} />
           <div className="capacity-info">

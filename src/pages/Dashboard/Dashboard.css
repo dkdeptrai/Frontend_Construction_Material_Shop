@@ -93,3 +93,10 @@
   border-radius: 50%;
   background: #F0FAFF;
 }
+
+.cat-pics {
+  object-fit: contain;
+  height: 210px;
+  width: 660px;
+}
+
