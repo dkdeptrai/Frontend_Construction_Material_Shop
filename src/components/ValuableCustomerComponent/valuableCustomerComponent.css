@@ -26,9 +26,14 @@
   font-weight: 600;
 }
 
-.valuableCustomer button {
+.valuableCustomer .valuableCustomerMoreButton {
   background-color: transparent;
-  padding: 0px;
+  padding: 4px;
   width: auto;
   height: auto;
+}
+
+.valuableCustomer .valuableCustomerMoreButton .nextIcon {
+  height: 36px;
+  width: auto;
 }
