@@ -332,7 +332,7 @@ function SaleOrdersPage() {
           className="table"
           columns={productColumns}
           rows={showSearchResults ? searchResults : saleOrdersFromStore}
-          cellName="customerPhone"
+          cellName="id"
           identifyRoute="id"
           noCheckboxSelection
           paginationModel={

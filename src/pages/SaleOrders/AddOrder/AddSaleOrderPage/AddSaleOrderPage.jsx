@@ -200,15 +200,37 @@ function AddSaleOrderPage() {
         Authorization: "Bearer " + sessionStorage.getItem("token"),
       },
       body: JSON.stringify(yourData),
-    }).finally(() => {
-      dispatch({ type: "SET_SALE_ORDERS", payload: [] });
-      dispatch(setSelectedProducts([]));
-      setLoading(false);
-      dispatch({ type: "SET_SALE_ORDERS", payload: [] });
-      dispatch({ type: "SET_INVENTORY_PAGE_INVENTORY_ITEM", payload: [] });
-      dispatch({ type: "SET_CUSTOMERS_PAGE_CUSTOMERS", payload: [] });
-      navigateBackToOrders();
-    });
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (window.confirm("DO you want to print out an invoice?")) {
+          fetch(API_CONST + "/orders/export/invoice/pdf/" + data.id, {
+            method: "GET",
+            headers: {
+              Authorization: "Bearer " + sessionStorage.getItem("token"),
+            },
+          })
+            .then((response) => response.blob())
+            .then((blob) => {
+              const url = window.URL.createObjectURL(new Blob([blob]));
+              const link = document.createElement("a");
+              link.href = url;
+              link.setAttribute("download", "invoice.pdf");
+              document.body.appendChild(link);
+              link.click();
+            });
+        }
+      })
+
+      .finally(() => {
+        dispatch({ type: "SET_SALE_ORDERS", payload: [] });
+        dispatch(setSelectedProducts([]));
+        setLoading(false);
+        dispatch({ type: "SET_SALE_ORDERS", payload: [] });
+        dispatch({ type: "SET_INVENTORY_PAGE_INVENTORY_ITEM", payload: [] });
+        dispatch({ type: "SET_CUSTOMERS_PAGE_CUSTOMERS", payload: [] });
+        navigateBackToOrders();
+      });
   };
 
   const productColumns = [

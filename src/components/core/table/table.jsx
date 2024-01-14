@@ -33,8 +33,7 @@ function Table(props) {
         if (
           params.field === cellName &&
           (params.field === "name" ||
-            params.field === "customerPhone" ||
-            params.field === "employeeCode")
+            params.field === "id" )
         ) {
           navigate(location.pathname + "/" + params.row[identifyRoute]);
         }

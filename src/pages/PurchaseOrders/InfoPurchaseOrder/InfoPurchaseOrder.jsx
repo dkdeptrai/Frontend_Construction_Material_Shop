@@ -104,6 +104,7 @@ const InfoPurchaseOrder = () => {
       headerName: "Total",
       field: "total",
       flex: 0.4,
+      valueGetter: (params) => Math.floor(params.value) + " $",
     },
   ];
 
@@ -121,7 +122,7 @@ const InfoPurchaseOrder = () => {
       <InformationLine label="Discounts:" content={discount + "%"} />
       <InformationLine
         label="Total:"
-        content={<span style={{ color: "red" }}>{total} $</span>}
+        content={<span style={{ color: "red" }}>{Math.floor(total)} $</span>}
       />
 
       <div className="order-state-line">

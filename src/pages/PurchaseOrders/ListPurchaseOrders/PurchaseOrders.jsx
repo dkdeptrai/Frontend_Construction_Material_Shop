@@ -343,7 +343,7 @@ const PurchaseOrders = () => {
           className="table"
           columns={orderColumns}
           rows={showSearchResults ? searchResults : purchaseOrdersFromStore}
-          cellName="employeeCode"
+          cellName="id"
           identifyRoute="id"
           paginationModel={
             showSearchResults ? searchPaginationModel : paginationModel
