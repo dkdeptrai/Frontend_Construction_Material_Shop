@@ -7,7 +7,7 @@ import BackButton from "../../../components/layouts/backButton/backButton";
 import InformationLine from "../../../components/InformationLine/InformationLine";
 import Table from "../../../components/core/table/table";
 import { API_CONST } from "../../../constants/apiConstants";
-import LoadingCircle from "../../../components/LoadingCircle/LoadingCircle.jsx";
+import LoadingScreen from "../../../components/LoadingScreen/LoadingScreen.jsx";
 
 const InfoOrder = () => {
   const { id } = useParams();
@@ -55,9 +55,10 @@ const InfoOrder = () => {
         setCustomerPhone(customer.phone);
         setCustomerName(customer.name);
         setDate(new Date(order.createdTime).toLocaleDateString());
+        console.log(order);
         await order.orderItems.map(async (item) => {
-          const orderedInventoryItemData = await fetch(
-            API_CONST + "/inventories/" + item.inventoryItemId,
+          const orderedProductData = await fetch(
+            API_CONST + "/products/" + item.productId,
             {
               method: "GET",
               headers: {
@@ -65,13 +66,14 @@ const InfoOrder = () => {
               },
             }
           );
-          const orderedInventoryItem = await orderedInventoryItemData.json();
+          const orderedProduct = await orderedProductData.json();
           const product = {
             id: item.productId,
-            name: orderedInventoryItem.product.name,
-            unitPrice: orderedInventoryItem.product.unitPrice,
+            name: orderedProduct.name,
+            imageUrl: orderedProduct.imageUrl,
+            unitPrice: orderedProduct.unitPrice,
             amount: item.quantity,
-            total: item.quantity * orderedInventoryItem.product.unitPrice,
+            total: item.quantity * orderedProduct.unitPrice,
           };
           setProducts((products) => [...products, product]);
         });
@@ -84,19 +86,30 @@ const InfoOrder = () => {
   }, []);
 
   const productColumns = [
-    { headerName: "Product name", field: "name", flex: 0.7 },
+    {
+      headerName: "Product name",
+      field: "name",
+      flex: 0.7,
+      renderCell: (params) => (
+        <div className="productNameCell">
+          <img className="productImage" src={params.row.imageUrl} />
+          <span>{params.value}</span>
+        </div>
+      ),
+    },
     { headerName: "Price/Unit", field: "unitPrice", flex: 0.4 },
     { headerName: "Amount", field: "amount", flex: 0.4 },
     {
       headerName: "Total",
       field: "total",
       flex: 0.4,
+      valueGetter: (params) => Math.floor(params.value) + " $",
     },
   ];
 
   return (
     <div>
-      {loading && <LoadingCircle />}
+      {loading && <LoadingScreen />}
       <BackButton content="Order information" />
       <InformationLine label="Order ID:" content={orderId} />
       <InformationLine
@@ -111,7 +124,7 @@ const InfoOrder = () => {
       <InformationLine label="Discounts:" content={discount + "%"} />
       <InformationLine
         label="Total:"
-        content={<span style={{ color: "red" }}>{total} $</span>}
+        content={<span style={{ color: "red" }}>{Math.floor(total)} $</span>}
       />
 
       <div className="order-state-line">
@@ -136,6 +149,10 @@ const InfoOrder = () => {
               return;
             setOrderStatus(newStatus);
             handleChangeStatus(newStatus);
+            dispatch({
+              type: "SET_SALE_ORDERS",
+              payload: [],
+            });
             window.history.back();
           }}
           disabled={orderStatus === "CANCELLED" || orderStatus === "COMPLETED"}
@@ -168,6 +185,10 @@ const InfoOrder = () => {
             setLoading(true);
             await handleChangeStatus("CANCELLED");
             setOrderStatus("CANCELLED");
+            dispatch({
+              type: "SET_SALE_ORDERS",
+              payload: [],
+            });
             window.history.back();
             setLoading(false);
           }}

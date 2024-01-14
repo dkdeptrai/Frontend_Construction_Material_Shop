@@ -19,18 +19,16 @@ import {
 import ProgressBar from "@ramonak/react-progress-bar";
 
 import ValuableCustomerComponent from "../../components/ValuableCustomerComponent/valuableCustomerComponent";
+import { API_CONST } from "../../constants/apiConstants";
 
 import "./Overview.css";
-import { API_CONST } from "../../constants/apiConstants";
 
 function Overview() {
   const fetchOverviewData = async () => {
     try {
-      const response = await fetch(`${API_CONST}/overview`, {
+      const response = await fetch(API_CONST + "/overview", {
         method: "GET",
-        headers: {
-          Authorization: "Bearer " + sessionStorage.getItem("token"),
-        },
+        Authorization: "Bearer " + sessionStorage.getItem("token"),
       });
       if (!response.ok) {
         throw Error(response.statusText);

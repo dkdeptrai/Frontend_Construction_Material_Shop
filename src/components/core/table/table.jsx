@@ -15,6 +15,7 @@ function Table(props) {
   //IdentifyRoute is the field's name that we can identify each row
 
   const noCheckboxSelection = props.noCheckboxSelection;
+  const disableRowSelectionOnClick = props.disableRowSelectionOnClick || false;
 
   const identifyRoute = props.identifyRoute;
 
@@ -31,7 +32,8 @@ function Table(props) {
     : (params, event) => {
         if (
           params.field === cellName &&
-          (params.field === "name" || params.field === "customerPhone")
+          (params.field === "name" ||
+            params.field === "id" )
         ) {
           navigate(location.pathname + "/" + params.row[identifyRoute]);
         }
@@ -56,6 +58,7 @@ function Table(props) {
         onPaginationModelChange={handlePaginationChange}
         pageSizeOptions={[10]}
         onCellClick={handleCellClick}
+        disableRowSelectionOnClick={disableRowSelectionOnClick}
         sx={{
           "& .MuiDataGrid-columnHeaders": {
             backgroundColor: "#FAFBFB",

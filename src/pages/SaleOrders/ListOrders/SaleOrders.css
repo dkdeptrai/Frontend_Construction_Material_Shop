@@ -7,3 +7,20 @@
 .buttonContainer-order > * {
   margin: 0px 10px;
 }
+
+.filters-container {
+  justify-content: space-between;
+  width: 71.7%;
+}
+
+.filters {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 20px;
+  justify-content: space-between;
+}
+
+.filters > * {
+  width: 220px;
+}

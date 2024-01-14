@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
 //pages and components
 import BackButton from "../../../components/layouts/backButton/backButton";
 import InformationLine from "../../../components/InformationLine/InformationLine";
 import Table from "../../../components/core/table/table";
 import { API_CONST } from "../../../constants/apiConstants";
-import LoadingCircle from "../../../components/LoadingCircle/LoadingCircle.jsx";
+import LoadingScreen from "../../../components/LoadingScreen/LoadingScreen.jsx";
 
 const InfoPurchaseOrder = () => {
+  const dispatch = useDispatch();
+
   const { id } = useParams();
   const [orderId, setOrderId] = useState("");
   const [employeeCode, setEmployeeCode] = useState("");
@@ -54,9 +57,9 @@ const InfoPurchaseOrder = () => {
         setEmployeeCode(employee.employeeCode);
         setEmployeeName(employee.name);
         setDate(new Date(order.createdTime).toLocaleDateString());
-        await order.orderItems.map(async (item) => {
+        await order.newInventoryItems.map(async (item) => {
           const orderedInventoryItemData = await fetch(
-            API_CONST + "/inventories/" + item.inventoryItemId,
+            API_CONST + "/inventories/" + item.id,
             {
               method: "GET",
               headers: {
@@ -68,6 +71,7 @@ const InfoPurchaseOrder = () => {
           const product = {
             id: item.productId,
             name: orderedInventoryItem.product.name,
+            imageUrl: orderedInventoryItem.product.imageUrl,
             unitPrice: orderedInventoryItem.product.unitPrice,
             amount: item.quantity,
             total: item.quantity * orderedInventoryItem.product.unitPrice,
@@ -83,25 +87,33 @@ const InfoPurchaseOrder = () => {
   }, []);
 
   const productColumns = [
-    { headerName: "Product name", field: "name", flex: 0.7 },
+    {
+      headerName: "Product name",
+      field: "name",
+      flex: 0.7,
+      renderCell: (params) => (
+        <div className="productNameCell">
+          <img className="productImage" src={params.row.imageUrl} />
+          <span>{params.value}</span>
+        </div>
+      ),
+    },
     { headerName: "Price/Unit", field: "unitPrice", flex: 0.4 },
     { headerName: "Amount", field: "amount", flex: 0.4 },
     {
       headerName: "Total",
       field: "total",
       flex: 0.4,
+      valueGetter: (params) => Math.floor(params.value) + " $",
     },
   ];
 
   return (
     <div>
-      {loading && <LoadingCircle />}
+      {loading && <LoadingScreen />}
       <BackButton content="Order information" />
       <InformationLine label="Order ID:" content={orderId} />
-      <InformationLine
-        label="Employee's Code:"
-        content={employeeCode}
-      />
+      <InformationLine label="Employee's Code:" content={employeeCode} />
       <InformationLine label="Employee's name:" content={employeeName} />
       <InformationLine label="Date:" content={date} />
       <label>List of products:</label>
@@ -110,7 +122,7 @@ const InfoPurchaseOrder = () => {
       <InformationLine label="Discounts:" content={discount + "%"} />
       <InformationLine
         label="Total:"
-        content={<span style={{ color: "red" }}>{total} $</span>}
+        content={<span style={{ color: "red" }}>{Math.floor(total)} $</span>}
       />
 
       <div className="order-state-line">
@@ -135,6 +147,10 @@ const InfoPurchaseOrder = () => {
               return;
             setOrderStatus(newStatus);
             handleChangeStatus(newStatus);
+            dispatch({
+              type: "SET_PURCHASE_ORDERS",
+              payload: [],
+            });
             window.history.back();
           }}
           disabled={orderStatus === "CANCELLED" || orderStatus === "COMPLETED"}
@@ -167,6 +183,10 @@ const InfoPurchaseOrder = () => {
             setLoading(true);
             await handleChangeStatus("CANCELLED");
             setOrderStatus("CANCELLED");
+            dispatch({
+              type: "SET_PURCHASE_ORDERS",
+              payload: [],
+            });
             window.history.back();
             setLoading(false);
           }}

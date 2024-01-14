@@ -7,7 +7,7 @@ import BackButton from "../../../components/layouts/backButton/backButton";
 import InputComponent from "../../../components/InputComponent/InputComponent";
 import Table from "../../../components/core/table/table";
 import { API_CONST } from "../../../constants/apiConstants";
-import LoadingCircle from "../../../components/LoadingCircle/LoadingCircle";
+import LoadingScreen from "../../../components/LoadingScreen/LoadingScreen";
 
 function CustomerInformationPage() {
   const dispatch = useDispatch();
@@ -136,7 +136,7 @@ function CustomerInformationPage() {
 
   return (
     <div>
-      {loading && <LoadingCircle />}
+      {loading && <LoadingScreen />}
       <BackButton
         content="Customer Information"
         handleClick={navigateBackToCustomers}

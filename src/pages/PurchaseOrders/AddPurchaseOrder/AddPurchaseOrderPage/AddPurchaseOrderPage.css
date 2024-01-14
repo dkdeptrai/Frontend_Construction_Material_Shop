@@ -37,4 +37,35 @@
   flex: 1;
 }
 
+.product-item-choose {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: var(--frame-color);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+}
+
+.warehouse-select {
+  margin: auto;
+  border: none;
+  font-size: 14px;
+  width: 100%;
+}
+
+.warehouse-select:focus {
+  outline: none;
+}
+
+.option {
+  color: black;
+  border: none;
+  font-size: 14px;
+  display: flex;
+  height: 40px;
+}
 

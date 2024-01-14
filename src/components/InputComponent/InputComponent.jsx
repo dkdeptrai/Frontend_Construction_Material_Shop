@@ -11,6 +11,9 @@ const InputComponent = ({
   options,
   className,
   placeholder,
+  dataListOptions,
+  errorMessage,
+  max,
 }) => {
   if (!type) {
     throw new Error("InputComponent: type is required!");
@@ -43,19 +46,37 @@ const InputComponent = ({
       </div>
     );
   }
-
+  console.log(max);
   return (
     <div>
       {renderedLabel}
       <input
-        type={type}
+        type={type === "dateFilter" ? "text" : type}
         placeholder={placeholder}
         accept={accept}
         defaultValue={defaultValue}
         value={value}
         onChange={handleChange}
-        className={className}
+        className={className + " inputBarcodeField"}
+        list={dataListOptions ? "dataListOptions" : null}
+        max={max}
+        onFocus={type === "dateFilter" ? (e) => (e.target.type = "date") : null}
+        onBlur={(e) => e.target.value === "" ? (e.target.type = "text") : null}
       />
+      {dataListOptions && (
+        <datalist id="dataListOptions">
+          {dataListOptions.map((option) => (
+            <option key={option}>
+              <span style={{ color: "red" }}>{option}</span>
+            </option>
+          ))}
+        </datalist>
+      )}
+      {errorMessage && (
+        <div className="input-missing-alert">
+          <span>{errorMessage}</span>
+        </div>
+      )}
     </div>
   );
 };

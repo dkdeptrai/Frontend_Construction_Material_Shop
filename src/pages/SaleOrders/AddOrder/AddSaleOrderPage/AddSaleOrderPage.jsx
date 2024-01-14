@@ -9,7 +9,6 @@ import {
   setSelectedProducts,
   updateSelectedProductsAmount,
 } from "../../../../actions/selectedProductsAction";
-import { addSaleOrder } from "../../../../actions/saleOrdersAction";
 
 //pages and components
 import InputComponent from "../../../../components/InputComponent/InputComponent";
@@ -18,10 +17,9 @@ import NewButton from "../../../../components/layouts/newButton/newButton";
 import DeleteButton from "../../../../components/layouts/deleteButton/deleteButton";
 import Table from "../../../../components/core/table/table";
 import InlineInputComponent from "../../../../components/inlineInputComponent/inlineInputComponent";
-import AmountInputModal from "../../../../components/AmountInputModal/AmountInputModal";
+import NewProductsModal from "../NewProductsModal/NewProductsModal";
 import { API_CONST } from "../../../../constants/apiConstants";
-import LoadingCircle from "../../../../components/LoadingCircle/LoadingCircle";
-import { setSelectedCustomer } from "../../../../actions/selectedCustomerAction";
+import LoadingScreen from "../../../../components/LoadingScreen/LoadingScreen";
 
 function AddSaleOrderPage() {
   const navigate = useNavigate();
@@ -33,15 +31,26 @@ function AddSaleOrderPage() {
   const [oldDebt, setOldDebt] = useState(0.0);
   const [deposit, setDeposit] = useState(0.0);
 
+  //select products modal
+  const [openSelectProductsModal, setOpenSelectProductsModal] = useState(false);
+
   //search for customer by phone number
   const [searchedCustomerPhone, setSearchedCustomerPhone] = useState("");
   const [searchedCustomerName, setSearchedCustomerName] = useState("");
+
+  //live search
+  const [customerOptions, setCustomerOptions] = useState([]);
 
   //loading
   const [loading, setLoading] = useState(false);
 
   //fetch customer name and debt from phone number
   useEffect(() => {
+    if (searchedCustomerPhone === "") {
+      setSearchedCustomerName("");
+      setOldDebt(0);
+      return;
+    }
     //fetch for customers with correct phone number
     fetch(API_CONST + "/customers?phone=" + searchedCustomerPhone, {
       method: "GET",
@@ -51,11 +60,17 @@ function AddSaleOrderPage() {
     })
       .then((response) => response.json())
       .then(async (customers) => {
+        // If there is only one customer with the phone number, fetch for the customer name
+        if (customers.results.length === 0) {
+          setSearchedCustomerName("Customer not found");
+          setCustomerOptions([]);
+          setOldDebt(0);
+          return;
+        }
+        setCustomerOptions(customers.results);
         if (customers.results.length > 0) {
           // Update the customer name input with the fetched customer name
           const customer = customers.results[0];
-          setSearchedCustomerName(customer.name);
-          dispatch(setSelectedCustomer(customer.phone, customer.name));
           // Update the old debt input with the fetched customer debt
           const customerTotalDebt = await customer.debts.reduce(
             (totalDebt, debt) => {
@@ -66,6 +81,9 @@ function AddSaleOrderPage() {
             0
           );
           setOldDebt(customerTotalDebt);
+        }
+        if (customers.results.length === 1) {
+          setSearchedCustomerName(customers.results[0].name);
         }
       })
       .catch((error) => console.error("Error:", error));
@@ -91,15 +109,6 @@ function AddSaleOrderPage() {
 
   const handleNavigateAddCustomer = () => {
     navigate("/customers/add");
-  };
-
-  //navigate to add new products page
-  const handleAddProducts = () => {
-    dispatch({
-      type: "SET_SALE_ORDERS_PAGE_SUBROUTE",
-      payload: "add/add-products",
-    });
-    navigate("/orders/add/add-products");
   };
 
   //handle deposit
@@ -181,6 +190,7 @@ function AddSaleOrderPage() {
           id: customer.results[0].id,
         },
       },
+      orderType: "SALE",
     };
 
     await fetch(API_CONST + "/orders", {
@@ -190,13 +200,37 @@ function AddSaleOrderPage() {
         Authorization: "Bearer " + sessionStorage.getItem("token"),
       },
       body: JSON.stringify(yourData),
-    }).finally(() => {
-      dispatch(setSelectedCustomer(null, null));
-      dispatch(setSelectedProducts([]));
-      setLoading(false);
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (window.confirm("DO you want to print out an invoice?")) {
+          fetch(API_CONST + "/orders/export/invoice/pdf/" + data.id, {
+            method: "GET",
+            headers: {
+              Authorization: "Bearer " + sessionStorage.getItem("token"),
+            },
+          })
+            .then((response) => response.blob())
+            .then((blob) => {
+              const url = window.URL.createObjectURL(new Blob([blob]));
+              const link = document.createElement("a");
+              link.href = url;
+              link.setAttribute("download", "invoice.pdf");
+              document.body.appendChild(link);
+              link.click();
+            });
+        }
+      })
 
-      navigateBackToOrders();
-    });
+      .finally(() => {
+        dispatch({ type: "SET_SALE_ORDERS", payload: [] });
+        dispatch(setSelectedProducts([]));
+        setLoading(false);
+        dispatch({ type: "SET_SALE_ORDERS", payload: [] });
+        dispatch({ type: "SET_INVENTORY_PAGE_INVENTORY_ITEM", payload: [] });
+        dispatch({ type: "SET_CUSTOMERS_PAGE_CUSTOMERS", payload: [] });
+        navigateBackToOrders();
+      });
   };
 
   const productColumns = [
@@ -255,22 +289,26 @@ function AddSaleOrderPage() {
 
   const navigateBackToOrders = () => {
     dispatch({ type: "SET_SALE_ORDERS_PAGE_SUBROUTE", payload: null });
+    dispatch(setSelectedProducts([]));
     navigate("/orders");
   };
 
   return (
     <div className="adding-page">
-      {loading ? <LoadingCircle /> : null}
-      {open === "true" ? (
-        <AmountInputModal open={open} setOpen={setOpen} />
+      {loading ? <LoadingScreen /> : null}
+
+      {openSelectProductsModal ? (
+        <NewProductsModal handleClose={setOpenSelectProductsModal} />
       ) : null}
+
       <BackButton content="Add Order" handleClick={navigateBackToOrders} />
       <div className="customer-info">
         <InputComponent
           label="Customer's phone number"
-          type="text"
+          type="search"
           value={searchedCustomerPhone}
           setValue={setSearchedCustomerPhone}
+          dataListOptions={customerOptions.map((customer) => customer.phone)}
         ></InputComponent>
         <InputComponent
           label="Customer's name"
@@ -292,7 +330,10 @@ function AddSaleOrderPage() {
               dispatch(deleteSelectedProducts(deletedItems));
             }}
           />
-          <NewButton text="New Products" onClick={handleAddProducts} />
+          <NewButton
+            text="New Products"
+            onClick={() => setOpenSelectProductsModal(true)}
+          />
         </div>
       </div>
       <Table
@@ -324,11 +365,8 @@ function AddSaleOrderPage() {
             label="Deposit:"
             type="number"
             value={deposit}
-            setValue={(value) => {
-              if (value <= total) {
-                setDeposit(value);
-              }
-            }}
+            setValue={setDeposit}
+            max={total}
             className="green-text"
           />
         </div>

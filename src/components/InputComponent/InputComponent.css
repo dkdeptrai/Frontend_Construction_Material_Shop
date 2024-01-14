@@ -28,3 +28,12 @@ select {
   background-color: transparent;
   color: var(--text-color);
 }
+
+.inputBarcodeField::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+}
+
+.data-option {
+  color: var(--text-color);
+}
+

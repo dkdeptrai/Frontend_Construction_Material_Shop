@@ -8,7 +8,18 @@ import BackButton from "../../../components/layouts/backButton/backButton";
 import InputComponent from "../../../components/InputComponent/InputComponent";
 import RequiredStar from "../../../components/RequiredStar";
 import { API_CONST } from "../../../constants/apiConstants";
-import LoadingCircle from "../../../components/LoadingCircle/LoadingCircle";
+import LoadingScreen from "../../../components/LoadingScreen/LoadingScreen";
+
+const transformISODate = (isoDate) => {
+  const date = new Date(isoDate);
+  const month = date.getMonth() + 1; // getMonth returns a zero-based value (where 0 indicates the first month)
+  const day = date.getDate();
+  const year = date.getFullYear();
+
+  return `${month.toString().padStart(2, "0")}/${day
+    .toString()
+    .padStart(2, "0")}/${year}`;
+};
 
 function AddCustomerPage(props) {
   const dispatch = useDispatch();
@@ -102,6 +113,12 @@ function AddCustomerPage(props) {
       .catch((error) => {
         console.error("Error:", error);
         alert("Add customer failed!");
+      })
+      .finally(() => {
+        alert("Add customer successfully!");
+      })
+      .finally(() => {
+        dispatch({ type: "SET_CUSTOMERS_PAGE_CUSTOMERS", payload: [] });
       });
     setLoading(false);
     clearInput();
@@ -113,8 +130,8 @@ function AddCustomerPage(props) {
   };
 
   return (
-    <div>
-      {loading && <LoadingCircle />}
+    <div className="add-customer-page">
+      {loading && <LoadingScreen />}
       <BackButton
         content="Add Customer"
         handleClick={navigateBackToCustomers}
@@ -134,6 +151,11 @@ function AddCustomerPage(props) {
           }
           className={isNameValid ? "" : "invalid-input"}
         />
+        {!isNameValid && (
+          <div className="input-missing-alert">
+            <span>Missing name</span>
+          </div>
+        )}
         <InputComponent
           label={
             <>
@@ -151,6 +173,11 @@ function AddCustomerPage(props) {
           }
           className={isPhoneNumberValid ? "" : "invalid-input"}
         />
+        {!isPhoneNumberValid && (
+          <div className="input-missing-alert">
+            <span>Missing phone</span>
+          </div>
+        )}
         <InputComponent
           label={
             <>
@@ -165,6 +192,11 @@ function AddCustomerPage(props) {
           }
           className={isAddressValid ? "" : "invalid-input"}
         />
+        {!isAddressValid && (
+          <div className="input-missing-alert">
+            <span>Missing address</span>
+          </div>
+        )}
         <InputComponent
           label={
             <>
@@ -181,7 +213,13 @@ function AddCustomerPage(props) {
             })
           }
           className={isDateOfBirthValid ? "" : "invalid-input"}
+          max={new Date().toISOString().split("T")[0]}
         />
+        {!isDateOfBirthValid && (
+          <div className="input-missing-alert">
+            <span>Missing date of birth</span>
+          </div>
+        )}
         <InputComponent
           label={
             <>
@@ -196,6 +234,11 @@ function AddCustomerPage(props) {
           }}
           className={isTaxValid ? "" : "invalid-input"}
         />
+        {!isTaxValid && (
+          <div className="input-missing-alert">
+            <span>Missing tax</span>
+          </div>
+        )}
       </form>
       <div className="button-container">
         <button className="submit-button" onClick={handleAddCustomer}>

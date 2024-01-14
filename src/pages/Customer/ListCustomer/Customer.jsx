@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./Customer.css";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+
 //pages and components
 import Table from "../../../components/core/table/table";
 import SearchBar from "../../../components/layouts/searchBar/searchBar";
@@ -9,17 +10,18 @@ import ExportButton from "../../../components/layouts/exportButton/exportButton"
 import DeleteButton from "../../../components/layouts/deleteButton/deleteButton";
 import NewButton from "../../../components/layouts/newButton/newButton";
 import CustomerIcon from "../../../assets/icons/customer_default.png";
-import LoadingCircle from "../../../components/LoadingCircle/LoadingCircle";
+import LoadingComponent from "../../../components/LoadingComponent/LoadingComponent";
 import { API_CONST } from "../../../constants/apiConstants";
 
 function Customer() {
   const dispatch = useDispatch();
   const subroute = useSelector((state) => state.customers.subroute);
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const customers = useSelector((state) => state.customers.customers);
   const selectedRowIds = useSelector((state) => state.customers.selectedRowIds);
+  
   //table states
   const paginationModel = useSelector(
     (state) => state.customers.paginationModel
@@ -44,8 +46,8 @@ function Customer() {
   console.log(useSelector((state) => state.customers.searchResults));
 
   const fetchCustomers = async (page, size) => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
       const response = await fetch(
         `${API_CONST}/customers?page=${page}&size=${size}`,
         {
@@ -278,7 +280,6 @@ function Customer() {
 
   return (
     <div className="customerPageContainer">
-      {isLoading && <LoadingCircle />}
       <div className="toolBar">
         <SearchBar
           options={searchOptions}
@@ -300,37 +301,39 @@ function Customer() {
           <NewButton text=" New Customer" onClick={navigateToNewCustomer} />
         </div>
       </div>
-      <Table
-        className="table"
-        columns={customerColumns}
-        rows={showSearchResults ? searchResults : customers}
-        handleCellClick={handleCellClick}
-        selectedRowIds={selectedRowIds}
-        cellName="name"
-        identifyRoute="id"
-        onRowSelection={(newSelection) => {
-          dispatch({
-            type: "SET_CUSTOMERS_PAGE_SELECTED_ROW_IDS",
-            payload: newSelection,
-          });
-        }}
-        paginationModel={
-          showSearchResults ? searchPaginationModel : paginationModel
-        }
-        onPaginationModelChange={
-          showSearchResults
-            ? (newPaginationModel) =>
-                dispatch({
-                  type: "SET_CUSTOMERS_PAGE_SEARCH_PAGINATION_MODEL",
-                  payload: newPaginationModel,
-                })
-            : (newPaginationModel) =>
-                dispatch({
-                  type: "SET_CUSTOMERS_PAGE_PAGINATION_MODEL",
-                  payload: newPaginationModel,
-                })
-        }
-      />
+      {!isLoading ? (
+        <Table
+          className="table"
+          columns={customerColumns}
+          rows={showSearchResults ? searchResults : customers}
+          handleCellClick={handleCellClick}
+          selectedRowIds={selectedRowIds}
+          cellName="name"
+          identifyRoute="id"
+          onRowSelection={(newSelection) => {
+            dispatch({
+              type: "SET_CUSTOMERS_PAGE_SELECTED_ROW_IDS",
+              payload: newSelection,
+            });
+          }}
+          paginationModel={
+            showSearchResults ? searchPaginationModel : paginationModel
+          }
+          onPaginationModelChange={
+            showSearchResults
+              ? (newPaginationModel) =>
+                  dispatch({
+                    type: "SET_CUSTOMERS_PAGE_SEARCH_PAGINATION_MODEL",
+                    payload: newPaginationModel,
+                  })
+              : (newPaginationModel) =>
+                  dispatch({
+                    type: "SET_CUSTOMERS_PAGE_PAGINATION_MODEL",
+                    payload: newPaginationModel,
+                  })
+          }
+        />
+      ) : <LoadingComponent />}
     </div>
   );
 }

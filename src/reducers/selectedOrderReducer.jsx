@@ -1,5 +1,4 @@
 const initialState = {
-  customerData: null,
   selectedProductsData: [],
 };
 
@@ -59,6 +58,22 @@ const selectedOrderReducer = (state = initialState, action) => {
         customerData: {
           customerPhone: action.payload.customerPhone,
           customerName: action.payload.customerName,
+        },
+      };
+    case "SET_CUSTOMER_PHONE":
+      return {
+        ...state,
+        customerData: {
+          ...state.customerData,
+          customerPhone: action.payload,
+        },
+      };
+    case "SET_CUSTOMER_NAME":
+      return {
+        ...state,
+        customerData: {
+          ...state.customerData,
+          customerName: action.payload,
         },
       };
     default:

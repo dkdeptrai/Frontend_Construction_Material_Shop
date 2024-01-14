@@ -8,6 +8,7 @@ import warehouseInfoPageReducer from "./warehouseInfoPageReducer.jsx";
 import saleOrdersReducer from "./saleOrdersReducer.jsx";
 import inventoryItemsReducer from "./inventoryItemsReducer.jsx";
 import purchaseOrdersReducer from "./purchaseOrdersReducer.jsx";
+import selectedImportedProductsReducer from "./selectedImportedProducts.jsx";
 import customersPageReducer from "./customersPageReducer.jsx";
 import productInfoPageReducer from "./productInfoPageReducer.jsx";
 import addCustomerPageReducer from "./addCustomerPageReducer.jsx";
@@ -32,6 +33,7 @@ const rootReducer = (state, action) => {
     saleOrders: saleOrdersReducer,
     inventoryItems: inventoryItemsReducer,
     purchaseOrders: purchaseOrdersReducer,
+    selectedImportedProducts: selectedImportedProductsReducer,
     products: productsReducer,
     productInfo: productInfoPageReducer,
     warehouses: warehousesReducer,

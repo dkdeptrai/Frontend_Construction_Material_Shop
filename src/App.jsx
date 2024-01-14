@@ -28,7 +28,6 @@ import InventoryItemList from "./pages/Inventory/InventoryItemsList/InventoryIte
 //sale order
 import SaleOrdersPage from "./pages/SaleOrders/ListOrders/saleOrders.jsx";
 import AddSaleOrderPage from "./pages/SaleOrders/AddOrder/AddSaleOrderPage/AddSaleOrderPage.jsx";
-import NewProducts from "./pages/SaleOrders/AddOrder/NewProducts/NewProducts.jsx";
 import InfoOrder from "./pages/SaleOrders/InfoOrder/InfoOrder.jsx";
 
 import ProductInfoPage from "./pages/products/productInfoPage/ProductInfoPage.jsx";
@@ -121,10 +120,7 @@ function App() {
                 <Route path="/inventory" element={<InventoryItemList />} />
                 <Route path="/orders" element={<SaleOrdersPage />} />
                 <Route path="/orders/add" element={<AddSaleOrderPage />} />
-                <Route
-                  path="/orders/add/add-products"
-                  element={<NewProducts />}
-                />
+
                 <Route path="/orders/:id" element={<InfoOrder />} />
 
                 {/* // products */}
@@ -139,10 +135,6 @@ function App() {
                 <Route
                   path="/purchase-orders/add"
                   element={<AddPurchaseOrderPage />}
-                />
-                <Route
-                  path="/purchase-orders/add/add-products"
-                  element={<NewProducts />}
                 />
                 <Route
                   path="/purchase-orders/:id"

@@ -10,7 +10,13 @@ import storage from "redux-persist/lib/storage";
 const persistConfig = {
   key: "root",
   storage,
-  blacklist: ["modal", "selectedOrder", "saleOrders", "inventoryItems"],
+  blacklist: [
+    "modal",
+    "selectedOrder",
+    "saleOrders",
+    "inventoryItems",
+    "selectedImportedProducts",
+  ],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

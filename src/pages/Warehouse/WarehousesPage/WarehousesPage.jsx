@@ -6,7 +6,7 @@ import WarehouseComponent from "../../../components/layouts/warehouseComponent/w
 import "./WarehousesPage.css";
 import NewButton from "../../../components/layouts/newButton/newButton";
 import { API_CONST } from "../../../constants/apiConstants";
-import LoadingCircle from "../../../components/LoadingCircle/LoadingCircle";
+import LoadingComponent from "../../../components/LoadingComponent/LoadingComponent";
 
 function WarehousesPage() {
   const dispatch = useDispatch();
@@ -88,7 +88,6 @@ function WarehousesPage() {
   };
   return (
     <div className="warehousePageContainer">
-      {isLoading && <LoadingCircle />}
       <div className="toolbar">
         <SearchBar
           handleSearch={handleSearch}
@@ -101,16 +100,20 @@ function WarehousesPage() {
           onClick={() => navigateToNewWarehouse()}
         />
       </div>
-      <div className="warehousesListContainer">
-        {warehouses.map((warehouse) => (
-          <WarehouseComponent
-            onClick={() => navigateToWarehouse(warehouse)}
-            className="warehouse"
-            key={warehouse.id}
-            warehouse={warehouse}
-          />
-        ))}
-      </div>
+      {isLoading ? (
+        <LoadingComponent />
+      ) : (
+        <div className="warehousesListContainer">
+          {warehouses.map((warehouse) => (
+            <WarehouseComponent
+              onClick={() => navigateToWarehouse(warehouse)}
+              className="warehouse"
+              key={warehouse.id}
+              warehouse={warehouse}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

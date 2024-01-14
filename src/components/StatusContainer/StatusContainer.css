@@ -1,12 +1,13 @@
 .status-container {
   border: none;
   border-radius: 20px;
-  padding: 10px 20px;
+  padding: 5px 20px;
   margin: auto;
   color: var(--text);
   font-weight: 550;
-  width: 60%;
+  width: 50%;
   text-align: center;
+  font-size: 14px;
 }
 
 .processing {

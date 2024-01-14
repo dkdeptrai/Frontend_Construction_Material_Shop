@@ -9,8 +9,9 @@ import NewButton from "../../../components/layouts/newButton/newButton.jsx";
 import "./ProductsPage.css";
 import { API_CONST } from "../../../constants/apiConstants.jsx";
 import InputComponent from "../../../components/InputComponent/InputComponent.jsx";
-import LoadingCircle from "../../../components/LoadingCircle/LoadingCircle.jsx";
+import LoadingComponent from "../../../components/LoadingComponent/LoadingComponent.jsx";
 import { productOrigins } from "../../../constants/productConstants.jsx";
+
 
 function ProductsPage() {
   const dispatch = useDispatch();
@@ -101,6 +102,7 @@ function ProductsPage() {
       console.log("query: ", query);
       const response = await fetch(`${API_CONST}/products/search?${query}`, {
         method: "GET",
+        
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${sessionStorage.getItem("token")}`,
@@ -281,7 +283,6 @@ function ProductsPage() {
   ];
   return (
     <div className="productPageContainer">
-      {isLoading && <LoadingCircle />}
       <div>
         <div className="toolBar">
           <SearchBar
@@ -343,7 +344,7 @@ function ProductsPage() {
           />
         </div>
       </div>
-      {products && (
+      {!isLoading ? (
         <Table
           className="table"
           columns={productColumns}
@@ -375,6 +376,8 @@ function ProductsPage() {
                   })
           }
         />
+      ) : (
+        <LoadingComponent />
       )}
     </div>
   );
