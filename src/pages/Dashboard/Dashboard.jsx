@@ -50,7 +50,7 @@ function Dashboard() {
 
   const [loading, setLoading] = useState(true);
 
-  const userType = useSelector((state) => state.user.userData.userType) || "";
+  const userType = useSelector((state) => state.user.userData?.userType) || "";
 
   //get all sale orders
   useEffect(() => {
