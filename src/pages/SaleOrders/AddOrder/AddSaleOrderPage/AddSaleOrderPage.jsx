@@ -163,6 +163,12 @@ function AddSaleOrderPage() {
 
     setLoading(true);
 
+    const newDebt = {
+      amount: (total - deposit).toString(),
+      customer: {
+        id: customer.results[0].id,
+      },
+    };
     //Add order to database
     const yourData = {
       createdUser: {
@@ -184,12 +190,7 @@ function AddSaleOrderPage() {
           quantity: product.amount,
         };
       }),
-      debt: {
-        amount: (total - deposit).toString(),
-        customer: {
-          id: customer.results[0].id,
-        },
-      },
+      debt: paymentType === "debt" ? newDebt : null,
       orderType: "SALE",
     };
 
@@ -200,7 +201,8 @@ function AddSaleOrderPage() {
         Authorization: "Bearer " + sessionStorage.getItem("token"),
       },
       body: JSON.stringify(yourData),
-    }).then((response) => response.json())
+    })
+      .then((response) => response.json())
       .then((data) => {
         console.log("Success:", data);
         if (window.confirm("Do you want to print out an invoice?")) {
@@ -365,7 +367,13 @@ function AddSaleOrderPage() {
             label="Deposit:"
             type="number"
             value={deposit}
-            setValue={setDeposit}
+            setValue={(e) => {
+              const newDeposit = Number(e);
+              if (newDeposit <= total) {
+                setDeposit(newDeposit);
+              }
+            }}
+            min={0}
             max={total}
             className="green-text"
           />
