@@ -72,9 +72,9 @@ const InfoPurchaseOrder = () => {
             id: item.productId,
             name: orderedInventoryItem.product.name,
             imageUrl: orderedInventoryItem.product.imageUrl,
-            unitPrice: orderedInventoryItem.product.unitPrice,
+            unitPrice: orderedInventoryItem.importedPrice,
             amount: item.quantity,
-            total: item.quantity * orderedInventoryItem.product.unitPrice,
+            total: item.quantity * orderedInventoryItem.importedPrice,
           };
           setProducts((products) => [...products, product]);
         });
