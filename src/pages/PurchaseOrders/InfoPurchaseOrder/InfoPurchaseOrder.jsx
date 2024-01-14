@@ -72,7 +72,7 @@ const InfoPurchaseOrder = () => {
             id: item.productId,
             name: orderedInventoryItem.product.name,
             imageUrl: orderedInventoryItem.product.imageUrl,
-            unitPrice: orderedInventoryItem.importedPrice,
+            importedPrice: orderedInventoryItem.importedPrice,
             amount: item.quantity,
             total: item.quantity * orderedInventoryItem.importedPrice,
           };
@@ -98,7 +98,7 @@ const InfoPurchaseOrder = () => {
         </div>
       ),
     },
-    { headerName: "Price/Unit", field: "unitPrice", flex: 0.4 },
+    { headerName: "Price/Unit", field: "importedPrice", flex: 0.4 },
     { headerName: "Amount", field: "amount", flex: 0.4 },
     {
       headerName: "Total",
