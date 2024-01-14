@@ -17,7 +17,6 @@ const InventoryItemList = () => {
   );
   const [loading, setLoading] = useState(false);
 
-  const options = ["Name", "Warehouse"];
   const warehouses = useSelector((state) => state.inventoryItems.warehouses);
   console.log("warehouses", warehouses);
   //search
@@ -39,12 +38,7 @@ const InventoryItemList = () => {
     (state) => state.inventoryItems.warehousesOption
   );
 
-  console.log("paginationModel", paginationModel);
-  console.log("searchPaginationModel", searchPaginationModel);
-
   const [currentWarehouse, setCurrentWarehouse] = useState(null);
-
-  console.log(showSearchResults);
 
   useEffect(() => {
     let warehouseOptions = [];
@@ -180,9 +174,13 @@ const InventoryItemList = () => {
       headerName: "No.",
       width: 50,
       renderCell: (params) =>
-        paginationModel.page * 10 +
-        inventoryItemsFromStore.indexOf(params.row) +
-        1,
+        showSearchResults
+          ? searchPaginationModel.page * searchPaginationModel.pageSize +
+            searchResults.indexOf(params.row) +
+            1
+          : paginationModel.page * paginationModel.pageSize +
+            inventoryItemsFromStore.indexOf(params.row) +
+            1,
     },
     {
       headerName: "Name",
@@ -245,8 +243,7 @@ const InventoryItemList = () => {
       <div className="toolBar">
         <SearchBar
           className="searchBar"
-          options={options}
-          placeholder="Search Inventory Items"
+          placeholder="Search Inventory Items by Product Name"
           value={searchQuery}
           handleSearch={handleSearch}
           handleSearchQueryChange={handleSearchQueryChange}

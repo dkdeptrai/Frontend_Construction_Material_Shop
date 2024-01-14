@@ -21,7 +21,7 @@ function Customer() {
 
   const customers = useSelector((state) => state.customers.customers);
   const selectedRowIds = useSelector((state) => state.customers.selectedRowIds);
-  
+
   //table states
   const paginationModel = useSelector(
     (state) => state.customers.paginationModel
@@ -333,7 +333,9 @@ function Customer() {
                   })
           }
         />
-      ) : <LoadingComponent />}
+      ) : (
+        <LoadingComponent />
+      )}
     </div>
   );
 }

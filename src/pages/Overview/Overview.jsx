@@ -31,14 +31,14 @@ function Overview() {
       {
         name: "John",
         phone: "1234567890",
-        orderCount: 5,
-        totalSpent: 500,
+        ordersCount: 5,
+        ordersValue: 500,
       },
       {
         name: "John",
         phone: "1234567890",
-        orderCount: 5,
-        totalSpent: 500,
+        ordersCount: 5,
+        ordersValue: 500,
       },
     ],
   ]);
@@ -91,8 +91,8 @@ function Overview() {
         id: customer.id,
         name: customer.name,
         phone: customer.phone,
-        orderCount: customer.orderCount && 0,
-        totalSpent: customer.totalSpent && 0,
+        ordersCount: customer.ordersCount && 0,
+        ordersValue: customer.ordersValue && 0,
       }));
       console.log(newCustomerData);
       setCustomerData(newCustomerData);

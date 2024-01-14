@@ -13,7 +13,8 @@ import customersPageReducer from "./customersPageReducer.jsx";
 import productInfoPageReducer from "./productInfoPageReducer.jsx";
 import addCustomerPageReducer from "./addCustomerPageReducer.jsx";
 import employeePageReducer from "./employeePageReducer.jsx";
-
+import selectProductsModalReducer from "./selectProductModalReducer.jsx";
+import newProductsModalReducer from "./newProductsModalReducer.jsx";
 const rootReducer = (state, action) => {
   if (action.type === "CLEAR_REDUX_STORE") {
     const keepUser = action.payload?.keepUser;
@@ -41,6 +42,8 @@ const rootReducer = (state, action) => {
     customers: customersPageReducer,
     addCustomerPage: addCustomerPageReducer,
     employees: employeePageReducer,
+    selectProductsModal: selectProductsModalReducer,
+    newProductsModal: newProductsModalReducer,
   })(state, action);
 };
 

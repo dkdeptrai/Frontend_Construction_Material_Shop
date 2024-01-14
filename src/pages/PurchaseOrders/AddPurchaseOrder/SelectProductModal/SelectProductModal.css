@@ -17,6 +17,7 @@
   width: 90%;
   background-color: white;
   border-radius: 14px;
+  overflow: auto;
 }
 
 .product-modal-content > * {

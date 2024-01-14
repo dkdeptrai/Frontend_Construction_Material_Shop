@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./SelectProductModal.css";
 
 //redux
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { updateSelectedImportedProduct } from "../../../../actions/selectedImportedProductsAction";
 
 //components
@@ -12,51 +12,158 @@ import ExitButton from "../../../../assets/icons/exitbutton.svg?react";
 import SearchBar from "../../../../components/layouts/searchBar/searchBar";
 
 import { API_CONST } from "../../../../constants/apiConstants";
+import { productOrigins } from "../../../../constants/productConstants";
+import InputComponent from "../../../../components/InputComponent/InputComponent";
+import { render } from "react-dom";
 
 const SelectProductModal = ({ handleClose, productRowPointer }) => {
   const dispatch = useDispatch();
 
-
-  const [products, setProducts] = useState([]);
+  const products = useSelector((state) => state.selectProductsModal.products);
+  const paginationModel = useSelector(
+    (state) => state.selectProductsModal.paginationModel
+  );
+  const searchPaginationModel = useSelector(
+    (state) => state.selectProductsModal.searchPaginationModel
+  );
+  const searchResults = useSelector(
+    (state) => state.selectProductsModal.searchResults
+  );
+  const showSearchResults = useSelector(
+    (state) => state.selectProductsModal.showSearchResults
+  );
+  const name = useSelector((state) => state.selectProductsModal.name);
+  const origin = useSelector((state) => state.selectProductsModal.origin);
+  const calculationUnit = useSelector(
+    (state) => state.selectProductsModal.calculationUnit
+  );
+  const priceStart = useSelector(
+    (state) => state.selectProductsModal.priceStart
+  );
+  const priceEnd = useSelector((state) => state.selectProductsModal.priceEnd);
 
   //loading
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
-  //fecth for products
-  const fetchProducts = async () => {
+  //fetch for products
+  const fetchProducts = async (page, size) => {
     try {
-      console.log(sessionStorage.getItem("token"));
-      const response = await fetch(API_CONST + "/products?page=0&size=10", {
+      setIsLoading(true);
+      const response = await fetch(
+        `${API_CONST}/products?page=${page}&size=${size}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+          },
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+      const products = data.results;
+      dispatch({ type: "SET_PRODUCTS_MODAL_PRODUCTS", payload: products });
+      const total = data.total;
+      dispatch({
+        type: "SET_PRODUCTS_MODAL_PAGINATION_MODEL",
+        payload: {
+          ...paginationModel,
+          total: total,
+        },
+      });
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+      console.error("Error fetching products:", error);
+    }
+    setIsLoading(false);
+  };
+
+  const handleSearch = async (page, size) => {
+    try {
+      setIsLoading(true);
+      let query = `keyword=${name}&page=${searchPaginationModel.page}&size=${searchPaginationModel.pageSize}`;
+      if (origin) {
+        query += `&origin=${origin}`;
+      }
+      if (calculationUnit) {
+        query += `&calculationUnit=${calculationUnit}`;
+      }
+      if (priceStart) {
+        query += `&minPrice=${priceStart}`;
+      }
+      if (priceEnd) {
+        query += `&maxPrice=${priceEnd}`;
+      }
+      console.log("query: ", query);
+      const response = await fetch(`${API_CONST}/products/search?${query}`, {
         method: "GET",
+
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${sessionStorage.getItem("token")}`,
         },
       });
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
       const data = await response.json();
-      setProducts(data.results);
-      console.log("Products fetched:", data);
-    } catch (error) {
-      console.error("Error fetching products:", error);
-    } finally {
-      setLoading(false);
+      const products = data.results;
+
+      dispatch({
+        type: "SET_PRODUCTS_MODAL_SEARCH_RESULTS",
+        payload: products,
+      });
+      dispatch({ type: "SET_PRODUCTS_MODAL_SHOW_RESULTS", payload: true });
+      dispatch({
+        type: "SET_PRODUCTS_MODAL_SEARCH_PAGINATION_MODEL",
+        payload: {
+          ...searchPaginationModel,
+          total: data.total,
+        },
+      });
+    } catch (e) {
+      console.error("Error fetching search results:", e);
+      dispatch({ type: "SET_PRODUCTS_MODAL_SHOW_RESULTS", payload: true });
+      dispatch({ type: "SET_PRODUCTS_MODAL_SEARCH_RESULTS", payload: [] });
+      setIsLoading(false);
+    }
+    setIsLoading(false);
+  };
+
+  const handleSearchQueryChange = (event) => {
+    dispatch({ type: "SET_PRODUCTS_MODAL_NAME", payload: event.target.value });
+    if (event.target.value === "" || event.target.value === null) {
+      dispatch({ type: "SET_PRODUCTS_PAGE_MODAL_RESULTS", payload: false });
+      dispatch({ type: "SET_PRODUCTS_PAGE_MODAL_RESULTS", payload: [] });
+      fetchProducts(paginationModel.page, paginationModel.pageSize);
     }
   };
 
   useEffect(() => {
-    fetchProducts();
-  }, []);
+    fetchProducts(paginationModel.page, paginationModel.pageSize);
+  }, [paginationModel.page, paginationModel.pageSize]);
 
-  const options = [
-    "Name"
-  ];
+  useEffect(() => {
+    if (showSearchResults) {
+      handleSearch();
+    }
+  }, [searchPaginationModel.page, searchPaginationModel.pageSize]);
+  const options = productOrigins;
 
   const productColumns = [
     {
       field: "index",
       headerName: "No.",
       width: 50,
-      valueGetter: (params) => products.indexOf(params.row) + 1,
+      renderCell: (params) =>
+        showSearchResults
+          ? searchPaginationModel.page * 10 +
+            searchResults.indexOf(params.row) +
+            1
+          : paginationModel.page * 10 + products.indexOf(params.row) + 1,
     },
     {
       field: "name",
@@ -84,7 +191,7 @@ const SelectProductModal = ({ handleClose, productRowPointer }) => {
 
   return (
     <div className="product-modal-overlay">
-      {loading && <LoadingScreen />}
+      {isLoading && <LoadingScreen />}
       <div className="product-modal-content">
         <div className="product-modal-header">
           <h2>Select a product</h2>
@@ -94,14 +201,74 @@ const SelectProductModal = ({ handleClose, productRowPointer }) => {
         </div>
         <div className="toolBar">
           <SearchBar
+            handleSearch={handleSearch}
+            handleSearchQueryChange={handleSearchQueryChange}
+            value={name}
             className="searchBar"
+            placeholder="Search Products by name"
+          />
+        </div>
+        <div className="filters">
+          <InputComponent
+            type="number"
+            placeholder="Price Start"
+            value={priceStart}
+            setValue={(value) =>
+              dispatch({
+                type: "SET_PRODUCTS_MODAL_PRICE_START",
+                payload: value,
+              })
+            }
+          />
+
+          <InputComponent
+            type="number"
+            placeholder="Price End"
+            value={priceEnd}
+            setValue={(value) =>
+              dispatch({ type: "SET_MODAL_PAGE_PRICE_END", payload: value })
+            }
+          />
+          <InputComponent
+            type="text"
+            placeholder="Calculation Unit"
+            value={calculationUnit}
+            setValue={(value) =>
+              dispatch({
+                type: "SET_PRODUCTS_MODAL_CALCULATION_UNIT",
+                payload: value,
+              })
+            }
+          />
+          <InputComponent
+            type="select"
             options={options}
-            placeholder="Search Products by name, ID or any related keywords"
+            placeholder="Origin"
+            value={origin}
+            setValue={(value) =>
+              dispatch({ type: "SET_PRODUCTS_MODAL_ORIGIN", payload: value })
+            }
           />
         </div>
         <Table
           columns={productColumns}
-          rows={products}
+          rows={showSearchResults ? searchResults : products}
+          paginationModel={
+            showSearchResults ? searchPaginationModel : paginationModel
+          }
+          onPaginationModelChange={
+            showSearchResults
+              ? (newPaginationModel) =>
+                  dispatch({
+                    type: "SET_PRODUCTS_MODAL_SEARCH_PAGINATION_MODEL",
+                    payload: newPaginationModel,
+                  })
+              : (newPaginationModel) =>
+                  dispatch({
+                    type: "SET_PRODUCTS_MODAL_PAGINATION_MODEL",
+                    payload: newPaginationModel,
+                  })
+          }
           onRowSelection={(newSelection) => {
             const itemId = newSelection[0];
             const selectedProduct = products.find(

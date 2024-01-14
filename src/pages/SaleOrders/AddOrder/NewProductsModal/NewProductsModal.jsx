@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "./NewProductsModal.css";
 
 //states
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addSelectedProducts } from "../../../../actions/selectedProductsAction.jsx";
 
 //pages and components
@@ -12,16 +12,21 @@ import Table from "../../../../components/core/table/table.jsx";
 import { API_CONST } from "../../../../constants/apiConstants.jsx";
 import LoadingComponent from "../../../../components/LoadingComponent/LoadingComponent.jsx";
 import ExitButton from "../../../../assets/icons/exitbutton.svg?react";
+import Select from "react-select";
 
 const NewProductsModal = ({ handleClose }) => {
-  const [inventoryItems, setInventoryItems] = useState([]);
-  const [selectedInventoryItems, setSelectedInventoryItems] = useState([]);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   //loading
-  const [loading, setLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
+  const inventoryItems = useSelector(
+    (state) => state.newProductsModal.inventoryItemsData
+  );
+  const selectedInventoryItems = useSelector(
+    (state) => state.newProductsModal.selectedInventoryItems
+  );
   const handleAddProducts = () => {
     const selectedProducts = selectedInventoryItems.map((item) => {
       const product = {
@@ -40,39 +45,173 @@ const NewProductsModal = ({ handleClose }) => {
     handleClose(false);
   };
 
-  const options = ["Product's name", "Product's code", "Price", "Quantity"];
+  const paginationModel = useSelector(
+    (state) => state.newProductsModal.paginationModel
+  );
+  const searchPaginationModel = useSelector(
+    (state) => state.newProductsModal.searchPaginationModel
+  );
+  const searchQuery = useSelector(
+    (state) => state.newProductsModal.searchQuery
+  );
+  const showSearchResults = useSelector(
+    (state) => state.newProductsModal.showSearchResults
+  );
+  const searchResults = useSelector(
+    (state) => state.newProductsModal.searchResults
+  );
 
-  const fetchInventoryItems = async () => {
+  const warehouseOptions = useSelector(
+    (state) => state.newProductsModal.warehousesOption
+  );
+
+  const warehouses = useSelector((state) => state.newProductsModal.warehouses);
+
+  const [currentWarehouse, setCurrentWarehouse] = useState(null);
+  const options = ["Name", "Warehouse"];
+
+  useEffect(() => {
+    let warehouseOptions = [];
+    warehouses.map((warehouse) => {
+      warehouseOptions.push({
+        value: warehouse.id,
+        label: warehouse.address,
+      });
+    });
+    dispatch({
+      type: "SET_NEW_PRODUCTS_MODAL_WAREHOUSES_OPTION",
+      payload: warehouseOptions,
+    });
+  }, [warehouses]);
+
+  const handleSearch = async (page, size) => {
     try {
-      console.log(sessionStorage.getItem("token"));
-      const response = await fetch(API_CONST + "/inventories?page=0&size=10", {
+      setIsLoading(true);
+      let query = `page=${searchPaginationModel.page}&size=${searchPaginationModel.pageSize}&keyword=${searchQuery}`;
+      if (currentWarehouse) {
+        query += `&warehouseId=${currentWarehouse}`;
+      }
+      const response = await fetch(`${API_CONST}/inventories/search?${query}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
+          Authorization: "Bearer " + sessionStorage.getItem("token"),
+        },
+      });
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+      const inventoryItems = data.results;
+      console.log("search results", inventoryItems);
+
+      dispatch({
+        type: "SET_NEW_PRODUCTS_MODAL_SEARCH_RESULTS",
+        payload: data.results,
+      });
+      dispatch({ type: "SET_NEW_PRODUCTS_MODAL_SHOW_RESULTS", payload: true });
+      dispatch({
+        type: "SET_NEW_PRODUCTS_MODAL_SEARCH_PAGINATION_MODEL",
+        payload: { ...searchPaginationModel, total: data.total },
+      });
+    } catch (error) {
+      dispatch({ type: "SET_NEW_PRODUCTS_MODAL_SHOW_RESULTS", payload: true });
+      dispatch({ type: "SET_NEW_PRODUCTS_MODAL_SEARCH_RESULTS", payload: [] });
+      setIsLoading(false);
+      console.error("Error:", error);
+    }
+    setIsLoading(false);
+  };
+
+  const fetchWarehouses = async () => {
+    try {
+      setIsLoading(true);
+      const response = await fetch(`${API_CONST}/warehouses`, {
+        method: "GET",
+        headers: {
           Authorization: `Bearer ${sessionStorage.getItem("token")}`,
         },
       });
       const data = await response.json();
-      const fetchedInventoryItems = data.results.filter(
-        (item) => item.quantity > 0 && item.manufacturingDate && item.expiryDate
-      );
-      setInventoryItems(fetchedInventoryItems);
-      console.log("Inventory 's products fetched:", data);
-    } catch (error) {
-      console.error("Error fetching products:", error);
+      const warehouses = data;
+      console.log("warehouses", data);
+      dispatch({
+        type: "SET_NEW_PRODUCTS_MODAL_WAREHOUSES",
+        payload: warehouses,
+      });
+      setIsLoading(false);
+    } catch (e) {
+      console.log(e);
+      setIsLoading(false);
     }
   };
 
+  const fetchInventoryItems = async (page, size) => {
+    try {
+      setIsLoading(true);
+      const response = await fetch(
+        API_CONST + `/inventories?page=${page}&size=${size}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: "Bearer " + sessionStorage.getItem("token"),
+          },
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      const data = await response.json();
+      console.log("get inventory items from api", data.results);
+      dispatch({
+        type: "SET_NEW_PRODUCTS_MODAL_INVENTORY_ITEM",
+        payload: data.results,
+      });
+      dispatch({
+        type: "SET_NEW_PRODUCTS_MODAL_PAGINATION_MODEL",
+        payload: { ...paginationModel, total: data.total },
+      });
+    } catch (error) {
+      setIsLoading(false);
+      console.error("Error:", error);
+    }
+    setIsLoading(false);
+  };
+
   useEffect(() => {
-    fetchInventoryItems().then(() => setLoading(false));
-  }, []);
+    fetchInventoryItems(paginationModel.page, paginationModel.pageSize);
+    fetchWarehouses();
+  }, [paginationModel.page, paginationModel.pageSize]);
+
+  useEffect(() => {
+    if (showSearchResults) {
+      handleSearch(searchPaginationModel.page, searchPaginationModel.pageSize);
+      fetchWarehouses();
+    }
+  }, [searchPaginationModel.page, searchPaginationModel.pageSize]);
+
+  const handleSelectionChange = (option) => {
+    if (option === null) {
+      setCurrentWarehouse(null);
+    } else {
+      setCurrentWarehouse(option.value);
+    }
+    console.log("current warehouse", currentWarehouse);
+  };
 
   const inventoryItemsColumns = [
     {
       field: "index",
       headerName: "No.",
       width: 50,
-      renderCell: (params) => inventoryItems.indexOf(params.row) + 1,
+      renderCell: (params) =>
+        showSearchResults
+          ? searchPaginationModel.page * searchPaginationModel.pageSize +
+            inventoryItems.indexOf(params.row) +
+            1
+          : paginationModel.page * paginationModel.pageSize +
+            inventoryItems.indexOf(params.row) +
+            1,
     },
     {
       field: "name",
@@ -122,6 +261,21 @@ const NewProductsModal = ({ handleClose }) => {
     },
   ];
 
+  const handleSearchQueryChange = (event) => {
+    dispatch({
+      type: "SET_NEW_PRODUCTS_MODAL_SEARCH_QUERY",
+      payload: event.target.value,
+    });
+    if (event.target.value === "" || event.target.value === null) {
+      dispatch({
+        type: "SET_NEW_PRODUCTS_MODAL_SHOW_RESULTS",
+        payload: false,
+      });
+      dispatch({ type: "SET_NEW_PRODUCTS_MODAL_SEARCH_RESULTS", payload: [] });
+      fetchInventoryItems(paginationModel.page, paginationModel.pageSize);
+    }
+  };
+
   return (
     <div className="new-products-modal-overlay">
       <div className="new-products-modal-content">
@@ -134,13 +288,28 @@ const NewProductsModal = ({ handleClose }) => {
 
         <SearchBar
           className="searchBar"
-          options={options}
-          placeholder="Search Products by name, ID or any related keywords"
+          placeholder="Search Inventory Items by Product Name"
+          value={searchQuery}
+          handleSearch={handleSearch}
+          handleSearchQueryChange={handleSearchQueryChange}
+          setFilter={(value) =>
+            dispatch({
+              type: "SET_NEW_PRODUCTS_MODAL_FILTER_OPTION",
+              payload: value,
+            })
+          }
         />
-        {!loading ? (
+        <div className="filter" width="40%">
+          <Select
+            isClearable={true}
+            options={warehouseOptions}
+            onChange={handleSelectionChange}
+          ></Select>
+        </div>
+        {!isLoading ? (
           <Table
             columns={inventoryItemsColumns}
-            rows={inventoryItems}
+            rows={showSearchResults ? searchResults : inventoryItems}
             selectedRowIds={selectedInventoryItems.map((item) => item.id)}
             onRowSelection={(newSelection) => {
               const selectedItems = newSelection.map((id) => {
@@ -149,8 +318,28 @@ const NewProductsModal = ({ handleClose }) => {
                 return item;
               });
               console.log(selectedItems);
-              setSelectedInventoryItems(selectedItems);
+              dispatch({
+                type: "SET_NEW_PRODUCTS_MODAL_SELECTED_INVENTORY_ITEMS",
+                payload: selectedItems,
+              });
             }}
+            className="table"
+            paginationModel={
+              showSearchResults ? searchPaginationModel : paginationModel
+            }
+            onPaginationModelChange={
+              showSearchResults
+                ? (newPaginationModel) =>
+                    dispatch({
+                      type: "SET_NEW_PRODUCTS_MODAL_SEARCH_PAGINATION_MODEL",
+                      payload: newPaginationModel,
+                    })
+                : (newPaginationModel) =>
+                    dispatch({
+                      type: "SET_NEW_PRODUCTS_MODAL_PAGINATION_MODEL",
+                      payload: newPaginationModel,
+                    })
+            }
           />
         ) : (
           <LoadingComponent />

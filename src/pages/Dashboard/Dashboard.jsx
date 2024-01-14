@@ -138,7 +138,7 @@ function Dashboard() {
       field: "total",
       headerName: "Total",
       flex: 0.4,
-      valueGetter: (params) => params.value + " $",
+      valueGetter: (params) => params.value.toFixed(2) + " $",
     },
     { field: "date", headerName: "Date", flex: 0.4 },
     {
