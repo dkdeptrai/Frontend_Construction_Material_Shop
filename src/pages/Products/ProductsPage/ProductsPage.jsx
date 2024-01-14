@@ -22,6 +22,8 @@ function ProductsPage() {
   const products = useSelector((state) => state.products.products);
   const selectedRowIds = useSelector((state) => state.products.selectedRowIds);
 
+  const userType = useSelector((state) => state.user.userData.userType);
+
   //tables states
   const paginationModel = useSelector(
     (state) => state.products.paginationModel
@@ -293,7 +295,10 @@ function ProductsPage() {
           />
           <div className="buttonContainer">
             <ExportButton onClick={handleExport} />
-            <DeleteButton onClick={() => handleDelete(selectedRowIds)} />
+            {userType === "MANAGER" && (
+              <DeleteButton onClick={() => handleDelete(selectedRowIds)} />
+            )}
+
             <NewButton
               text="New Product"
               onClick={() => navigateToNewProduct()}
@@ -348,8 +353,8 @@ function ProductsPage() {
           className="table"
           columns={productColumns}
           rows={showSearchResults ? searchResults : products}
-          handleCellClick={handleCellClick}
-          cellName="name"
+          handleCellClick={userType === "MANAGER" ? handleCellClick : null}
+          cellName={userType === "MANAGER" ? "name" : null}
           identifyRoute="id"
           selectedRowIds={selectedRowIds}
           onRowSelection={(newSelection) => {
@@ -374,6 +379,7 @@ function ProductsPage() {
                     payload: newPaginationModel,
                   })
           }
+          noCheckboxSelection={userType === "EMPLOYEE"}
         />
       ) : (
         <LoadingComponent />
