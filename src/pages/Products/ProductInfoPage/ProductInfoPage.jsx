@@ -21,6 +21,11 @@ function ProductInfoPage() {
   const unitPrice = useSelector((state) => state.productInfo.unitPrice);
   const unit = useSelector((state) => state.productInfo.unit);
   const image = useSelector((state) => state.productInfo.image);
+  const [productImage, setProductImage] = useState("");
+
+  useEffect(() => {
+    dispatch({ type: "SET_PRODUCT_INFO_PAGE_IMAGE", payload: productImage });
+  }, [productImage]);
 
   useEffect(() => {
     const fetchProductDetails = async () => {
@@ -68,11 +73,11 @@ function ProductInfoPage() {
 
   const navigateBackToProducts = () => {
     dispatch({ type: "SET_PRODUCTS_PAGE_SUBROUTE", payload: null });
+    clearInput();
     navigate("/products");
   };
 
   const clearInput = () => {
-    setImage(null);
     dispatch({ type: "SET_PRODUCT_INFO_PAGE_NAME", payload: "" });
     dispatch({ type: "SET_PRODUCT_INFO_PAGE_ORIGIN", payload: "" });
     dispatch({ type: "SET_PRODUCT_INFO_PAGE_DESCRIPTION", payload: "" });
@@ -150,7 +155,10 @@ function ProductInfoPage() {
     <div className="addProductPage">
       {isLoading && <LoadingCircle />}
 
-      <BackButton content="Add Product" handleClick={navigateBackToProducts} />
+      <BackButton
+        content={productId ? "Update Product" : "Add Product"}
+        handleClick={navigateBackToProducts}
+      />
       <form>
         <InputComponent
           label="Name"
@@ -211,13 +219,8 @@ function ProductInfoPage() {
         />
 
         <ImageInputComponent
-          imageUrl={image}
-          setImage={(value) =>
-            dispatch({
-              type: "SET_PRODUCT_INFO_PAGE_IMAGE",
-              payload: value,
-            })
-          }
+          {...(image && { imageUrl: image })}
+          setImage={setProductImage}
         />
         <button
           className="submitButton"

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   PieChart,
   Pie,
@@ -16,145 +16,14 @@ import {
   Label,
 } from "recharts";
 
+import ProgressBar from "@ramonak/react-progress-bar";
+
 import ValuableCustomerComponent from "../../components/ValuableCustomerComponent/valuableCustomerComponent";
 
 import "./Overview.css";
 import { API_CONST } from "../../constants/apiConstants";
 
 function Overview() {
-  const revenueData = [
-    {
-      month: "Jan",
-      revenue: 900,
-    },
-    {
-      month: "Feb",
-      revenue: 300,
-    },
-    {
-      month: "Mar",
-      revenue: 500,
-    },
-    {
-      month: "Apr",
-      revenue: 200,
-    },
-    {
-      month: "May",
-      revenue: 600,
-    },
-    {
-      month: "Jun",
-      revenue: 400,
-    },
-    {
-      month: "Jul",
-      revenue: 1200,
-    },
-    {
-      month: "Aug",
-      revenue: 1700,
-    },
-    {
-      month: "Sep",
-      revenue: 1800,
-    },
-    {
-      month: "Oct",
-      revenue: 300,
-    },
-    {
-      month: "Nov",
-      revenue: 300,
-    },
-    {
-      month: "Dec",
-      revenue: 300,
-    },
-  ];
-  const orderData = [
-    {
-      name: "Pending",
-      value: 300,
-      fill: "#deefff",
-    },
-    {
-      name: "Delivered",
-      value: 500,
-      fill: "#e1ffe7",
-    },
-    {
-      name: "Cancelled",
-      value: 700,
-      fill: "#ffdfdf",
-    },
-    {
-      name: "Delivering",
-      value: 200,
-      fill: "#fff4d8",
-    },
-  ];
-
-  const customerData = [
-    {
-      name: "John",
-      phone: "1234567890",
-      orderCount: 5,
-      totalSpent: 500,
-      img: "https://via.placeholder.com/150",
-    },
-    {
-      name: "John",
-      phone: "1234567890",
-      orderCount: 5,
-      totalSpent: 500,
-      img: "https://via.placeholder.com/150",
-    },
-    {
-      name: "John",
-      phone: "1234567890",
-      orderCount: 5,
-      totalSpent: 500,
-      img: "https://via.placeholder.com/150",
-    },
-    {
-      name: "John",
-      phone: "1234567890",
-      orderCount: 5,
-      totalSpent: 500,
-      img: "https://via.placeholder.com/150",
-    },
-    {
-      name: "John",
-      phone: "1234567890",
-      orderCount: 5,
-      totalSpent: 500,
-      img: "https://via.placeholder.com/150",
-    },
-    {
-      name: "John",
-      phone: "1234567890",
-      orderCount: 5,
-      totalSpent: 500,
-      img: "https://via.placeholder.com/150",
-    },
-    {
-      name: "John",
-      phone: "1234567890",
-      orderCount: 5,
-      totalSpent: 500,
-      img: "https://via.placeholder.com/150",
-    },
-    {
-      name: "John",
-      phone: "1234567890",
-      orderCount: 5,
-      totalSpent: 500,
-      img: "https://via.placeholder.com/150",
-    },
-    {},
-  ];
-
   const fetchOverviewData = async () => {
     try {
       const response = await fetch(`${API_CONST}/overview`, {
@@ -163,12 +32,68 @@ function Overview() {
           Authorization: "Bearer " + sessionStorage.getItem("token"),
         },
       });
+      if (!response.ok) {
+        throw Error(response.statusText);
+      }
       const data = await response.json();
       console.log(data);
-    } catch (error) {
-      console.log(error);
+      const revenueData = data.monthlySales.monthlySalesItems;
+      revenueData.map((revenue) => {
+        revenue.month = revenue.month.split("-")[1];
+      });
+      setRevenueData(revenueData);
+
+      const orderStatistics = data.orderStatistics;
+      const newOrderData = [
+        {
+          name: "Pending",
+          value: orderStatistics.processingOrderCount,
+          fill: "#deefff",
+        },
+        {
+          name: "Delivered",
+          value: orderStatistics.completedOrderCount,
+          fill: "#e1ffe7",
+        },
+        {
+          name: "Cancelled",
+          value: orderStatistics.cancelledOrderCount,
+          fill: "#ffdfdf",
+        },
+        {
+          name: "Delivering",
+          value: orderStatistics.deliveringOrderCount,
+          fill: "#fff4d8",
+        },
+      ];
+      setOrderData(newOrderData);
+      const valuableCustomers = data.valuableCustomers;
+    } catch (e) {
+      console.log("Error in fetching overview data: ", e);
     }
   };
+  const [revenueData, setRevenueData] = useState([
+    {
+      month: "Jan",
+      revenue: 900,
+    },
+  ]);
+  const [orderData, setOrderData] = useState([
+    {
+      name: "Delivering",
+      value: 200,
+      fill: "#fff4d8",
+    },
+  ]);
+
+  const customerData = [
+    {
+      name: "John",
+      phone: "1234567890",
+      orderCount: 5,
+      totalSpent: 500,
+    },
+  ];
 
   useEffect(() => {
     fetchOverviewData();
@@ -194,7 +119,7 @@ function Overview() {
         <div className="ordersStatus">
           <div className="label">Orders Status</div>
           <div className="pieChartContainer">
-            <ResponsiveContainer>
+            <ResponsiveContainer className="pieChartRC">
               <PieChart>
                 <Pie
                   data={orderData}
@@ -217,7 +142,12 @@ function Overview() {
           </div>
         </div>
         <div className="topSelling">
-          <div className="label">Top Selling</div>
+          <div className="label">Top Revenue Growth</div>
+          <ProgressBar
+            completed={70}
+            bgColor="#8884d8"
+            animateOnRender={true}
+          />
         </div>
         <div className="valuableCustomers">
           <div className="label">Valuable Customers</div>
