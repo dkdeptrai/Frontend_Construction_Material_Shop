@@ -147,6 +147,9 @@ function ProductInfoPage() {
       setIsLoading(false);
     }
 
+    if (productId) {
+      navigateBackToProducts();
+    }
     setIsLoading(false);
     clearInput();
   };
