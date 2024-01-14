@@ -272,8 +272,7 @@ const PurchaseOrders = () => {
       field: "total",
       headerName: "Total",
       flex: 0.4,
-      valueGetter: (params) =>
-        params.row.total ? params.row.total.toLocaleString() + " $" : "0.0 $",
+      valueGetter: (params) => params.value.toFixed(2) + " $",
     },
     { field: "date", headerName: "Date", flex: 0.4 },
     {

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import "./InfoOrder.css";
 
@@ -11,6 +12,8 @@ import LoadingScreen from "../../../components/LoadingScreen/LoadingScreen.jsx";
 import InvoiceButton from "../../../components/layouts/invoiceButton/InvoiceButton.jsx";
 
 const InfoOrder = () => {
+  const dispatch = useDispatch();
+
   const { id } = useParams();
   const [orderId, setOrderId] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
@@ -116,13 +119,18 @@ const InfoOrder = () => {
         </div>
       ),
     },
-    { headerName: "Price/Unit", field: "unitPrice", flex: 0.4 },
+    {
+      headerName: "Price/Unit",
+      field: "unitPrice",
+      flex: 0.4,
+      valueGetter: (params) => params.value.toFixed(2) + " $",
+    },
     { headerName: "Amount", field: "amount", flex: 0.4 },
     {
       headerName: "Total",
       field: "total",
       flex: 0.4,
-      valueGetter: (params) => Math.floor(params.value) + " $",
+      valueGetter: (params) => params.value.toFixed(2) + " $",
     },
   ];
 
@@ -147,7 +155,7 @@ const InfoOrder = () => {
       <InformationLine label="Discounts:" content={discount + "%"} />
       <InformationLine
         label="Total:"
-        content={<span style={{ color: "red" }}>{Math.floor(total)} $</span>}
+        content={<span style={{ color: "red" }}>{total.toFixed(2)} $</span>}
       />
 
       <div className="order-state-line">
@@ -170,14 +178,15 @@ const InfoOrder = () => {
               ) === false
             )
               return;
+            setLoading(true);
             setOrderStatus(newStatus);
             handleChangeStatus(newStatus);
             dispatch({
               type: "SET_SALE_ORDERS",
               payload: [],
-            }).then(() => {
-              window.history.back();
             });
+            setLoading(false);
+            window.history.back();
           }}
           disabled={orderStatus === "CANCELLED" || orderStatus === "COMPLETED"}
         >
@@ -207,15 +216,14 @@ const InfoOrder = () => {
             if (window.confirm("Are you sure to cancel this order?") === false)
               return;
             setLoading(true);
-            await handleChangeStatus("CANCELLED");
+            handleChangeStatus("CANCELLED");
             setOrderStatus("CANCELLED");
             dispatch({
               type: "SET_SALE_ORDERS",
               payload: [],
-            }).then(() => {
-              window.history.back();
             });
             setLoading(false);
+            window.history.back();
           }}
         >
           Cancel this order

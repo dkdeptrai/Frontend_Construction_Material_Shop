@@ -8,12 +8,6 @@ const InlineInputComponent = (props) => {
     setValue(e.target.value);
   };
 
-  useEffect(() => {
-    if (value > max) {
-      setValue(max);
-    }
-  }, [value]);
-
   return (
     <div className="input-field">
       <label>{label}</label>
