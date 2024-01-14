@@ -43,6 +43,46 @@ function Overview() {
     ],
   ]);
 
+  const [revenueData, setRevenueData] = useState([
+    {
+      month: "Jan",
+      revenue: 900,
+    },
+  ]);
+  const [orderData, setOrderData] = useState([
+    {
+      name: "Delivering",
+      value: 200,
+      fill: "#fff4d8",
+    },
+  ]);
+
+  const colors = ["#FF9364", "#FFD572", "#7AD3FF", "#FE6C6C", "#B09FFF"];
+
+  const [revenueGrowth, setRevenueGrowth] = useState([
+    {
+      productId: 1,
+      productName: "Product 1",
+      productGrowth: 10,
+    },
+
+    {
+      productId: 1,
+      productName: "Product 1",
+      productGrowth: 10,
+    },
+    {
+      productId: 1,
+      productName: "Product 1",
+      productGrowth: 10,
+    },
+    {
+      productId: 1,
+      productName: "Product 1",
+      productGrowth: 10,
+    },
+  ]);
+
   const fetchOverviewData = async () => {
     try {
       const response = await fetch(API_CONST + "/overview", {
@@ -94,25 +134,25 @@ function Overview() {
         ordersCount: customer.ordersCount && 0,
         ordersValue: customer.ordersValue && 0,
       }));
-      console.log(newCustomerData);
       setCustomerData(newCustomerData);
+
+      const aggregatedMonthlySales = data.aggregatedMonthlySales;
+      const newGrowth = aggregatedMonthlySales.map((revenue) => {
+        return {
+          productId: revenue.productId,
+          productName: revenue.productName,
+          productGrowth: Math.round(
+            ((revenue.currentMonthValue - revenue.previousMonthValue) /
+              revenue.previousMonthValue) *
+              100
+          ),
+        };
+      });
+      setRevenueGrowth(newGrowth);
     } catch (e) {
       console.log("Error in fetching overview data: ", e);
     }
   };
-  const [revenueData, setRevenueData] = useState([
-    {
-      month: "Jan",
-      revenue: 900,
-    },
-  ]);
-  const [orderData, setOrderData] = useState([
-    {
-      name: "Delivering",
-      value: 200,
-      fill: "#fff4d8",
-    },
-  ]);
 
   useEffect(() => {
     fetchOverviewData();
@@ -172,27 +212,29 @@ function Overview() {
             </div>
           </div>
         </div>
-        <div className="topSelling">
+        <div className="revenueGrowth">
           <div className="label">Top Revenue Growth</div>
-          <ProgressBar
-            completed={70}
-            bgColor="#8884d8"
-            animateOnRender={true}
-          />
+          {revenueGrowth.map((revenue, index) => (
+            <div className="growth">
+              <div className="productName">{revenue.productName}</div>
+              <ProgressBar
+                className="progressBar"
+                completed={revenue.productGrowth}
+                bgColor={colors[index % colors.length]}
+                animateOnRender={true}
+              />
+            </div>
+          ))}
         </div>
         <div className="valuableCustomers">
           <div className="label">Valuable Customers</div>
 
-          {customerData ? (
-            customerData.map((customer) => (
-              <ValuableCustomerComponent
-                customer={customer}
-                handleClick={() => handleClick(customer)}
-              />
-            ))
-          ) : (
-            <ValuableCustomerComponent customer={customerData} />
-          )}
+          {customerData.map((customer) => (
+            <ValuableCustomerComponent
+              customer={customer}
+              handleClick={() => handleClick(customer)}
+            />
+          ))}
         </div>
       </div>
     </>
