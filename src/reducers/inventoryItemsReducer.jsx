@@ -15,6 +15,8 @@ const initialState = {
   },
   searchQuery: "",
   filterOption: "Name",
+  warehousesOption: [],
+  warehouses: [],
 };
 
 const inventoryItemsReducer = (state = initialState, action) => {
@@ -59,8 +61,16 @@ const inventoryItemsReducer = (state = initialState, action) => {
         ...state,
         filterOption: action.payload,
       };
-    default:
-      break;
+    case "SET_INVENTORY_PAGE_WAREHOUSES_OPTION":
+      return {
+        ...state,
+        warehousesOption: action.payload,
+      };
+    case "SET_INVENTORY_PAGE_WAREHOUSES":
+      return {
+        ...state,
+        warehouses: action.payload,
+      };
   }
   return state;
 };
