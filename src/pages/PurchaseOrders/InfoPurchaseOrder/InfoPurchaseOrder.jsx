@@ -111,7 +111,9 @@ const InfoPurchaseOrder = () => {
   return (
     <div>
       {loading && <LoadingScreen />}
+
       <BackButton content="Order information" />
+
       <InformationLine label="Order ID:" content={orderId} />
       <InformationLine label="Employee's Code:" content={employeeCode} />
       <InformationLine label="Employee's name:" content={employeeName} />

@@ -283,7 +283,7 @@ function SaleOrdersPage() {
           value={searchQuery}
         />
         <div className="buttonContainer-order">
-          <ExportButton onClick={() => {}} />
+        
           <NewButton text="New Order" onClick={handleClick} />
         </div>
       </div>

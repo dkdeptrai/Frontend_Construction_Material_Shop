@@ -295,7 +295,6 @@ const PurchaseOrders = () => {
           handleSearchQueryChange={handleSearchQueryChange}
         />
         <div className="buttonContainer">
-          <ExportButton onClick={() => {}} />
           <NewButton text="New Order" onClick={handleClick} />
         </div>
       </div>

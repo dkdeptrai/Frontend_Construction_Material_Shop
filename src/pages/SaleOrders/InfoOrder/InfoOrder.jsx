@@ -8,6 +8,7 @@ import InformationLine from "../../../components/InformationLine/InformationLine
 import Table from "../../../components/core/table/table";
 import { API_CONST } from "../../../constants/apiConstants";
 import LoadingScreen from "../../../components/LoadingScreen/LoadingScreen.jsx";
+import InvoiceButton from "../../../components/layouts/invoiceButton/InvoiceButton.jsx";
 
 const InfoOrder = () => {
   const { id } = useParams();
@@ -29,6 +30,24 @@ const InfoOrder = () => {
         Authorization: "Bearer " + sessionStorage.getItem("token"),
       },
     });
+  };
+
+  const handleInvoice = async () => {
+    fetch(API_CONST + "/orders/export/invoice/pdf/" + orderId, {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + sessionStorage.getItem("token"),
+      },
+    })
+      .then((response) => response.blob())
+      .then((blob) => {
+        const url = window.URL.createObjectURL(new Blob([blob]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "invoice.pdf");
+        document.body.appendChild(link);
+        link.click();
+      });
   };
 
   //get order information
@@ -110,7 +129,11 @@ const InfoOrder = () => {
   return (
     <div>
       {loading && <LoadingScreen />}
-      <BackButton content="Order information" />
+      <div className="infoHeader">
+        <BackButton content="Order information" />
+        <InvoiceButton onClick={handleInvoice} />
+      </div>
+
       <InformationLine label="Order ID:" content={orderId} />
       <InformationLine
         label="Customer's phone number:"
