@@ -12,7 +12,6 @@ import InputComponent from "../../../components/InputComponent/InputComponent.js
 import LoadingComponent from "../../../components/LoadingComponent/LoadingComponent.jsx";
 import { productOrigins } from "../../../constants/productConstants.jsx";
 
-
 function ProductsPage() {
   const dispatch = useDispatch();
   const subroute = useSelector((state) => state.products.subroute);
@@ -102,7 +101,7 @@ function ProductsPage() {
       console.log("query: ", query);
       const response = await fetch(`${API_CONST}/products/search?${query}`, {
         method: "GET",
-        
+
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${sessionStorage.getItem("token")}`,

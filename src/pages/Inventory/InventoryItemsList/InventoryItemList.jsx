@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
+import Select from "react-select";
 //pages and components
 import SearchBar from "../../../components/layouts/searchBar/searchBar";
 import ExportButton from "../../../components/layouts/exportButton/exportButton";
@@ -8,16 +8,18 @@ import Table from "../../../components/core/table/table"; // Change the import s
 import { API_CONST } from "../../../constants/apiConstants";
 import LoadingComponent from "../../../components/LoadingComponent/LoadingComponent";
 
+import "./InventoryItemList.css";
+
 const InventoryItemList = () => {
   const dispatch = useDispatch();
   const inventoryItemsFromStore = useSelector(
     (state) => state.inventoryItems.inventoryItemsData
   );
-  console.log("inventory items from store", inventoryItemsFromStore);
   const [loading, setLoading] = useState(false);
 
   const options = ["Name", "Warehouse"];
-
+  const warehouses = useSelector((state) => state.inventoryItems.warehouses);
+  console.log("warehouses", warehouses);
   //search
   const paginationModel = useSelector(
     (state) => state.inventoryItems.paginationModel
@@ -26,39 +28,96 @@ const InventoryItemList = () => {
     (state) => state.inventoryItems.searchPaginationModel
   );
   const searchQuery = useSelector((state) => state.inventoryItems.searchQuery);
+  const showSearchResults = useSelector(
+    (state) => state.inventoryItems.showSearchResults
+  );
+  const searchResults = useSelector(
+    (state) => state.inventoryItems.searchResults
+  );
 
-  const handleSearch = async () => {
+  const warehouseOptions = useSelector(
+    (state) => state.inventoryItems.warehousesOption
+  );
+
+  console.log("paginationModel", paginationModel);
+  console.log("searchPaginationModel", searchPaginationModel);
+
+  const [currentWarehouse, setCurrentWarehouse] = useState(null);
+
+  console.log(showSearchResults);
+
+  useEffect(() => {
+    let warehouseOptions = [];
+    warehouses.map((warehouse) => {
+      warehouseOptions.push({
+        value: warehouse.id,
+        label: warehouse.address,
+      });
+    });
+    dispatch({
+      type: "SET_INVENTORY_PAGE_WAREHOUSES_OPTION",
+      payload: warehouseOptions,
+    });
+  }, [warehouses]);
+
+  const handleSearch = async (page, size) => {
     try {
-      let query = `page=${searchPaginationModel.page}&size=${searchPaginationModel.pageSize}`;
-      if (filter == "Name") {
-        query = query + `&customerName=${searchQuery}`;
-      }
-      if (filter == "Warehouse") {
-        query = query + `&phone=${searchQuery}`;
+      setLoading(true);
+      let query = `page=${searchPaginationModel.page}&size=${searchPaginationModel.pageSize}&keyword=${searchQuery}`;
+      if (currentWarehouse) {
+        query += `&warehouseId=${currentWarehouse}`;
       }
       console.log("query", query);
-      const response = await fetch(`${API_CONST}/customers?${query}`, {
+      const response = await fetch(`${API_CONST}/inventories/search?${query}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
           Authorization: "Bearer " + sessionStorage.getItem("token"),
         },
       });
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
       const data = await response.json();
-      const customers = data.results;
+      const inventoryItems = data.results;
+      console.log("search results", inventoryItems);
+
       dispatch({
-        type: "SET_CUSTOMERS_PAGE_SEARCH_RESULTS",
-        payload: customers,
+        type: "SET_INVENTORY_PAGE_SEARCH_RESULTS",
+        payload: data.results,
       });
-      dispatch({ type: "SET_CUSTOMERS_PAGE_SHOW_RESULTS", payload: true });
+      dispatch({ type: "SET_INVENTORY_PAGE_SHOW_RESULTS", payload: true });
       dispatch({
-        type: "SET_CUSTOMERS_PAGE_SEARCH_PAGINATION_MODEL",
+        type: "SET_INVENTORY_PAGE_SEARCH_PAGINATION_MODEL",
         payload: { ...searchPaginationModel, total: data.total },
       });
     } catch (error) {
-      dispatch({ type: "SET_CUSTOMERS_PAGE_SHOW_RESULTS", payload: false });
+      dispatch({ type: "SET_INVENTORY_PAGE_SHOW_RESULTS", payload: true });
+      dispatch({ type: "SET_INVENTORY_PAGE_SEARCH_RESULTS", payload: [] });
+      setLoading(false);
+      console.error("Error:", error);
+    }
+    setLoading(false);
+  };
 
-      console.log("Error searching customers: ", error);
+  const fetchWarehouses = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(`${API_CONST}/warehouses`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+        },
+      });
+      const data = await response.json();
+      const warehouses = data;
+      console.log("warehouses", data);
+      dispatch({ type: "SET_INVENTORY_PAGE_WAREHOUSES", payload: warehouses });
+      setLoading(false);
+      console.log(warehouses);
+    } catch (e) {
+      console.log(e);
+      setLoading(false);
     }
   };
 
@@ -96,7 +155,24 @@ const InventoryItemList = () => {
   //get all inventory items
   useEffect(() => {
     fetchInventoryItems(paginationModel.page, paginationModel.pageSize);
+    fetchWarehouses();
   }, [paginationModel.page, paginationModel.pageSize]);
+
+  useEffect(() => {
+    if (showSearchResults) {
+      handleSearch(searchPaginationModel.page, searchPaginationModel.pageSize);
+      fetchWarehouses();
+    }
+  }, [searchPaginationModel.page, searchPaginationModel.pageSize]);
+
+  const handleSelectionChange = (option) => {
+    if (option === null) {
+      setCurrentWarehouse(null);
+    } else {
+      setCurrentWarehouse(option.value);
+    }
+    console.log("current warehouse", currentWarehouse);
+  };
 
   const inventoryColumns = [
     {
@@ -149,6 +225,20 @@ const InventoryItemList = () => {
       valueGetter: (params) => params.row.warehouse.address,
     },
   ];
+  const handleSearchQueryChange = (event) => {
+    dispatch({
+      type: "SET_INVENTORY_PAGE_SEARCH_QUERY",
+      payload: event.target.value,
+    });
+    if (event.target.value === "" || event.target.value === null) {
+      dispatch({
+        type: "SET_INVENTORY_PAGE_SHOW_RESULTS",
+        payload: false,
+      });
+      dispatch({ type: "SET_INVENTORY_PAGE_SEARCH_RESULTS", payload: [] });
+      fetchInventoryItems(paginationModel.page, paginationModel.pageSize);
+    }
+  };
 
   return (
     <div className="pageContainer">
@@ -156,11 +246,13 @@ const InventoryItemList = () => {
         <SearchBar
           className="searchBar"
           options={options}
-          placeholder="Search inventory items by "
+          placeholder="Search Inventory Items"
           value={searchQuery}
+          handleSearch={handleSearch}
+          handleSearchQueryChange={handleSearchQueryChange}
           setFilter={(value) =>
             dispatch({
-              type: "SET_INVENTORY_ITEM_PAGE_FILTER_OPTION",
+              type: "SET_INVENTORY_PAGE_FILTER_OPTION",
               payload: value,
             })
           }
@@ -168,17 +260,34 @@ const InventoryItemList = () => {
 
         <ExportButton onClick={() => {}} />
       </div>
+      <div className="filter">
+        <Select
+          isClearable={true}
+          options={warehouseOptions}
+          onChange={handleSelectionChange}
+        ></Select>
+      </div>
       {!loading ? (
         <Table
-          paginationModel={paginationModel}
-          onPaginationModelChange={(newPaginationModel) =>
-            dispatch({
-              type: "SET_INVENTORY_PAGE_PAGINATION_MODEL",
-              payload: newPaginationModel,
-            })
+          className="table"
+          paginationModel={
+            showSearchResults ? searchPaginationModel : paginationModel
+          }
+          onPaginationModelChange={
+            showSearchResults
+              ? (newPaginationModel) =>
+                  dispatch({
+                    type: "SET_INVENTORY_PAGE_SEARCH_PAGINATION_MODEL",
+                    payload: newPaginationModel,
+                  })
+              : (newPaginationModel) =>
+                  dispatch({
+                    type: "SET_INVENTORY_PAGE_PAGINATION_MODEL",
+                    payload: newPaginationModel,
+                  })
           }
           columns={inventoryColumns}
-          rows={inventoryItemsFromStore}
+          rows={showSearchResults ? searchResults : inventoryItemsFromStore}
           noCheckboxSelection
         />
       ) : (
